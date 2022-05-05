@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hive-metastore
+spec:
+  selector:
+    matchLabels:
+      app: hive-metastore
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: hive-metastore
+    spec:
+      containers:
+      - image: hive-metastore:3.0.0
+        name: hive-metastore
+        env:
+          - name: MYSQL_USER
+            value: root
+          - name: MYSQL_PASSWORD
+            value: password
+          - name: MINIO_ROOT_USER
+            value: minio
+          - name: MINIO_ROOT_PASSWORD
+            value: minio123
+        ports: 
+          - containerPort: 9083
+        volumeMounts:
+          - name: hive-metastore-config-volume
+            mountPath: /opt/hive-metastore/conf/metastore-site.xml
+            subPath: metastore-site.xml
+          - name: hive-metastore-config-volume
+            mountPath: /opt/hive-metastore/conf/core-site.xml
+            subPath: core-site.xml
+        command: ["/opt/hive-metastore/bin/start-metastore"]
+        args: ["-p","9083","--skiphadoopversion"]
+        imagePullPolicy: Always
+      volumes:
+        - name: hive-metastore-config-volume
+          configMap:
+            name: hive-metastore-config
+
+

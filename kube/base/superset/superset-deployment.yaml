@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: superset
+spec:
+  selector:
+    matchLabels:
+      app: superset
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: superset
+    spec:
+      containers:
+      - image: superset:latest
+        name: superset
+        env:
+          - name: SUPERSET_USER
+            value: superset
+          - name: SUPERSET_PASSWORD
+            value: superset123
+        ports: 
+          - containerPort: 8080
+            name: superset
+      hostAliases:
+        - hostnames:
+            - "superset"
