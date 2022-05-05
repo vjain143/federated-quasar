@@ -24,7 +24,7 @@ spec:
             value: steampipe123
         ports: 
           - containerPort: 9193
-            name: minio-console
+            name: steampipe
         volumeMounts:
           - mountPath: /home/steampipe/.steampipe/config/bitbucket.spc
             name: steampipe-configs-volume
