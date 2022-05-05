@@ -14,7 +14,7 @@ spec:
         app: minio
     spec:
       containers:
-      - image: minio:latest
+      - image: minio/minio:latest
         name: minio
         args:
           - server
@@ -30,7 +30,7 @@ spec:
             name: minio-console
         volumeMounts:
           - mountPath: minio-persistent-storage
-            name: /data
+            name: minio-persistent-storage
       volumes: 
         - name: minio-persistent-storage
           persistentVolumeClaim:

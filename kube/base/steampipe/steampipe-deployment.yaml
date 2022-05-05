@@ -14,7 +14,7 @@ spec:
         app: steampipe
     spec:
       containers:
-      - image: steampipe:latest
+      - image: turbot/steampipe:latest
         name: steampipe
         args: ["steampipe", "service", "start", "--foreground", "--database-listen=network", "--database-password=steampipe123"]
         env:

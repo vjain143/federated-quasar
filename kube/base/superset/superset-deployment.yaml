@@ -14,7 +14,7 @@ spec:
         app: superset
     spec:
       containers:
-      - image: superset:latest
+      - image: apache/superset:latest
         name: superset
         env:
           - name: SUPERSET_USER
@@ -24,6 +24,3 @@ spec:
         ports: 
           - containerPort: 8080
             name: superset
-      hostAliases:
-        - hostnames:
-            - "superset"
