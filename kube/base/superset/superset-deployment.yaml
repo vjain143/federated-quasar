@@ -16,11 +16,20 @@ spec:
       containers:
       - image: apache/superset:latest
         name: superset
+        ports:
+          - containerPort: 8088
         env:
           - name: SUPERSET_USER
-            value: superset
+            value: admin
           - name: SUPERSET_PASSWORD
-            value: superset123
-        ports: 
-          - containerPort: 8080
-            name: superset
+            value: admin
+          - name: SUPERSET_PORT
+            value: "8088"
+        volumeMounts:
+          - mountPath: /home/superset/etc/superset/superset_config.py
+            name: superset-configs-volume
+            subPath: superset_config.py
+      volumes:
+        - name: superset-configs-volume
+          configMap:
+            name: superset-configs
