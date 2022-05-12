@@ -34,6 +34,9 @@ spec:
           - mountPath: /home/trino/config/jvm.config
             name: trino-configmap-volume
             subPath: jvm.config
+          - mountPath: /home/trino/config/password.db
+            name: trino-configmap-volume
+            subPath: password.db
           #Coordinator
           - mountPath: /home/trino/config/config.properties.coordinator
             name: trino-configmap-volume

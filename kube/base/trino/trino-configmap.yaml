@@ -26,6 +26,7 @@ data:
     query.max-memory-per-node=1GB
     query.max-total-memory-per-node=2GB
     discovery.uri=http://trino:8080
+    http-server.authentication.type=PASSWORD
   config.properties.worker:
     coordinator=false
     node-scheduler.include-coordinator=true
@@ -34,6 +35,9 @@ data:
     query.max-memory-per-node=1GB
     query.max-total-memory-per-node=2GB
     discovery.uri=http://trino:8080
+  password-authenticator.properties:
+    password-authenticator.name=file
+    file.password-file=/home/trino/config/password.db
   node.properties:
     node.environment=name_of_cluster
     node.id=ffffffff-ffff-ffff-ffff-ffffffffffff
