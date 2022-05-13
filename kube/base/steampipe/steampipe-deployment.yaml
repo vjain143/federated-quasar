@@ -36,6 +36,6 @@ spec:
       volumes: 
         - name: steampipe-configs-volume
           configMap:
-            name: steampipe-configs
+            name: steampipe-config
 
 

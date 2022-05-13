@@ -14,7 +14,7 @@ spec:
         app: redash
     spec:
       containers:
-      - image: redash:latest
+      - image: redash/redash:latest
         name: redash
         env:
           - name: REDASH_COOKIE_SECRET

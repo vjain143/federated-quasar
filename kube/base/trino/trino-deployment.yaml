@@ -34,11 +34,11 @@ spec:
           - mountPath: /home/trino/config/jvm.config
             name: trino-configmap-volume
             subPath: jvm.config
-          - mountPath: /home/trino/config/password.db
+          - mountPath: etc/trino/password.db
             name: trino-configmap-volume
             subPath: password.db
           #Coordinator
-          - mountPath: /home/trino/config/config.properties.coordinator
+          - mountPath: /home/trino/config/config.properties
             name: trino-configmap-volume
             subPath: config.properties.coordinator
           #Worker
@@ -49,15 +49,6 @@ spec:
           - mountPath: /home/trino/config/node.properties
             name: trino-configmap-volume
             subPath: node.properties
-          - mountPath: /home/trino/config/hive-metastore.properties
-            name: trino-configmap-volume
-            subPath: hive-metastore.properties
-          - mountPath: /home/trino/config/iceberg.properties
-            name: trino-configmap-volume
-            subPath: iceberg.properties
-          - mountPath: /home/trino/config/mysql.properties
-            name: trino-configmap-volume
-            subPath: mysql.properties
       volumes:
         - name: trino-configmap-volume
           configMap:

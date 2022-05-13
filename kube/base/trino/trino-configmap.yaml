@@ -5,15 +5,15 @@ metadata:
 data:
   jvm.config: |-
     -server
-    -Xmx16G
+    -Xmx1G
     -XX:-UseBiasedLocking
     -XX:+UseG1GC
     -XX:G1HeapRegionSize=32M
     -XX:+ExplicitGCInvokesConcurrent
-    -XX:+ExitOnOutOfMemoryError
     -XX:+HeapDumpOnOutOfMemoryError
+    -XX:+ExitOnOutOfMemoryError
     -XX:-OmitStackTraceInFastThrow
-    -XX:ReservedCodeCacheSize=512M
+    -XX:ReservedCodeCacheSize=256M
     -XX:PerMethodRecompilationCutoff=10000
     -XX:PerBytecodeRecompilationCutoff=10000
     -Djdk.attach.allowAttachSelf=true
@@ -37,41 +37,4 @@ data:
     discovery.uri=http://trino:8080
   password-authenticator.properties:
     password-authenticator.name=file
-    file.password-file=/home/trino/config/password.db
-  node.properties:
-    node.environment=name_of_cluster
-    node.id=ffffffff-ffff-ffff-ffff-ffffffffffff
-    node.data-dir=/path/to/data/folder
-  hive-metastore.properties:
-    connector.name=hive-hadoop2
-    hive.metastore.uri=thrift://metastore:9083
-    hive.metastore-timeout=130s
-    hive.create-empty-bucket-files=true
-    hive.allow-drop-table=true
-    hive.max-partitions-per-scan=1000000
-    hive.s3.endpoint=http://minio:9000
-    hive.s3.path-style-access=true
-    hive.s3.ssl.enabled=false
-    hive.s3.max-connections=100
-    hive.s3.aws-access-key=minio
-    hive.s3.aws-secret-key=minio123
-    hive.non-managed-table-writes-enabled=true
-  iceberg.properties:
-    connector.name=iceberg
-    hive.metastore.uri=thrift://metastore:9083
-    hive.metastore-timeout=130s
-    hive.create-empty-bucket-files=true
-    hive.allow-drop-table=true
-    hive.max-partitions-per-scan=1000000
-    hive.s3.endpoint=http://minio:9000
-    hive.s3.path-style-access=true
-    hive.s3.ssl.enabled=false
-    hive.s3.max-connections=100
-    hive.s3.aws-access-key=minio
-    hive.s3.aws-secret-key=minio123
-    hive.non-managed-table-writes-enabled=true
-  mysql.properties:
-    connector.name=mysql
-    connection-url=jdbc:mysql://localhost:3306
-    connection-user=root
-    connection-password=my_password
+    file.password-file=etc/trino/password.db

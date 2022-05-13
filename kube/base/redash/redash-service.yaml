@@ -8,8 +8,8 @@ spec:
   type: NodePort
   ports:
     - name: https
-      port: 9193
-      targetPort: 9193
+      port: 80
+      targetPort: 80
       protocol: TCP
   selector:
     app: redash
