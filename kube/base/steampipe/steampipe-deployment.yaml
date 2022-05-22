@@ -16,9 +16,10 @@ spec:
       containers:
       - image: turbot/steampipe:latest
         name: steampipe
+        command: ["/usr/local/bin/docker-entrypoint.sh"]
         args: ["steampipe", "service", "start", "--foreground", "--database-listen=network", "--database-password=steampipe123"]
         env:
-          - name: STEAMPIPE_USER
+          - name: STEAMPIPE_USERku
             value: steampipe
           - name: STEAMPIPE_PASSWORD
             value: steampipe123

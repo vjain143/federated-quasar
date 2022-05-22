@@ -45,10 +45,14 @@ spec:
           - mountPath: /home/trino/config/config.properties
             name: trino-configmap-volume
             subPath: config.properties.worker
-          #Plugins
+          #Node
           - mountPath: /home/trino/config/node.properties
             name: trino-configmap-volume
             subPath: node.properties
+          #Steampipe Plugins
+          - mountPath: etc/trino/catalog/steampipe.properties
+            name: trino-configmap-volume
+            subPath: steampipe.properties
       volumes:
         - name: trino-configmap-volume
           configMap:

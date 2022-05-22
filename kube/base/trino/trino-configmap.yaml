@@ -38,3 +38,8 @@ data:
   password-authenticator.properties:
     password-authenticator.name=file
     file.password-file=etc/trino/password.db
+  steampipe.properties:
+    connector.name=postgresql
+    connection-url=jdbc:postgresql://steampipe:9193/steampipe?ssl=false
+    connection-user=steampipe
+    connection-password=steampipe123

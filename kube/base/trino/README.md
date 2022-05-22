@@ -4,7 +4,9 @@
 ```text
 curl -O https://repo1.maven.org/maven2/io/trino/trino-cli/380/trino-cli-380-executable.jar
 chmod +x trino-cli-380-executable.jar
-mv trino-cli-380-executable.jar trinosow 
+mv trino-cli-380-executable.jar trino
+
+./trino --server https://localhost:30263/ --user=trino --password
 ```
 
 steampipe.properties:
@@ -42,7 +44,7 @@ hive.s3.aws-secret-key=minio123
 hive.non-managed-table-writes-enabled=true
 mysql.properties:
 connector.name=mysql
-connection-url=jdbc:mysql://localhost:3306
+connection-url=jdbc:mysql://mysql:13306/?useSSL=false
 connection-user=root
 connection-password=my_password
 
