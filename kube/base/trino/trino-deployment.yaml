@@ -49,10 +49,12 @@ spec:
           - mountPath: /home/trino/config/node.properties
             name: trino-configmap-volume
             subPath: node.properties
-          #Steampipe Plugins
-          - mountPath: etc/trino/catalog/steampipe.properties
+          - mountPath: etc/trino/catalog/hive-metastore.properties
             name: trino-configmap-volume
-            subPath: steampipe.properties
+            subPath: hive-metastore.properties
+          - mountPath: etc/trino/catalog/iceberg.properties
+            name: trino-configmap-volume
+            subPath: iceberg.properties
       volumes:
         - name: trino-configmap-volume
           configMap:

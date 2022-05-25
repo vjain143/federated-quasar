@@ -37,3 +37,5 @@ hs_err_pid*
 !/.idea/vcs.xml
 !/.idea/workspace.xml
 !/kube/base/trino/trino-cli-380-executable.jar
+!/trino
+!/trino

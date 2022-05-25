@@ -5,7 +5,7 @@
     </property>
     <property>
         <name>fs.s3a.endpoint</name>
-        <value>http://minio:9000</value>
+        <value>http://minio:30900</value>
     </property>
     <property>
         <name>fs.s3a.fast.upload</name>

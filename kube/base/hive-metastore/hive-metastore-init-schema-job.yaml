@@ -23,6 +23,6 @@ spec:
             - name: MINIO_ROOT_PASSWORD
               value: minio123
           command: ["/opt/hive-metastore/bin/schematool"]
-          args: ["--verbose", "-dbType", "mysql", "-userName", "root", "-initSchema", "-passWord", "password", "-url", "jdbc:mysql://mysql:13306/metastore_db?createDatabaseIfNotExist=true&useSSL=false"]
+          args: ["--verbose", "-dbType", "mysql", "-userName", "root", "-initSchema", "-passWord", "password", "-url", "jdbc:mysql://mysql:30306/metastore_db?createDatabaseIfNotExist=true&useSSL=false"]
       restartPolicy: Never
   backoffLimit: 4

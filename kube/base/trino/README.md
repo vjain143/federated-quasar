@@ -6,14 +6,24 @@ curl -O https://repo1.maven.org/maven2/io/trino/trino-cli/380/trino-cli-380-exec
 chmod +x trino-cli-380-executable.jar
 mv trino-cli-380-executable.jar trino
 
-./trino --server https://localhost:30263/ --user=trino --password
+./trino --server https://localhost:30080/ --user=trino --password
 ```
+
+# SHOW SESSION
 
 steampipe.properties:
 connector.name=postgresql
 connection-url=jdbc:postgresql://localhost:9193/steampipe
 connection-user=steampipe
 connection-password=steampipe123
+
+#Steampipe Plugins
+- mountPath: etc/trino/catalog/steampipe.properties
+  name: trino-configmap-volume
+  subPath: steampipe.properties
+
+
+
 hive-metastore.properties:
 connector.name=hive-hadoop2
 hive.metastore.uri=thrift://metastore:9083
