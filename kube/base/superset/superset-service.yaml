@@ -9,6 +9,7 @@ spec:
   ports:
     - name: http
       port: 8088
+      nodePort: 30888
       targetPort: 8088
       protocol: TCP
   selector:

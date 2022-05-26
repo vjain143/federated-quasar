@@ -16,7 +16,7 @@ spec:
       containers:
       - image: trinodb/trino:latest
         imagePullPolicy: Always
-        name: trino-coordinator
+        name: trino
         ports:
           - containerPort: 8080
         env:

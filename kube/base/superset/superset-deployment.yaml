@@ -13,6 +13,11 @@ spec:
       labels:
         app: superset
     spec:
+      initContainers:
+        - image: apache/superset:latest
+          imagePullPolicy: Always
+          command:
+            -
       containers:
       - image: apache/superset:latest
         name: superset

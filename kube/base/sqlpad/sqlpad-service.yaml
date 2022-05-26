@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sqlpad
+  labels:
+    app: sqlpad
+spec:
+  type: NodePort
+  ports:
+    - name: https
+      port: 3000
+      nodePort: 30030
+      targetPort: 3000
+      protocol: TCP
+  selector:
+    app: sqlpad
