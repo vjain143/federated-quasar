@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openmetadata-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openmetadata-server
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: openmetadata-server
+    spec:
+      containers:
+        - env:
+            - name: DB_DRIVER_CLASS
+              value: com.mysql.cj.jdbc.Driver
+            - name: DB_HOST
+              value: localhost
+            - name: DB_PORT
+              value: "30306"
+            - name: DB_SCHEME
+              value: mysql
+            - name: DB_USER
+              value: root
+              #value: openmetadata_user
+              #value: openmetadata
+            - name: DB_USER_PASSWORD
+              value: password
+              #value: openmetadata_password
+              #value: openmetadata123
+            - name: DB_USE_SSL
+              value: "false"
+            - name: SERVER_HOST_API_URL
+              value: http://localhost:80585/api
+          image: open-metadata:1.0.0.4
+          #livenessProbe:
+          #  exec:
+          #    command:
+          #      - curl
+          #      - -f
+          #      - http://localhost:80586/healthcheck
+          name: openmetadata-server
+          ports:
+            - containerPort: 8585
+            - containerPort: 8586
+            - containerPort: 5005
+          resources: {}
+      restartPolicy: Always
+status: {}
