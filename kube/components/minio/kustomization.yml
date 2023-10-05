@@ -2,4 +2,5 @@ resources:
   - minio-console-service.yaml
   - minio-deployment.yaml
   - minio-pv.yaml
+  - minio-pvc.yaml
   - minio-service.yaml
