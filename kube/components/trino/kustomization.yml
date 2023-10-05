@@ -1,0 +1,5 @@
+resources:
+  - trino-configmap.yaml
+  - trino-deployment.yaml
+  - trino-service.yaml
+  - trino-statefulset.yaml

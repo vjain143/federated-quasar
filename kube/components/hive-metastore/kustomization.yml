@@ -1,0 +1,3 @@
+resources:
+  - hive-metastore-deployment.yaml
+  - hive-metastore-init-schema-job.yaml

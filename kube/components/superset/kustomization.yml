@@ -1,0 +1,3 @@
+resources:
+  - superset-deployment.yaml
+  - superset-service.yaml

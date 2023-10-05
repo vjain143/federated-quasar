@@ -1,0 +1,3 @@
+resources:
+  - redash-deployment.yaml
+  - redash-service.yaml

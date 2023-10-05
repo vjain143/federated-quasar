@@ -1,0 +1,11 @@
+resources:
+# Core Components
+  - ../../components/mysql
+  - ../../components/minio
+  - ../../components/hive-metastore
+  - ../../components/trino
+# Additional Components
+  - ../../components/redash
+  - ../../components/sqlpad
+  - ../../components/steampipe
+  - ../../components/superset
