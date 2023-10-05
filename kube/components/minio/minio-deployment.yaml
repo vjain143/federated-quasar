@@ -29,11 +29,11 @@ spec:
           - containerPort: 9001
             name: minio-console
         volumeMounts:
-          - mountPath: minio-persistent-storage
-            name: minio-persistent-storage
-      volumes: 
-        - name: minio-persistent-storage
+          - name: minio-storage
+            mountPath: "/data"
+      volumes:
+        - name: minio-storage
           persistentVolumeClaim:
-            claimName: minio-pv-claim
+            claimName: minio-pvc
 
 

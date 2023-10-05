@@ -3,7 +3,7 @@ resources:
   - ../../components/mysql
   - ../../components/minio
   - ../../components/hive-metastore
-  - ../../components/trino
+  - ../../overlays/minikube/trino
 # Additional Components
   #- ../../components/redash
   #- ../../components/sqlpad

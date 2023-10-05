@@ -14,8 +14,8 @@ spec:
         app: hive-metastore
     spec:
       containers:
-      - image: hive-metastore:3.0.0
-        name: hive-metastore
+      - name: hive-metastore
+        image: vjain143/hive-metastore:3.0.0
         env:
           - name: MYSQL_USER
             value: root

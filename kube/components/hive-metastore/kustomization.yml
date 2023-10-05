@@ -1,3 +1,8 @@
 resources:
   - hive-metastore-deployment.yaml
   - hive-metastore-init-schema-job.yaml
+configMapGenerator:
+  - name: hive-metastore-config
+    files:
+      - hive-metastore-config/core-site.xml
+      - hive-metastore-config/metastore-site.xml

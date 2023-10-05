@@ -1,5 +1,11 @@
 resources:
-  - trino-configmap.yaml
   - trino-deployment.yaml
   - trino-service.yaml
   - trino-statefulset.yaml
+configMapGenerator:
+  - name: trino-configmap
+    files:
+      - trino-config/config.properties.coordinator
+      - trino-config/config.properties.worker
+      - trino-config/jvm.config
+      - trino-config/password-authenticator.properties

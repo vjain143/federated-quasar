@@ -13,7 +13,7 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:mysql://metastore-db.default.svc.cluster.local:13306/metastore_db</value>
+        <value>jdbc:mysql://localhost:30306/metastore_db</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>

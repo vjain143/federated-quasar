@@ -3,8 +3,7 @@ kind: StatefulSet
 metadata:
   name: trino-worker
 spec:
-  serviceName: trino-worker
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: trino-worker
@@ -31,29 +30,39 @@ spec:
         command: ["/usr/lib/trino/bin/run-trino"]
         args: ["-v"]
         volumeMounts:
-          - mountPath: /home/trino/config/jvm.config
-            name: trino-configmap-volume
-            subPath: jvm.config
-          - mountPath: etc/trino/password.db
-            name: trino-configmap-volume
-            subPath: password.db
-          #Coordinator
-          - mountPath: /home/trino/config/config.properties.coordinator
-            name: trino-configmap-volume
-            subPath: config.properties.coordinator
-          #Worker
-          - mountPath: /home/trino/config/config.properties
-            name: trino-configmap-volume
+          # trino-configmap files
+          - name: trino-configmap-volume
+            mountPath: /home/trino/config/config.properties
             subPath: config.properties.worker
-          #Node
-          - mountPath: /home/trino/config/node.properties
-            name: trino-configmap-volume
+          - name: trino-configmap-volume
+            mountPath: /home/trino/config/jvm.config
+            subPath: jvm.config
+          - name: trino-configmap-volume
+            mountPath: /home/trino/config/node.properties
             subPath: node.properties
-          #Steampipe Plugins
-          - mountPath: etc/trino/catalog/steampipe.properties
-            name: trino-configmap-volume
-            subPath: steampipe.properties
+          - name: trino-configmap-volume
+            mountPath: etc/trino/password-authenticator.properties
+            subPath: password-authenticator.properties
+          - name: trino-configmap-volume
+            mountPath: etc/trino/password.db
+            subPath: password.db
+          # trino-datasource-configmap files
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/hive-metastore-mysql.properties
+            subPath: hive-metastore-mysql.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/iceberg.properties
+            subPath: iceberg.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/minio.properties
+            subPath: minio.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/steampipe-postgres.properties.properties
+            subPath: steampipe-postgres.properties.properties
       volumes:
         - name: trino-configmap-volume
           configMap:
             name: trino-configmap
+        - name: trino-datasource-configmap-volume
+          configMap:
+            name: trino-datasource-configmap
