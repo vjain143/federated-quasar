@@ -13,7 +13,7 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionURL</name>
-        <value>jdbc:mysql://localhost:30306/metastore_db</value>
+        <value>jdbc:mysql://mysql:3306/metastore_db</value>
     </property>
     <property>
         <name>javax.jdo.option.ConnectionUserName</name>
@@ -21,7 +21,7 @@
     </property>
     <property>
         <name>javax.jdo.option.ConnectionPassword</name>
-        <value>mypass</value>
+        <value>password</value>
     </property>
     <property>
         <name>metastore.warehouse.dir</name>

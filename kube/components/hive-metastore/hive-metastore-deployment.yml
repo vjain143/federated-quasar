@@ -34,6 +34,9 @@ spec:
           - name: hive-metastore-config-volume
             mountPath: /opt/hive-metastore/conf/core-site.xml
             subPath: core-site.xml
+          - name: hive-metastore-config-volume
+            mountPath: /opt/hive-metastore/conf/metastore-log4j2.properties
+            subPath: metastore-log4j2.properties
         command: ["/opt/hive-metastore/bin/start-metastore"]
         args: ["-p","9083","--skiphadoopversion"]
         imagePullPolicy: Always

@@ -6,12 +6,12 @@ spec:
   template:
     metadata:
       labels: 
-        app: hive-metastore
+        app: hive-metastore-init-schema
     spec:
-      securityContext:
-        runAsUser: 999
+      #securityContext:
+       # runAsUser: 999
       containers:
-        - name: hive-metastore
+        - name: hive-metastore-init-schema
           image: vjain143/hive-metastore:3.0.0
           env:
             - name: MYSQL_USER
@@ -23,6 +23,6 @@ spec:
             - name: MINIO_ROOT_PASSWORD
               value: minio123
           command: ["/opt/hive-metastore/bin/schematool"]
-          args: ["--verbose", "-dbType", "mysql", "-userName", "root", "-initSchema", "-passWord", "password", "-url", "jdbc:mysql://localhost:30306/metastore_db?createDatabaseIfNotExist=true&useSSL=false"]
+          args: ["--verbose", "-dbType", "mysql", "-userName", "root", "-initSchema", "-passWord", "password", "-url", "jdbc:mysql://mysql:3306/metastore_db?createDatabaseIfNotExist=true&useSSL=false"]
       restartPolicy: Never
   backoffLimit: 4

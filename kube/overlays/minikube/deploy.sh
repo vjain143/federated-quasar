@@ -19,8 +19,14 @@ echo "Setting the default namespace to $NAMESPACE"
 kubectl config set-context --current --namespace=$NAMESPACE
 echo "Namespace set successfully."
 echo "-----------------------------------------------------------------------------------------------------------------"
+kubectl delete job.batch/hive-metastore-init-schema
+echo "Cleaning namespace"
+echo "-----------------------------------------------------------------------------------------------------------------"
 kubectl apply -k .
-echo "Deployment completed"
+echo "Component deployment completed"
+echo "-----------------------------------------------------------------------------------------------------------------"
+kubectl apply -k ../../jobs
+echo "Job deployment completed"
 echo "-----------------------------------------------------------------------------------------------------------------"
 kubectl get all -o wide
 
