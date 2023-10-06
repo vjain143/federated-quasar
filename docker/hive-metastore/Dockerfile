@@ -18,7 +18,7 @@ RUN curl -sfSL https://github.com/hairyhenderson/gomplate/releases/download/v3.6
 ENV HADOOP_HOME="/opt/hadoop"
 ENV METASTORE_HOME="/opt/hive-metastore"
 ENV HADOOP_CLASSPATH="${HADOOP_HOME}/share/hadoop/tools/lib/*:${METASTORE_HOME}/lib"
-ENV PATH="${HADOOP_HOME}/bin:${METASTORE_HOME}/lib/:${HADOOP_HOME}/share/hadoop/tools/lib/:/opt/postgresql-jdbc.jar:${PATH}"
+ENV PATH="${HADOOP_HOME}/bin:${METASTORE_HOME}/lib/:${HADOOP_HOME}/share/hadoop/tools/lib/:/opt/postgresql-jdbc.jar:${HADOOP_HOME}/share/hadoop/tools/lib/:/opt/mysql-connector-j-8.0.33.jar:${PATH}"
 
 # Download and extract the Hadoop binary package.
 RUN curl -s https://archive.apache.org/dist/hadoop/core/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz \
@@ -43,6 +43,10 @@ RUN cp ${HADOOP_HOME}/share/hadoop/tools/lib/hadoop-aws* ${METASTORE_HOME}/lib/ 
 RUN curl -s https://jdbc.postgresql.org/download/postgresql-42.2.16.jar -o postgresql-42.2.16.jar && mv postgresql-42.2.16.jar /opt/postgresql-jdbc.jar
 RUN cp /opt/postgresql-jdbc.jar  ${HADOOP_HOME}/share/hadoop/common/lib/ && chmod -R 775 ${HADOOP_HOME}/share/hadoop/common/lib/*
 RUN cp /opt/postgresql-jdbc.jar ${METASTORE_HOME}/lib/ && chmod -R 775 ${METASTORE_HOME}/lib/*
+
+RUN curl -s https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/8.0.33/mysql-connector-j-8.0.33.jar -o mysql-connector-j-8.0.33.jar && mv mysql-connector-j-8.0.33.jar /opt/mysql-connector-j-8.0.33.jar
+RUN cp /opt/mysql-connector-j-8.0.33.jar  ${HADOOP_HOME}/share/hadoop/common/lib/ && chmod -R 775 ${HADOOP_HOME}/share/hadoop/common/lib/*
+RUN cp /opt/mysql-connector-j-8.0.33.jar ${METASTORE_HOME}/lib/ && chmod -R 775 ${METASTORE_HOME}/lib/*
 
 COPY entrypoint.sh ${METASTORE_HOME}/bin/
 RUN chmod 775 ${METASTORE_HOME}/bin/entrypoint.sh

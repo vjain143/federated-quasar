@@ -66,3 +66,13 @@ spec:
         - name: trino-datasource-configmap-volume
           configMap:
             name: trino-datasource-configmap
+  volumeClaimTemplates:
+    - metadata:
+        name: trino-tmp-data
+      spec:
+        storageClassName: manual
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

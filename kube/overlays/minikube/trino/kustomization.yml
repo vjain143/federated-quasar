@@ -3,6 +3,7 @@ resources:
 configMapGenerator:
   - name: trino-datasource-configmap
     behavior: merge
+    files:
       - trino-datasource-config/hive-metastore-mysql.properties
       - trino-datasource-config/iceberg.properties
       - trino-datasource-config/minio.properties

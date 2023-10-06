@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-traffic-to-trino
+spec:
+  podSelector:
+    matchExpressions:
+      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino ] }
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.1.0.0/24
+      ports:
+        - protocol: TCP
+          port: 9083
+        - protocol: TCP
+          port: 9000
+        - protocol: TCP
+          port: 9001
+        - protocol: TCP
+          port: 3306
+        - protocol: TCP
+          port: 8080

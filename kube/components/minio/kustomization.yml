@@ -1,6 +1,8 @@
 resources:
-  - minio-console-service.yaml
-  - minio-deployment.yaml
-  - minio-pv.yaml
-  - minio-pvc.yaml
-  - minio-service.yaml
+  - minio-console-service.yml
+  - minio-deployment.yml
+  - minio-egress-network-policy.yml
+  - minio-ingress-network-policy.yml
+  - minio-pv.yml
+  - minio-pvc.yml
+  - minio-service.yml

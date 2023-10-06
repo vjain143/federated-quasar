@@ -1,5 +1,7 @@
 resources:
-  - mysql-pv.yaml
-  - mysql-pvc.yaml
-  - mysql-deployment.yaml
-  - mysql-service.yaml
+  - mysql-pv.yml
+  - mysql-pvc.yml
+  - mysql-deployment.yml
+  - mysql-egress-network-policy.yml
+  - mysql-ingress-network-policy.yml
+  - mysql-service.yml
