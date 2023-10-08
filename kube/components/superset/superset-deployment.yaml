@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: superset
+spec:
+  selector:
+    matchLabels:
+      app: superset
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: superset
+    spec:
+      initContainers:
+        - image: apache/superset:latest
+          imagePullPolicy: Always
+          command:
+            -
+      containers:
+      - image: apache/superset:latest
+        name: superset
+        ports:
+          - containerPort: 8088
+        env:
+          - name: SUPERSET_USER
+            value: admin
+          - name: SUPERSET_PASSWORD
+            value: admin
+          - name: SUPERSET_PORT
+            value: "8088"
+        volumeMounts:
+          - mountPath: /home/superset/etc/superset/superset_config.py
+            name: superset-configs-volume
+            subPath: superset_config.py
+      volumes:
+        - name: superset-configs-volume
+          configMap:
+            name: superset-configs

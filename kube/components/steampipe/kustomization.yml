@@ -1,0 +1,3 @@
+resources:
+  - steampipe-deployment.yaml
+  - steampipe-service.yaml

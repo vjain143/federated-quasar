@@ -1,0 +1,14 @@
+resources:
+  - trino-deployment.yml
+  - trino-egress-network-policy.yml
+  - trino-ingress-network-policy.yml
+  - trino-service.yml
+  - trino-statefulset.yml
+configMapGenerator:
+  - name: trino-configmap
+    files:
+      - trino-config/config.properties.coordinator
+      - trino-config/config.properties.worker
+      - trino-config/jvm.config
+      - trino-config/password-authenticator.properties
+  - name: trino-datasource-configmap

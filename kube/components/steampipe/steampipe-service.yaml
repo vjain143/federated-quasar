@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: steampipe
+  labels:
+    app: steampipe
+spec:
+  type: NodePort
+  ports:
+    - name: https
+      port: 9193
+      targetPort: 9193
+      protocol: TCP
+  selector:
+    app: steampipe

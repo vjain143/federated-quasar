@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: steampipe
+spec:
+  selector:
+    matchLabels:
+      app: steampipe
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: steampipe
+    spec:
+      containers:
+      - image: turbot/steampipe:latest
+        name: steampipe
+        command: ["/usr/local/bin/docker-entrypoint.sh"]
+        args: ["steampipe", "service", "start", "--foreground", "--database-listen=network", "--database-password=steampipe123"]
+        env:
+          - name: STEAMPIPE_USERku
+            value: steampipe
+          - name: STEAMPIPE_PASSWORD
+            value: steampipe123
+        ports: 
+          - containerPort: 9193
+            name: steampipe
+        volumeMounts:
+          - mountPath: /home/steampipe/.steampipe/config/bitbucket.spc
+            name: steampipe-configs-volume
+            subPath: bitbucket.spc
+      hostAliases:
+        - hostnames:
+            - "steampipe"
+          ip: "127.0.0.1"
+      volumes: 
+        - name: steampipe-configs-volume
+          configMap:
+            name: steampipe-config
+
+

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sqlpad
+spec:
+  selector:
+    matchLabels:
+      app: sqlpad
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: sqlpad
+    spec:
+      containers:
+      - image: sqlpad/sqlpad:latest
+        name: sqlpad
+        ports: 
+          - containerPort: 3000
+            name: sqlpad
+        env:
+          - name: SQLPAD_ADMIN
+            value: admin
+          - name: SQLPAD_ADMIN_PASSWORD
+            value: admin
+          - name: SQLPAD_PORT
+            value: "3000"
+      hostAliases:
+        - hostnames:
+            - "sqlpad"
+          ip: "127.0.0.1"
+
+

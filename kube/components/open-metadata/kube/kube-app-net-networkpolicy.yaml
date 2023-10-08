@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  creationTimestamp: null
+  name: kube-app-net
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              io.kompose.network/kube-app-net: "true"
+  podSelector:
+    matchLabels:
+      io.kompose.network/kube-app-net: "true"

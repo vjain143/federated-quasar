@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: trino-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: trino-worker
+  template:
+    metadata:
+      labels:
+        app: trino-worker
+    spec:
+      containers:
+      - image: trinodb/trino:latest
+        imagePullPolicy: Always
+        name: trino
+        ports:
+          - containerPort: 8080
+        env:
+          - name: MYSQL_ROOT_USER
+            value: root
+          - name: MYSQL_ROOT_PASSWORD
+            value: password
+          - name: MINIO_ROOT_USER
+            value: minio
+          - name: MINIO_ROOT_PASSWORD
+            value: minio123
+        command: ["/usr/lib/trino/bin/run-trino"]
+        args: ["-v"]
+        volumeMounts:
+          # trino-configmap files
+          - name: trino-configmap-volume
+            mountPath: /home/trino/config/config.properties
+            subPath: config.properties.worker
+          - name: trino-configmap-volume
+            mountPath: /home/trino/config/jvm.config
+            subPath: jvm.config
+          - name: trino-configmap-volume
+            mountPath: /home/trino/config/node.properties
+            subPath: node.properties
+          - name: trino-configmap-volume
+            mountPath: etc/trino/password-authenticator.properties
+            subPath: password-authenticator.properties
+          - name: trino-configmap-volume
+            mountPath: etc/trino/password.db
+            subPath: password.db
+          # trino-datasource-configmap files
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/hive-metastore-mysql.properties
+            subPath: hive-metastore-mysql.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/iceberg.properties
+            subPath: iceberg.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/minio.properties
+            subPath: minio.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/steampipe-postgres.properties.properties
+            subPath: steampipe-postgres.properties.properties
+      volumes:
+        - name: trino-configmap-volume
+          configMap:
+            name: trino-configmap
+        - name: trino-datasource-configmap-volume
+          configMap:
+            name: trino-datasource-configmap
+  volumeClaimTemplates:
+    - metadata:
+        name: trino-tmp-data
+      spec:
+        storageClassName: manual
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi

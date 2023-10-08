@@ -1,0 +1,3 @@
+resources:
+  - sqlpad-deployment.yaml
+  - sqlpad-service.yaml

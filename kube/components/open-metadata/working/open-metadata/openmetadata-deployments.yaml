@@ -1,0 +1,218 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "1"
+    meta.helm.sh/release-name: openmetadata
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: "2023-05-28T20:36:13Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/instance: openmetadata
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: openmetadata
+    app.kubernetes.io/version: 1.0.2
+    helm.sh/chart: openmetadata-1.0.3
+  name: openmetadata
+  namespace: default
+  resourceVersion: "187925"
+  uid: 19138a79-0ef6-40bd-bd1f-21004ed96130
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: openmetadata
+      app.kubernetes.io/name: openmetadata
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app.kubernetes.io/instance: openmetadata
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: openmetadata
+        app.kubernetes.io/version: 1.0.2
+        helm.sh/chart: openmetadata-1.0.3
+    spec:
+      containers:
+      - name: openmetadata
+        image: docker.getcollate.io/openmetadata/server:1.0.2
+        imagePullPolicy: Always
+        env:
+        - name: FERNET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: FERNET_KEY
+              name: openmetadata-secret
+        - name: EVENT_MONITOR
+          value: prometheus
+        - name: EVENT_MONITOR_BATCH_SIZE
+          value: "10"
+        - name: EVENT_MONITOR_PATH_PATTERN
+          value: '["/api/v1/tables/*","/api/v1/health-check"]'
+        - name: EVENT_MONITOR_LATENCY
+          value: '[]'
+        - name: MASK_PASSWORDS_API
+          value: "false"
+        - name: OPENMETADATA_CLUSTER_NAME
+          value: openmetadata
+        - name: OM_URI
+          value: http://openmetadata:8585
+        - name: LOG_LEVEL
+          value: INFO
+        - name: SERVER_HOST
+          value: openmetadata
+        - name: SERVER_PORT
+          value: "8585"
+        - name: SERVER_ADMIN_PORT
+          value: "8586"
+        - name: AUTHENTICATION_PROVIDER
+          value: basic
+        - name: AUTHENTICATION_PUBLIC_KEYS
+          value: '["http://openmetadata:8585/api/v1/system/config/jwks"]'
+        - name: AUTHENTICATION_AUTHORITY
+          value: https://accounts.google.com
+        - name: AUTHENTICATION_CLIENT_ID
+        - name: AUTHENTICATION_CALLBACK_URL
+        - name: AUTHENTICATION_JWT_PRINCIPAL_CLAIMS
+          value: '["email","preferred_username","sub"]'
+        - name: AUTHENTICATION_ENABLE_SELF_SIGNUP
+          value: "true"
+        - name: OM_MAX_FAILED_LOGIN_ATTEMPTS
+          value: "3"
+        - name: OM_LOGIN_ACCESS_BLOCK_TIME
+          value: "600"
+        - name: AUTHORIZER_CLASS_NAME
+          value: org.openmetadata.service.security.DefaultAuthorizer
+        - name: AUTHORIZER_REQUEST_FILTER
+          value: org.openmetadata.service.security.JwtFilter
+        - name: AUTHORIZER_ADMIN_PRINCIPALS
+          value: '["admin"]'
+        - name: AUTHORIZER_PRINCIPAL_DOMAIN
+          value: open-metadata.org
+        - name: AUTHORIZER_ENFORCE_PRINCIPAL_DOMAIN
+          value: "false"
+        - name: AUTHORIZER_ENABLE_SECURE_SOCKET
+          value: "false"
+        - name: AUTHORIZER_ALLOWED_REGISTRATION_DOMAIN
+          value: '["all"]'
+        - name: RSA_PUBLIC_KEY_FILE_PATH
+          value: ./conf/public_key.der
+        - name: RSA_PRIVATE_KEY_FILE_PATH
+          value: ./conf/private_key.der
+        - name: JWT_ISSUER
+          value: open-metadata.org
+        - name: JWT_KEY_ID
+          value: Gb389a-9f76-gdjs-a92j-0242bk94356
+        - name: ELASTICSEARCH_HOST
+          value: elasticsearch
+        - name: ELASTICSEARCH_PORT
+          value: "9200"
+        - name: ELASTICSEARCH_SCHEME
+          value: http
+        - name: ELASTICSEARCH_INDEX_MAPPING_LANG
+          value: EN
+        - name: DB_HOST
+          value: mysql
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USER
+          value: openmetadata_user
+        - name: DB_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: openmetadata-mysql-password
+              name: mysql-secrets
+        - name: OM_DATABASE
+          value: openmetadata_db
+        - name: DB_DRIVER_CLASS
+          value: com.mysql.cj.jdbc.Driver
+        - name: DB_SCHEME
+          value: mysql
+        - name: DB_USE_SSL
+          value: "false"
+        - name: PIPELINE_SERVICE_CLIENT_CLASS_NAME
+          value: org.openmetadata.service.clients.pipeline.airflow.AirflowRESTClient
+        - name: PIPELINE_SERVICE_IP_INFO_ENABLED
+          value: "false"
+        - name: PIPELINE_SERVICE_CLIENT_ENDPOINT
+          value: http://openmetadata-dependencies-web.default.svc.cluster.local:8080
+        - name: AIRFLOW_USERNAME
+          value: admin
+        - name: AIRFLOW_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: openmetadata-airflow-password
+              name: airflow-secrets
+        - name: PIPELINE_SERVICE_CLIENT_VERIFY_SSL
+          value: no-ssl
+        - name: PIPELINE_SERVICE_CLIENT_HOST_IP
+        - name: PIPELINE_SERVICE_CLIENT_SSL_CERT_PATH
+          value: /no/path
+        - name: SERVER_HOST_API_URL
+          value: http://openmetadata.default.svc.cluster.local:8585/api
+        - name: SECRET_MANAGER
+          value: noop
+        livenessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /healthcheck
+            port: http-admin
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+        ports:
+        - containerPort: 8585
+          name: http
+          protocol: TCP
+        - containerPort: 8586
+          name: http-admin
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 5
+          httpGet:
+            path: /
+            port: http
+            scheme: HTTP
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          successThreshold: 1
+          timeoutSeconds: 1
+        resources: {}
+        securityContext: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: openmetadata
+      serviceAccountName: openmetadata
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 1
+  conditions:
+  - lastTransitionTime: "2023-05-28T20:44:28Z"
+    lastUpdateTime: "2023-05-28T20:44:28Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2023-05-28T20:36:13Z"
+    lastUpdateTime: "2023-05-28T20:44:28Z"
+    message: ReplicaSet "openmetadata-74f5f4d9c6" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 1
+  readyReplicas: 1
+  replicas: 1
+  updatedReplicas: 1

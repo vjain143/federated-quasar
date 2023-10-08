@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hive-metastore-init-schema
+spec:
+  template:
+    metadata:
+      labels: 
+        app: hive-metastore-init-schema
+    spec:
+      #securityContext:
+       # runAsUser: 999
+      containers:
+        - name: hive-metastore-init-schema
+          image: vjain143/hive-metastore:3.0.0
+          env:
+            - name: MYSQL_USER
+              value: root
+            - name: MYSQL_PASSWORD
+              value: password
+            - name: MINIO_ROOT_USER
+              value: minio
+            - name: MINIO_ROOT_PASSWORD
+              value: minio123
+          command: ["/opt/hive-metastore/bin/schematool"]
+          args: ["--verbose", "-dbType", "mysql", "-userName", "root", "-initSchema", "-passWord", "password", "-url", "jdbc:mysql://mysql:3306/metastore_db?createDatabaseIfNotExist=true&useSSL=false"]
+      restartPolicy: Never
+  backoffLimit: 4

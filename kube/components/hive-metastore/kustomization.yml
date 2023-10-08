@@ -1,0 +1,11 @@
+resources:
+  - hive-metastore-deployment.yml
+  - hive-metastore-service.yml
+  - hive-metastore-egress-network-policy.yml
+  - hive-metastore-ingress-network-policy.yml
+configMapGenerator:
+  - name: hive-metastore-config
+    files:
+      - hive-metastore-config/metastore-log4j2.properties
+      - hive-metastore-config/core-site.xml
+      - hive-metastore-config/metastore-site.xml

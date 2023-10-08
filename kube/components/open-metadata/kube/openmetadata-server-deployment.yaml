@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose.yml
+    kompose.version: 1.28.0 (c4137012e)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: openmetadata-server
+  name: openmetadata-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: openmetadata-server
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -f docker-compose.yml
+        kompose.version: 1.28.0 (c4137012e)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/kube-app-net: "true"
+        io.kompose.service: openmetadata-server
+    spec:
+      containers:
+        - env:
+            - name: AUTHENTICATION_AUTHORITY
+              value: ${AUTHENTICATION_AUTHORITY:-https://accounts.google.com}
+            - name: AUTHENTICATION_CALLBACK_URL
+              value: ${AUTHENTICATION_CALLBACK_URL:-""}
+            - name: AUTHENTICATION_CLIENT_ID
+              value: ${AUTHENTICATION_CLIENT_ID:-""}
+            - name: AUTHENTICATION_ENABLE_SELF_SIGNUP
+              value: ${AUTHENTICATION_ENABLE_SELF_SIGNUP:-true}
+            - name: AUTHENTICATION_JWT_PRINCIPAL_CLAIMS
+              value: ${AUTHENTICATION_JWT_PRINCIPAL_CLAIMS:-[email,preferred_username,sub]}
+            - name: AUTHENTICATION_PROVIDER
+              value: ${AUTHENTICATION_PROVIDER:-basic}
+            - name: AUTHENTICATION_PUBLIC_KEYS
+              value: ${AUTHENTICATION_PUBLIC_KEYS:-[http://localhost:8585/api/v1/system/config/jwks]}
+            - name: AUTHORIZER_ADMIN_PRINCIPALS
+              value: ${AUTHORIZER_ADMIN_PRINCIPALS:-[admin]}
+            - name: AUTHORIZER_ALLOWED_REGISTRATION_DOMAIN
+              value: ${AUTHORIZER_ALLOWED_REGISTRATION_DOMAIN:-["all"]}
+            - name: AUTHORIZER_CLASS_NAME
+              value: ${AUTHORIZER_CLASS_NAME:-org.openmetadata.service.security.DefaultAuthorizer}
+            - name: AUTHORIZER_ENABLE_SECURE_SOCKET
+              value: ${AUTHORIZER_ENABLE_SECURE_SOCKET:-false}
+            - name: AUTHORIZER_ENFORCE_PRINCIPAL_DOMAIN
+              value: ${AUTHORIZER_ENFORCE_PRINCIPAL_DOMAIN:-false}
+            - name: AUTHORIZER_INGESTION_PRINCIPALS
+              value: ${AUTHORIZER_INGESTION_PRINCIPALS:-[ingestion-bot]}
+            - name: AUTHORIZER_PRINCIPAL_DOMAIN
+              value: ${AUTHORIZER_PRINCIPAL_DOMAIN:-"openmetadata.org"}
+            - name: AUTHORIZER_REQUEST_FILTER
+              value: ${AUTHORIZER_REQUEST_FILTER:-org.openmetadata.service.security.JwtFilter}
+            - name: CUSTOM_LOGO_URL_PATH
+              value: ${CUSTOM_LOGO_URL_PATH:-""}
+            - name: CUSTOM_MONOGRAM_URL_PATH
+              value: ${CUSTOM_MONOGRAM_URL_PATH:-""}
+            - name: CUSTOM_OIDC_AUTHENTICATION_PROVIDER_NAME
+              value: ${CUSTOM_OIDC_AUTHENTICATION_PROVIDER_NAME:-""}
+            - name: DB_DRIVER_CLASS
+              value: ${DB_DRIVER_CLASS:-com.mysql.cj.jdbc.Driver}
+            - name: DB_HOST
+              value: ${DB_HOST:-mysql}
+            - name: DB_PORT
+              value: ${DB_PORT:-3306}
+            - name: DB_SCHEME
+              value: ${DB_SCHEME:-mysql}
+            - name: DB_USER
+              value: ${DB_USER:-openmetadata_user}
+            - name: DB_USER_PASSWORD
+              value: ${DB_USER_PASSWORD:-openmetadata_password}
+            - name: DB_USE_SSL
+              value: ${DB_USE_SSL:-false}
+            - name: ELASTICSEARCH_HOST
+              value: ${ELASTICSEARCH_HOST:- elasticsearch}
+            - name: ELASTICSEARCH_PASSWORD
+              value: ${ELASTICSEARCH_PASSWORD:-""}
+            - name: ELASTICSEARCH_PORT
+              value: ${ELASTICSEARCH_PORT:-9200}
+            - name: ELASTICSEARCH_SCHEME
+              value: ${ELASTICSEARCH_SCHEME:-http}
+            - name: ELASTICSEARCH_USER
+              value: ${ELASTICSEARCH_USER:-""}
+            - name: JWT_ISSUER
+              value: ${JWT_ISSUER:-"open-metadata.org"}
+            - name: JWT_KEY_ID
+              value: ${JWT_KEY_ID:-"Gb389a-9f76-gdjs-a92j-0242bk94356"}
+            - name: MASK_PASSWORDS_API
+              value: ${MASK_PASSWORDS_API:-false}
+            - name: OM_DATABASE
+              value: ${OM_DATABASE:-openmetadata_db}
+            - name: OM_JWT_EXPIRY_TIME
+              value: ${OM_JWT_EXPIRY_TIME:-3600}
+            - name: OM_LOGIN_ACCESS_BLOCK_TIME
+              value: ${OM_LOGIN_ACCESS_BLOCK_TIME:-600}
+            - name: OM_MAX_FAILED_LOGIN_ATTEMPTS
+              value: ${OM_MAX_FAILED_LOGIN_ATTEMPTS:-3}
+            - name: OPENMETADATA_HEAP_OPTS
+              value: ${OPENMETADATA_HEAP_OPTS:--Xmx1G -Xms1G}
+            - name: PIPELINE_SERVICE_CLIENT_ENDPOINT
+              value: ${PIPELINE_SERVICE_CLIENT_ENDPOINT:-http://ingestion:8080}
+            - name: PIPELINE_SERVICE_CLIENT_SSL_CERT_PATH
+              value: ${PIPELINE_SERVICE_CLIENT_SSL_CERT_PATH:-""}
+            - name: PIPELINE_SERVICE_CLIENT_VERIFY_SSL
+              value: ${PIPELINE_SERVICE_CLIENT_VERIFY_SSL:-"no-ssl"}
+            - name: RSA_PRIVATE_KEY_FILE_PATH
+              value: ${RSA_PRIVATE_KEY_FILE_PATH:-"./conf/private_key.der"}
+            - name: RSA_PUBLIC_KEY_FILE_PATH
+              value: ${RSA_PUBLIC_KEY_FILE_PATH:-"./conf/public_key.der"}
+            - name: SERVER_HOST_API_URL
+              value: ${SERVER_HOST_API_URL:-http://openmetadata-server:8585/api}
+          image: docker.getcollate.io/openmetadata/server:1.0.1
+          livenessProbe:
+            exec:
+              command:
+                - curl
+                - -f
+                - http://localhost:8586/healthcheck
+          name: openmetadata-server
+          ports:
+            - containerPort: 8585
+            - containerPort: 8586
+          resources: {}
+      restartPolicy: Always
+status: {}

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redash
+spec:
+  selector:
+    matchLabels:
+      app: redash
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: redash
+    spec:
+      containers:
+      - image: redash/redash:latest
+        name: redash
+        env:
+          - name: REDASH_COOKIE_SECRET
+            value: redash
+        ports: 
+          - containerPort: 8125
+            name: redash
+      hostAliases:
+        - hostnames:
+            - "redash"
+          ip: "127.0.0.1"
+
+
