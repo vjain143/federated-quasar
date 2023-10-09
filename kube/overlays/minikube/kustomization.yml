@@ -7,5 +7,5 @@ resources:
 # Additional Components
   #- ../../components/redash
   #- ../../components/sqlpad
-  #- ../../components/steampipe
+  - ../../components/steampipe
   #- ../../components/superset

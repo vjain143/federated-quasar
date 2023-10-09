@@ -1,15 +1,15 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-external-traffic-to-trino
+  name: allow-internal-traffic-to-steampipe
 spec:
   podSelector:
     matchExpressions:
       - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, steampipe ] }
   policyTypes:
-    - Egress
-  egress:
-    - to:
+    - Ingress
+  ingress:
+    - from:
         - ipBlock:
             cidr: 10.1.0.0/24
       ports:

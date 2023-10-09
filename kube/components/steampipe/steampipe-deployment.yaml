@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: steampipe
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: steampipe
@@ -13,11 +14,31 @@ spec:
       labels:
         app: steampipe
     spec:
+      initContainers:
+        - name: init
+          image: turbot/steampipe:latest
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - |
+              echo "Installing steampipe plugins"
+              steampipe plugin install net
+              steampipe plugin install github
+              steampipe plugin install bitbucket
+              steampipe plugin install updown
+              steampipe plugin install trivy
+              steampipe plugin install code
+              steampipe plugin install config
+              steampipe plugin install openapi
+              steampipe plugin install kubernetes
+              echo "Plugin installation complete"
+          volumeMounts:
+            - name: init-install-volume
+              mountPath: /home/steampipe/.steampipe/plugins/hub.steampipe.io/plugins/turbot
       containers:
-      - image: turbot/steampipe:latest
-        name: steampipe
+      - name: steampipe
+        image: turbot/steampipe:latest
         command: ["/usr/local/bin/docker-entrypoint.sh"]
-        args: ["steampipe", "service", "start", "--foreground", "--database-listen=network", "--database-password=steampipe123"]
+        args: [ "steampipe", "service", "start", "--foreground", "--database-listen=network", "--database-password=steampipe123" ]
         env:
           - name: STEAMPIPE_USERku
             value: steampipe
@@ -27,16 +48,26 @@ spec:
           - containerPort: 9193
             name: steampipe
         volumeMounts:
-          - mountPath: /home/steampipe/.steampipe/config/bitbucket.spc
-            name: steampipe-configs-volume
+          - name: steampipe-configmap-volume
+            mountPath: /home/steampipe/.steampipe/config/bitbucket.spc
             subPath: bitbucket.spc
+          - name: steampipe-configmap-volume
+            mountPath: /home/steampipe/.steampipe/config/github.spc
+            subPath: github.spc
+          - name: steampipe-configmap-volume
+            mountPath: /home/steampipe/.steampipe/config/net.spc
+            subPath: net.spc
+          - name: init-install-volume
+            mountPath: /home/steampipe/.steampipe/plugins/hub.steampipe.io/plugins/turbot
       hostAliases:
         - hostnames:
             - "steampipe"
           ip: "127.0.0.1"
-      volumes: 
-        - name: steampipe-configs-volume
+      volumes:
+        - name: steampipe-configmap-volume
           configMap:
-            name: steampipe-config
+            name: steampipe-configmap
+        - name: init-install-volume
+          emptyDir: { }
 
 

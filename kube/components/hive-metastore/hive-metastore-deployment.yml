@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: hive-metastore
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: hive-metastore

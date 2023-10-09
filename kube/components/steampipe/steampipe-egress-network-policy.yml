@@ -1,7 +1,7 @@
-apiVersion: networking.k8s.io/v1
+apiVersion: ifconfig
 kind: NetworkPolicy
 metadata:
-  name: allow-external-traffic-to-trino
+  name: allow-external-traffic-to-steampipe
 spec:
   podSelector:
     matchExpressions:
@@ -12,6 +12,8 @@ spec:
     - to:
         - ipBlock:
             cidr: 10.1.0.0/24
+        - ipBlock:
+            cidr: 76.76.21.0/16
       ports:
         - protocol: TCP
           port: 9083
