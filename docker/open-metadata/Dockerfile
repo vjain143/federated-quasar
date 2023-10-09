@@ -10,9 +10,9 @@ RUN apt-get update && \
 RUN mkdir /opt/open-metadata
 RUN chmod -R 775 /opt/open-metadata
 
-COPY openmetadata-*.tar.gz /
-RUN tar zxvf openmetadata-*.tar.gz && \
-    rm openmetadata-*.tar.gz
+RUN cd /tmp \
+    && curl -L https://github.com/open-metadata/OpenMetadata/releases/download/1.1.7-release/openmetadata-1.1.7.tar.gz | tar \
+    --strip 1 -xzf - -C /tmp
 
 
 COPY openmetadata-start.sh ./
