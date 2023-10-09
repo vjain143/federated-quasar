@@ -10,6 +10,7 @@ spec:
     - name: https
       port: 9193
       targetPort: 9193
+      nodePort: 30193
       protocol: TCP
   selector:
     app: steampipe

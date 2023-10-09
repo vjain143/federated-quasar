@@ -1,3 +1,11 @@
 resources:
   - steampipe-deployment.yaml
+  - steampipe-egress-network-policy.yml
+  - steampipe-ingress-network-policy.yml
   - steampipe-service.yaml
+configMapGenerator:
+  - name: steampipe-configmap
+    files:
+      - steampipe-config/bitbucket.spc
+      - steampipe-config/github.spc
+      - steampipe-config/net.spc

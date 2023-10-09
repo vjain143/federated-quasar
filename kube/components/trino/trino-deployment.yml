@@ -50,8 +50,8 @@ spec:
             subPath: password.db
           # trino-datasource-configmap files
           - name: trino-datasource-configmap-volume
-            mountPath: etc/trino/catalog/hive-metastore-mysql.properties
-            subPath: hive-metastore-mysql.properties
+            mountPath: etc/trino/catalog/hive_metastore_mysql.properties
+            subPath: hive_metastore_mysql.properties
           - name: trino-datasource-configmap-volume
             mountPath: etc/trino/catalog/iceberg.properties
             subPath: iceberg.properties
@@ -59,8 +59,8 @@ spec:
             mountPath: etc/trino/catalog/minio.properties
             subPath: minio.properties
           - name: trino-datasource-configmap-volume
-            mountPath: etc/trino/catalog/steampipe-postgres.properties.properties
-            subPath: steampipe-postgres.properties.properties
+            mountPath: etc/trino/catalog/steampipe_postgres.properties
+            subPath: steampipe_postgres.properties
       volumes:
         - name: trino-configmap-volume
           configMap:
