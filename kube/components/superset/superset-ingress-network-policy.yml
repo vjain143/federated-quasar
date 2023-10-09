@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-internal-traffic-to-trino
+  name: allow-internal-traffic-to-superset
 spec:
   podSelector:
     matchExpressions:
