@@ -1,0 +1,5 @@
+resources:
+  - openmetadata-deployment.yml
+  - openmetadata-egress-network-policy.yml
+  - openmetadata-ingress-network-policy.yml
+  - openmetadata-service.yaml

@@ -4,8 +4,10 @@ resources:
   - ../../components/minio
   - ../../components/hive-metastore
   - ../../overlays/minikube/trino
-# Additional Components
+# Additional Components - Working
+# - ../../components/steampipe
+# Additional Components - To Do
   #- ../../components/redash
   #- ../../components/sqlpad
-  - ../../components/steampipe
   #- ../../components/superset
+  - ../../components/open-metadata

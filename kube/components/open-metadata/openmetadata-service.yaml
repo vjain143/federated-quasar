@@ -13,11 +13,5 @@ spec:
     - name: "8586"
       port: 8586
       targetPort: 8586
-    - name: 8585-tcp
-      port: 8585
-      targetPort: 8585
-    - name: 8586-tcp
-      port: 8586
-      targetPort: 8586
   selector:
     app: openmetadata
