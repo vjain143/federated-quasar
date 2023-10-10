@@ -5,7 +5,7 @@ metadata:
 spec:
   podSelector:
     matchExpressions:
-      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, superset ] }
+      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, superset, openmetadata ] }
   policyTypes:
     - Egress
   egress:

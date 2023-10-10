@@ -1,15 +1,15 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-internal-traffic-to-trino
+  name: allow-external-traffic-to-openmetadata
 spec:
   podSelector:
     matchExpressions:
-      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, steampipe, superset, openmetadata ] }
+      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, hive-metastore-init-schema, openmetadata ] }
   policyTypes:
-    - Ingress
-  ingress:
-    - from:
+    - Egress
+  egress:
+    - to:
         - ipBlock:
             cidr: 10.1.0.0/24
       ports:
