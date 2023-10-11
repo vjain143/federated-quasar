@@ -1,0 +1,90 @@
+{
+  "folders": {
+    "DBs": {}
+  },
+  "connections": {
+    "trino": {
+      "provider": "trino",
+      "driver": "trino",
+      "name": "trino",
+      "description": "",
+      "save-password": false,
+      "show-system-objects": true,
+      "read-only": false,
+      "folder": "DBs",
+      "configuration": {
+        "user": "trino",
+        "host": "trino",
+        "port": "8080",
+        "database": "",
+        "url": "jdbc:mysql://trino:8080/",
+        "type": "dev",
+        "properties": {
+          "allowPublicKeyRetrieval": "true"
+        },
+        "provider-properties": {
+          "@dbeaver-show-non-default-db@": "false"
+        },
+        "auth-model": "native"
+      }
+    },
+    "trino-steampipe": {
+      "provider": "postgresql",
+      "driver": "postgres-jdbc",
+      "name": "steampipe",
+      "description": "Postgre connection",
+      "save-password": false,
+      "show-system-objects": true,
+      "read-only": false,
+      "folder": "DBs",
+      "configuration": {
+        "user": "msteampipe",
+        "host": "postgres",
+        "port": "5432",
+        "database": "my-postgre-db",
+        "url": "jdbc:postgresql://postgres:5432/steampipe",
+        "type": "dev",
+        "provider-properties": {
+          "@dbeaver-show-non-default-db@": "true"
+        },
+        "auth-model": "native"
+      }
+    },
+    "hive-metastore-mysql": {
+      "provider": "mysql",
+      "driver": "mysql8",
+      "name": "mysql",
+      "description": "",
+      "save-password": false,
+      "show-system-objects": true,
+      "read-only": false,
+      "folder": "DBs",
+      "configuration": {
+        "user": "root",
+        "host": "mysql",
+        "port": "3306",
+        "database": "metastore_db",
+        "url": "jdbc:mysql://mysql:3306/metastore_db?SSL=false",
+        "type": "dev",
+        "properties": {
+          "allowPublicKeyRetrieval": "true"
+        },
+        "provider-properties": {
+          "@dbeaver-show-non-default-db@": "false"
+        },
+        "auth-model": "native"
+      }
+    }
+  },
+  "connection-types": {
+    "dev": {
+      "name": "Development",
+      "color": "0,0,255",
+      "description": "Regular development database",
+      "auto-commit": true,
+      "confirm-execute": false,
+      "confirm-data-change": false,
+      "auto-close-transactions": false
+    }
+  }
+}

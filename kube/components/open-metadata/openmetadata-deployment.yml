@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openmetadata
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openmetadata
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: openmetadata
+    spec:
+      containers:
+        - name: openmetadata
+          image: vjain143/open-metadata:1.0.1
+          env:
+              # MySQL Environment Variables
+            - name: DB_DRIVER_CLASS
+              value: com.mysql.cj.jdbc.Driver
+            - name: DB_HOST
+              value: mysql
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_SCHEME
+              value: mysql
+            - name: DB_USER
+              value: openmetadata_user
+            - name: DB_USER_PASSWORD
+              value: openmetadata_password
+            - name: DB_USE_SSL
+              value: "false"
+            - name: OM_DATABASE
+              value: openmetadata_db
+            - name: OM_JWT_EXPIRY_TIME
+              value: "3600"
+            - name: OM_LOGIN_ACCESS_BLOCK_TIME
+              value: "600"
+            - name: OM_MAX_FAILED_LOGIN_ATTEMPTS
+              value: "3"
+            - name: OPENMETADATA_HEAP_OPTS
+              value: "--Xmx1G -Xms1G"
+            - name: PIPELINE_SERVICE_CLIENT_ENDPOINT
+              value: http://ingestion:8080
+            #- name: PIPELINE_SERVICE_CLIENT_SSL_CERT_PATH
+            #  value:
+            - name: PIPELINE_SERVICE_CLIENT_VERIFY_SSL
+              value: no-ssl
+            - name: RSA_PRIVATE_KEY_FILE_PATH
+              value: ./conf/private_key.der
+            - name: RSA_PUBLIC_KEY_FILE_PATH
+              value: ./conf/public_key.der
+            - name: SERVER_HOST_API_URL
+              value: http://openmetadata:8585/api
+          #livenessProbe:
+          #  exec:
+          #    command:
+          #      - curl
+          #      - -f
+          #      - http://localhost:8586/healthcheck
+          ports:
+            - containerPort: 8585
+            - containerPort: 8586
+          command: [ "/bin/sh", "-c" ]
+          args:
+            - |
+              sleep infinity
+          resources: {}
+      restartPolicy: Always
+#status: {}

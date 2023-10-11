@@ -1,0 +1,19 @@
+resources:
+  - cloudbeaver-deployment.yaml
+  - cloudbeaver-egress-network-policy.yml
+  - cloudbeaver-ingress-network-policy.yml
+  - cloudbeaver-service.yaml
+configMapGenerator:
+    - name: dbeaver-product-configmap
+      files:
+        - cloudbeaver-config/product.conf
+    - name: dbeaver-sources-user-configmap
+      files:
+        - cloudbeaver-config/data-sources.json
+    - name: dbeaver-sources-global-configmap
+      files:
+        - cloudbeaver-config/data-sources.json
+    - name: dbeaver-server-configmap
+      files:
+        - cloudbeaver-config/cloudbeaver.conf
+#https://github.com/dionathanchrys/cloud-beaver/tree/main

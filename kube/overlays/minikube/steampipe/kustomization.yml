@@ -1,0 +1,8 @@
+resources:
+  - ../../../components/steampipe
+configMapGenerator:
+  - name: steampipe-configmap
+    files:
+      - steampipe-datasource-config/bitbucket.spc
+      - steampipe-datasource-config/github.spc
+      - steampipe-datasource-config/net.spc

@@ -1,3 +1,9 @@
 resources:
   - superset-deployment.yaml
+  - superset-egress-network-policy.yml
+  - superset-ingress-network-policy.yml
   - superset-service.yaml
+configMapGenerator:
+  - name: superset-configmap
+    files:
+      - superset-config/superset_config.py

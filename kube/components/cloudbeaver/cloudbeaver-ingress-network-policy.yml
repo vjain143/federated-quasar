@@ -1,11 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-internal-traffic-to-trino
+  name: allow-internal-traffic-to-cloudbeaver
 spec:
   podSelector:
     matchExpressions:
-      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, steampipe, superset, openmetadata ] }
+      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, steampipe, cloudbeaver ] }
   policyTypes:
     - Ingress
   ingress:

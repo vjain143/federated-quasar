@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: superset
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: superset
@@ -13,13 +14,15 @@ spec:
       labels:
         app: superset
     spec:
-      initContainers:
-        - image: apache/superset:latest
-          imagePullPolicy: Always
-          command:
-            -
       containers:
       - image: apache/superset:latest
+        command: [ "/bin/sh", "-c" ]
+        args:
+          - |
+            echo "Creating admin user"
+            superset fab create-admin --username admin --firstname Admin --lastname Admin --email admin@superset.com --password admin
+            echo "Starting superset"
+            gunicorn --bind 0.0.0.0:8088 --workers 4 superset:app
         name: superset
         ports:
           - containerPort: 8088
@@ -37,4 +40,4 @@ spec:
       volumes:
         - name: superset-configs-volume
           configMap:
-            name: superset-configs
+            name: superset-configmap

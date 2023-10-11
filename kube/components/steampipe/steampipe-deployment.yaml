@@ -20,7 +20,7 @@ spec:
           command: [ "/bin/sh", "-c" ]
           args:
             - |
-              echo "Installing steampipe plugins"
+              echo "Installing steampipe plugins"              
               steampipe plugin install net
               steampipe plugin install github
               steampipe plugin install bitbucket

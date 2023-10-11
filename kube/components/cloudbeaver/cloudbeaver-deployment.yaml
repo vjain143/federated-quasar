@@ -1,0 +1,85 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: cloudbeaver
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: cloudbeaver
+  template:
+    metadata:
+      labels:
+        app: cloudbeaver
+    spec:
+      containers:
+        - name: cloudbeaver
+          image: dbeaver/cloudbeaver:latest
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          ports:
+            - name: web-access
+              containerPort: 8978
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8978
+              scheme: HTTP
+            initialDelaySeconds: 300
+            timeoutSeconds: 10
+            periodSeconds: 300
+            successThreshold: 1
+            failureThreshold: 5
+          env:
+            - name: CB_SERVER_NAME
+              value: CloudBeaver Test Server
+            - name: CB_ADMIN_NAME
+              value: cloudbeaver
+            - name: CB_ADMIN_PASSWORD
+              value: cloudbeaver123
+          #envFrom:
+          #  - secretRef:
+          #      name: dbeaver-secret
+          volumeMounts:
+            - name: dbeaver-product
+              mountPath: /opt/cloudbeaver/conf/product.conf
+              subPath: product.conf
+            - name: dbeaver-sources-user
+              mountPath: /opt/cloudbeaver/workspace/user-projects/admin.dbeaver/.dbeaver/data-sources.json
+              subPath: data-sources.json
+            #- name: dbeaver-sources-global
+              #mountPath: /opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/data-sources.json
+              #subPath: data-sources.json
+            - name: dbeaver-sources
+              mountPath: /opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/
+            - name: dbeaver-server
+              mountPath: /opt/cloudbeaver/conf/cloudbeaver.conf
+              subPath: cloudbeaver.conf
+      volumes:
+        - name: dbeaver-product
+          configMap:
+            name: dbeaver-product-configmap
+        - name: dbeaver-sources-user
+          configMap:
+            name: dbeaver-sources-user-configmap
+        - name: dbeaver-sources-global
+          configMap:
+            name: dbeaver-sources-global-configmap
+        - name: dbeaver-server
+          configMap:
+            name: dbeaver-server-configmap
+        - name: dbeaver-sources
+          emptyDir: { }

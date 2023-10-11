@@ -19,21 +19,21 @@ server:
   rootPath: '/api/*'
   applicationConnectors:
     - type: http
-      port: ${SERVER_PORT:-8585}
+      port: 8585
   adminConnectors:
     - type: http
-      port: ${SERVER_ADMIN_PORT:-8586}
+      port: 8586
 
-# Above configuration for running http is fine for dev and testing.
-# For production setup, where UI app will hit apis through DPS it 
-# is strongly recommended to run https instead. Note that only
-# keyStorePath and keyStorePassword are mandatory properties. Values
-# for other properties are defaults
-#server:
+  # Above configuration for running http is fine for dev and testing.
+  # For production setup, where UI app will hit apis through DPS it
+  # is strongly recommended to run https instead. Note that only
+  # keyStorePath and keyStorePassword are mandatory properties. Values
+  # for other properties are defaults
+  #server:
   #applicationConnectors:
   #  - type: https
   #    port: 8585
-  #    keyStorePath: ./conf/keystore.jks 
+  #    keyStorePath: ./conf/keystore.jks
   #    keyStorePassword: changeit
   #    keyStoreType: JKS
   #    keyStoreProvider:
@@ -57,12 +57,12 @@ server:
   #    supportedCipherSuites: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
   #    allowRenegotiation: true
   #    endpointIdentificationAlgorithm: (none)
- 
+
   #adminConnectors:
   #  - type: https
   #    port: 8586
-  #    keyStorePath: ./conf/keystore.jks 
-  #    keyStorePassword: changeit 
+  #    keyStorePath: ./conf/keystore.jks
+  #    keyStorePassword: changeit
   #    keyStoreType: JKS
   #    keyStoreProvider:
   #    trustStorePath: /path/to/file
@@ -89,9 +89,9 @@ server:
 # Logging settings.
 # https://logback.qos.ch/manual/layouts.html#conversionWord
 logging:
-  level: ${LOG_LEVEL:-INFO}
+  level: INFO
   loggers:
-    io.swagger: ERROR
+    io.swagger: DEBUG
   appenders:
     - type: console
       threshold: TRACE
@@ -120,16 +120,18 @@ logging:
 
 database:
   # the name of the JDBC driver, mysql in our case
-  driverClass: ${DB_DRIVER_CLASS:-com.mysql.cj.jdbc.Driver}
+  driverClass: com.mysql.cj.jdbc.Driver
   # the username and password
-  user: ${DB_USER:-openmetadata_user}
-  password: ${DB_USER_PASSWORD:-openmetadata_password}
+  user: openmetadata_user
+  password: openmetadata_password
   # the JDBC URL; the database is called openmetadata_db
-  url: jdbc:${DB_SCHEME:-mysql}://${DB_HOST:-localhost}:${DB_PORT:-3306}/${OM_DATABASE:-openmetadata_db}?allowPublicKeyRetrieval=true&useSSL=${DB_USE_SSL:-false}&serverTimezone=UTC
-
+  url: jdbc:mysql://mysql:3306/openmetadata_db?$allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
 
 migrationConfiguration:
-  path: "./bootstrap/sql"
+  flywayPath: "./bootstrap/sql/migrations/flyway"
+  nativePath: "./bootstrap/sql/migrations/native"
+
+  extensionPath: ${MIGRATION_EXTENSION_PATH:-""}
 
 # Authorizer Configuration
 authorizerConfiguration:
@@ -210,6 +212,7 @@ jwtTokenConfiguration:
   keyId: ${JWT_KEY_ID:-"Gb389a-9f76-gdjs-a92j-0242bk94356"}
 
 elasticsearch:
+  searchType: ${SEARCH_TYPE:- "elasticsearch"}
   host: ${ELASTICSEARCH_HOST:-localhost}
   port: ${ELASTICSEARCH_PORT:-9200}
   scheme: ${ELASTICSEARCH_SCHEME:-http}
@@ -219,6 +222,7 @@ elasticsearch:
   truststorePassword: ${ELASTICSEARCH_TRUST_STORE_PASSWORD:-""}
   connectionTimeoutSecs: ${ELASTICSEARCH_CONNECTION_TIMEOUT_SECS:-5}
   socketTimeoutSecs: ${ELASTICSEARCH_SOCKET_TIMEOUT_SECS:-60}
+  keepAliveTimeoutSecs: ${ELASTICSEARCH_KEEP_ALIVE_TIMEOUT_SECS:-600}
   batchSize: ${ELASTICSEARCH_BATCH_SIZE:-10}
   searchIndexMappingLanguage: ${ELASTICSEARCH_INDEX_MAPPING_LANG:-EN}
 
@@ -240,17 +244,23 @@ eventHandlerConfiguration:
     - "org.openmetadata.service.events.WebAnalyticEventHandler"
 
 pipelineServiceClientConfiguration:
+  enabled: ${PIPELINE_SERVICE_CLIENT_ENABLED:-true}
   # If we don't need this, set "org.openmetadata.service.clients.pipeline.noop.NoopClient"
   className: ${PIPELINE_SERVICE_CLIENT_CLASS_NAME:-"org.openmetadata.service.clients.pipeline.airflow.AirflowRESTClient"}
   apiEndpoint: ${PIPELINE_SERVICE_CLIENT_ENDPOINT:-http://localhost:8080}
   metadataApiEndpoint: ${SERVER_HOST_API_URL:-http://localhost:8585/api}
   ingestionIpInfoEnabled: ${PIPELINE_SERVICE_IP_INFO_ENABLED:-false}
   hostIp: ${PIPELINE_SERVICE_CLIENT_HOST_IP:-""}
+  healthCheckInterval: ${PIPELINE_SERVICE_CLIENT_HEALTH_CHECK_INTERVAL:-300}
   # This SSL information is about the OpenMetadata server.
   # It will be picked up from the pipelineServiceClient to use/ignore SSL when connecting to the OpenMetadata server.
   verifySSL: ${PIPELINE_SERVICE_CLIENT_VERIFY_SSL:-"no-ssl"} # Possible values are "no-ssl", "ignore", "validate"
   sslConfig:
     certificatePath: ${PIPELINE_SERVICE_CLIENT_SSL_CERT_PATH:-""} # Local path for the Pipeline Service Client
+
+  # Secrets Manager Loader: specify to the Ingestion Framework how to load the SM credentials from its env
+  # Supported: noop, airflow, env
+  secretsManagerLoader: ${PIPELINE_SERVICE_CLIENT_SECRETS_MANAGER_LOADER:-"noop"}
 
   # Default required parameters for Airflow as Pipeline Service Client
   parameters:
@@ -268,15 +278,11 @@ fernetConfiguration:
 
 secretsManagerConfiguration:
   secretsManager: ${SECRET_MANAGER:-noop} # Possible values are "noop", "aws", "aws-ssm"
-# it will use the default auth provider for the secrets' manager service if parameters are not set
+  # it will use the default auth provider for the secrets' manager service if parameters are not set
   parameters:
     region: ${OM_SM_REGION:-""}
     accessKeyId: ${OM_SM_ACCESS_KEY_ID:-""}
     secretAccessKey: ${OM_SM_ACCESS_KEY:-""}
-
-security:
-# it will mask all the password fields in the responses sent from the API except for the bots
-  maskPasswordsAPI: ${MASK_PASSWORDS_API:-false}
 
 health:
   delayedShutdownHandlerEnabled: true
@@ -313,16 +319,33 @@ applicationConfig:
 
 
 web:
-  uriPath: /api
+  uriPath: ${WEB_CONF_URI_PATH:-"/api"}
   hsts:
-    enabled: true
+    enabled: ${WEB_CONF_HSTS_ENABLED:-false}
+    maxAge: ${WEB_CONF_HSTS_MAX_AGE:-"365 days"}
+    includeSubDomains: ${WEB_CONF_HSTS_INCLUDE_SUBDOMAINS:-"true"}
+    preload: ${WEB_CONF_HSTS_PRELOAD:-"true"}
   frame-options:
-    enabled: true
+    enabled: ${WEB_CONF_FRAME_OPTION_ENABLED:-false}
+    option: ${WEB_CONF_FRAME_OPTION:-"SAMEORIGIN"}
+    origin: ${WEB_CONF_FRAME_ORIGIN:-""}
   content-type-options:
-    enabled: true
+    enabled: ${WEB_CONF_CONTENT_TYPE_OPTIONS_ENABLED:-false}
   xss-protection:
-    enabled: true
+    enabled: ${WEB_CONF_XSS_PROTECTION_ENABLED:-false}
+    on: ${WEB_CONF_XSS_PROTECTION_ON:-true}
+    block: ${WEB_CONF_XSS_PROTECTION_BLOCK:-true}
+  csp:
+    enabled: ${WEB_CONF_XSS_CSP_ENABLED:-false}
+    policy: ${WEB_CONF_XSS_CSP_POLICY:-"default-src 'self'"}
+    reportOnlyPolicy: ${WEB_CONF_XSS_CSP_REPORT_ONLY_POLICY:-""}
+  referrer-policy:
+    enabled: ${WEB_CONF_REFERRER_POLICY_ENABLED:-false}
+    option: ${WEB_CONF_REFERRER_POLICY_OPTION:-"SAME_ORIGIN"}
+  permission-policy:
+    enabled: ${WEB_CONF_PERMISSION_POLICY_ENABLED:-false}
+    option: ${WEB_CONF_PERMISSION_POLICY_OPTION:-""}
+
 
 changeEventConfig:
   omUri: ${OM_URI:- "http://localhost:8585"} #openmetadata in om uri for eg http://localhost:8585
-

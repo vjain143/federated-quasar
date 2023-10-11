@@ -1,7 +1,5 @@
 FROM openjdk:17-slim
 
-
-
 RUN apt-get update && \
     apt-get install -y curl --no-install-recommends && \
     apt-get clean && \
@@ -10,17 +8,13 @@ RUN apt-get update && \
 RUN mkdir /opt/open-metadata
 RUN chmod -R 775 /opt/open-metadata
 
-COPY openmetadata-*.tar.gz /
-RUN tar zxvf openmetadata-*.tar.gz && \
-    rm openmetadata-*.tar.gz
+RUN cd /opt/open-metadata \
+    && curl -L https://github.com/open-metadata/OpenMetadata/releases/download/1.1.7-release/openmetadata-1.1.7.tar.gz | tar \
+    --strip 1 -xzf - -C /opt/open-metadata
 
-
-COPY openmetadata-start.sh ./
-COPY bootstrap/* ./
-COPY conf/* ./
-
-RUN chmod 777 /openmetadata-start.sh
+RUN chmod 777 /opt/open-metadata/bin/openmetadata-server-start.sh
+RUN chmod 777 /opt/open-metadata/bin/openmetadata.sh
 
 EXPOSE 8585
 
-CMD ["./openmetadata-start.sh"]
+CMD ["./opt/open-metadata/bin/openmetadata-server-start.sh"]
