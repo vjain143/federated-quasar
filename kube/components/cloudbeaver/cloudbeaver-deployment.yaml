@@ -60,9 +60,11 @@ spec:
             - name: dbeaver-sources-user
               mountPath: /opt/cloudbeaver/workspace/user-projects/admin.dbeaver/.dbeaver/data-sources.json
               subPath: data-sources.json
-            - name: dbeaver-sources-global
-              mountPath: /opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/data-sources.json
-              subPath: data-sources.json
+            #- name: dbeaver-sources-global
+              #mountPath: /opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/data-sources.json
+              #subPath: data-sources.json
+            - name: dbeaver-sources
+              mountPath: /opt/cloudbeaver/workspace/GlobalConfiguration/.dbeaver/
             - name: dbeaver-server
               mountPath: /opt/cloudbeaver/conf/cloudbeaver.conf
               subPath: cloudbeaver.conf
@@ -79,3 +81,5 @@ spec:
         - name: dbeaver-server
           configMap:
             name: dbeaver-server-configmap
+        - name: dbeaver-sources
+          emptyDir: { }

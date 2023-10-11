@@ -16,3 +16,4 @@ configMapGenerator:
     - name: dbeaver-server-configmap
       files:
         - cloudbeaver-config/cloudbeaver.conf
+#https://github.com/dionathanchrys/cloud-beaver/tree/main
