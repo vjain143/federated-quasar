@@ -10,4 +10,5 @@ resources:
   #- ../../components/redash
   #- ../../components/sqlpad
   #- ../../components/superset
-  - ../../components/open-metadata
+  #- ../../components/open-metadata
+  - ../../components/cloudbeaver
