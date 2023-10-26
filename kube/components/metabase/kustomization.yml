@@ -1,5 +1,7 @@
 resources:
   - metabase-deployment.yml
+  - metabase-egress-network-policy.yml
+  - metabase-ingress-network-policy.yml
   - metabase-pv.yml
   - metabase-pvc.yml
   - metabase-service.yml
