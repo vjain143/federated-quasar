@@ -1,0 +1,12 @@
+resources:
+  - airflow-egress-network-policy.yml
+  - airflow-ingress-network-policy.yml
+  - airflow-scheduler-deployment.yml
+  - airflow-webserver-deployment.yml
+  #- airflow-pv.yml
+  #- airflow-pvc.yml
+  - airflow-webserver-service.yml
+#configMapGenerator:
+#  - name: airflow-configmap
+#    files:
+#      - airflow-config/airflow.yml

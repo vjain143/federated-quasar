@@ -68,3 +68,5 @@ helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs
 --set nfs.path=/airflow
 
 
+https://docs.open-metadata.org/v1.1.x/quick-start/local-kubernetes-deployment
+
