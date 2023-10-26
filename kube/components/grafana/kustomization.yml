@@ -1,0 +1,5 @@
+resources:
+  - grafana-egress-network-policy.yml
+  - grafana-ingress-network-policy.yml
+  - grafana-deployment.yml
+  - grafana-service.yml

@@ -17,3 +17,4 @@ resources:
   #- ../../components/redash
   #- ../../components/sqlpad
   #- ../../components/superset
+  - ../../components/grafana
