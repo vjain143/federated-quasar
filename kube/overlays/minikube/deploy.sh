@@ -17,7 +17,7 @@ echo "--------------------------------------------------------------------------
 
 echo "Setting the default namespace to $NAMESPACE"
 kubectl config set-context --current --namespace=$NAMESPACE
-echo "Namespace set successfully."
+echo "Namespace $NAMESPACE set successfully."
 echo "-----------------------------------------------------------------------------------------------------------------"
 #echo "Setting the cluster-admin for namespace to $NAMESPACE"
 #kubectl config set-context --current --user=docker-desktop

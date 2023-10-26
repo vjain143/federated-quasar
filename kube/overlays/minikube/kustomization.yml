@@ -1,6 +1,6 @@
 resources:
 # Common Database Components
-  #- ../../components/mysql
+  - ../../components/mysql
 # Trino Components
   #- ../../components/minio
   #- ../../components/hive-metastore
@@ -11,11 +11,15 @@ resources:
   - ../../components/openmetadata
   - ../../components/elasticsearch
   - ../../components/airflow
-# Additional Components - Working
+# Trino Web Based Client Components - Working
   #- ../../components/cloudbeaver
-# Additional Components - To Do - Not Worked/Working
+# Trino Web Based Client Components - To Do - Not Worked/Working
   #- ../../components/redash
   #- ../../components/sqlpad
   #- ../../components/superset
-  - ../../components/grafana
-  - ../../components/kiali
+# Logging and Monitoring
+#kub  - ../../components/grafana
+  #- ../../components/kiali
+# AU/AZ -Security
+#  - ../../components/openldap
+#  - ../../components/ranger

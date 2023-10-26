@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openldap
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openldap
+  template:
+    metadata:
+      labels:
+        app: openldap
+    spec:
+      containers:
+        - name: openldap
+          image: osixia/openldap:1.5.0
+          ports:
+            - containerPort: 389
+          env:
+            - name: LDAP_ORGANISATION
+              value: "fde"
+            - name: LDAP_DOMAIN
+              value: "fde.com"
+            - name: LDAP_ADMIN_PASSWORD
+              value: "openldap123"
+            - name: LDAP_CONFIG_PASSWORD
+              value: "openldap123"
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/ldap
+            - name: config
+              mountPath: /etc/ldap/slapd.d
+  volumes:
+    - name: data
+      persistentVolumeClaim:
+        claimName: openldap-pvc
+    - name: config
+      emptyDir: {}

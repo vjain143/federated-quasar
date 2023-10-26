@@ -1,0 +1,12 @@
+resources:
+  - ranger-egress-network-policy.yml
+  - ranger-ingress-network-policy.yml
+  - ranger-deployment.yml
+  - ranger-service.yml
+configMapGenerator:
+  - name: ranger-admin-configmap
+    files:
+      - ranger-config/admin-site.xml
+  - name: ranger-usersync-configmap-volume
+    files:
+      - ranger-config/usersync-site.xml

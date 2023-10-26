@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<configuration>
+
+    <!-- Ranger Admin Database Configuration -->
+    <property>
+        <name>ranger.jpa.jdbc.url</name>
+        <value>jdbc:mysql://<mysql_host>:<mysql_port>/<db_name></value>
+    </property>
+    <property>
+        <name>ranger.jpa.jdbc.user</name>
+        <value><db_username></value>
+    </property>
+    <property>
+        <name>ranger.jpa.jdbc.password</name>
+        <value><db_password></value>
+    </property>
+    <property>
+        <name>ranger.jpa.jdbc.driver</name>
+        <value>com.mysql.cj.jdbc.Driver</value>
+    </property>
+
+    <!-- Ranger Admin Authentication Configuration -->
+    <property>
+        <name>ranger.authentication.method</name>
+        <value>org.apache.ranger.authentication.X509CertificateAuthentication</value>
+    </property>
+
+    <!-- Other configurations -->
+    <!-- ... -->
+
+</configuration>

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<configuration>
+
+    <!-- Ranger UserSync Configuration -->
+    <property>
+        <name>ranger.usersync.policymanager.mockrun</name>
+        <value>false</value>
+    </property>
+
+    <!-- Ranger UserSync LDAP Configuration -->
+    <property>
+        <name>ranger.usersync.source.impl.class</name>
+        <value>org.apache.ranger.unixusersync.process.PolicyMgrUserGroupBuilder</value>
+    </property>
+    <property>
+        <name>ranger.usersync.ldap.ldapbindpassword</name>
+        <value>openldap123</value>
+    </property>
+    <property>
+        <name>ranger.usersync.ldap.ldapuser</name>
+        <value>admin</value>
+    </property>
+    <property>
+        <name>ranger.usersync.unix.binddn</name>
+        <value><bind_dn></value>
+    </property>
+    <property>
+        <name>ranger.usersync.unix.ldap.searchBase</name>
+        <value><search_base></value>
+    </property>
+
+    <!-- Other configurations -->
+    <!-- ... -->
+
+</configuration>

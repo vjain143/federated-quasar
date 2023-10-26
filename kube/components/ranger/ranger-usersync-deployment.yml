@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ranger-usersync
+  namespace: ranger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ranger-usersync
+  template:
+    metadata:
+      labels:
+        app: ranger-usersync
+    spec:
+      containers:
+        - name: ranger-usersync
+          image: apache/ranger-usersync:<version>
+          volumeMounts:
+            - name: ranger-usersync-configmap-volume
+              mountPath: /etc/ranger/usersync
+      volumes:
+        - name: ranger-usersync-configmap-volume
+          configMap:
+            name: ranger-usersync-configmap

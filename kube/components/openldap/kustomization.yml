@@ -1,0 +1,5 @@
+resources:
+  - openldap-deployment.yml
+  - openldap-pv.yml
+  - openldap-pvc.yml
+  - openldap-service.yml

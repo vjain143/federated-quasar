@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ranger-admin
+  namespace: ranger
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ranger-admin
+  template:
+    metadata:
+      labels:
+        app: ranger-admin
+    spec:
+      containers:
+        - name: ranger-admin
+          image: apache/ranger-admin:<version>
+          ports:
+            - containerPort: 6080
+          volumeMounts:
+            - name: ranger-admin-configmap-volume
+              mountPath: /etc/ranger/admin
+      volumes:
+        - name: ranger-admin-configmap-volume
+          configMap:
+            name: ranger-admin-configmap
