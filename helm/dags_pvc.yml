@@ -1,0 +1,16 @@
+# dags_pvc.yml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  namespace: default
+  name: openmetadata-dependencies-dags
+  labels:
+    storage.k8s.io/name: nfs
+    app: airflow
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: nfs-client
+  resources:
+    requests:
+      storage: 1Gi

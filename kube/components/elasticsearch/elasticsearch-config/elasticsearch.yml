@@ -1,0 +1,25 @@
+cluster.name: minicube
+node.name: elasticsearch
+
+network.host: 0.0.0.0
+http.port: 9200
+
+discovery.seed_hosts: ["127.0.0.1"]
+cluster.initial_master_nodes: ["elasticsearch"]
+
+node.master: true
+node.data: true
+
+path.data: /var/lib/elasticsearch
+path.logs: /var/log/elasticsearch
+
+# For single-node development environment only
+discovery.type: single-node
+
+# Disable production mode for non-production environments
+xpack.ml.enabled: false
+xpack.security.enabled: false
+xpack.watcher.enabled: false
+
+
+#discovery.seed_hosts, discovery.seed_providers, cluster.initial_master_node

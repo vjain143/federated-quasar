@@ -1,14 +1,15 @@
 resources:
 # Core Components
-  - ../../components/mysql
-  - ../../components/minio
-  - ../../components/hive-metastore
-  - ../../overlays/minikube/trino
+  #- ../../components/mysql
+  #- ../../components/minio
+  #- ../../components/hive-metastore
+  #- ../../overlays/minikube/trino
 # Additional Components - Working
 # - ../../components/steampipe
 # Additional Components - To Do
   #- ../../components/redash
   #- ../../components/sqlpad
   #- ../../components/superset
-  #- ../../components/open-metadata
-  - ../../components/cloudbeaver
+  - ../../components/openmetadata
+  - ../../components/elasticsearch
+  #- ../../components/cloudbeaver

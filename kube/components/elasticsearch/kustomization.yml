@@ -1,0 +1,11 @@
+resources:
+  - elasticsearch-deployment.yml
+  - elasticsearch-egress-network-policy.yml
+  - elasticsearch-ingress-network-policy.yml
+  - elasticsearch-pv.yml
+  - elasticsearch-pvc.yml
+  - elasticsearch-service.yaml
+configMapGenerator:
+  - name: elasticsearch-configmap
+    files:
+      - elasticsearch-config/elasticsearch.yml

@@ -21,7 +21,8 @@ spec:
     spec:
       containers:
         - name: cloudbeaver
-          image: dbeaver/cloudbeaver:latest
+          image: dbeaver/cloudbeaver:23.2.1
+          #image: dbeaver/cloudbeaver:latest
           imagePullPolicy: Always
           resources:
             requests:

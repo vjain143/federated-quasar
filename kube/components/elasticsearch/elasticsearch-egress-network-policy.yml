@@ -1,11 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-external-traffic-to-openmetadata
+  name: allow-external-traffic-to-elasticsearch
 spec:
   podSelector:
     matchExpressions:
-      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, hive-metastore-init-schema, openmetadata ] }
+      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, hive-metastore-init-schema, openmetadata, elasticsearch ] }
   policyTypes:
     - Egress
   egress:

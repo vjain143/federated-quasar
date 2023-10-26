@@ -28,13 +28,13 @@ spec:
             - name: DB_SCHEME
               value: mysql
             - name: DB_USER
-              value: openmetadata_user
+              value: openmetadata
             - name: DB_USER_PASSWORD
-              value: openmetadata_password
+              value: openmetadata123
             - name: DB_USE_SSL
               value: "false"
             - name: OM_DATABASE
-              value: openmetadata_db
+              value: openmetadata
             - name: OM_JWT_EXPIRY_TIME
               value: "3600"
             - name: OM_LOGIN_ACCESS_BLOCK_TIME
@@ -42,17 +42,17 @@ spec:
             - name: OM_MAX_FAILED_LOGIN_ATTEMPTS
               value: "3"
             - name: OPENMETADATA_HEAP_OPTS
-              value: "--Xmx1G -Xms1G"
+              value: "-Xmx1G -Xms1G"
             - name: PIPELINE_SERVICE_CLIENT_ENDPOINT
               value: http://ingestion:8080
-            #- name: PIPELINE_SERVICE_CLIENT_SSL_CERT_PATH
-            #  value:
+            - name: PIPELINE_SERVICE_CLIENT_SSL_CERT_PATH
+              value:
             - name: PIPELINE_SERVICE_CLIENT_VERIFY_SSL
               value: no-ssl
             - name: RSA_PRIVATE_KEY_FILE_PATH
-              value: ./conf/private_key.der
+              value: /opt/open-metadata/conf/private_key.der
             - name: RSA_PUBLIC_KEY_FILE_PATH
-              value: ./conf/public_key.der
+              value: /opt/open-metadata/conf/public_key.der
             - name: SERVER_HOST_API_URL
               value: http://openmetadata:8585/api
           #livenessProbe:
@@ -64,10 +64,27 @@ spec:
           ports:
             - containerPort: 8585
             - containerPort: 8586
+            - containerPort: 5005
+          #command: [ "./opt/open-metadata/bin/openmetadata-server-start.sh", "/opt/open-metadata/conf/openmetadata.yaml" ]
+          #command: [ "./opt/open-metadata/bin/openmetadata.sh", "start" ]
           command: [ "/bin/sh", "-c" ]
           args:
             - |
               sleep infinity
           resources: {}
+          volumeMounts:
+            - name: openmetadata-configmap-volume
+              mountPath: /opt/open-metadata/conf/openmetadata.yaml
+              subPath: openmetadata.yaml
+            - name: openmetadata-configmap-volume
+              mountPath: /opt/open-metadata/conf/private_key.der
+              subPath: private_key.der
+            - name: openmetadata-configmap-volume
+              mountPath: /opt/open-metadata/conf/public_key.der
+              subPath: public_key.der
       restartPolicy: Always
+      volumes:
+        - name: openmetadata-configmap-volume
+          configMap:
+            name: openmetadata-configmap
 #status: {}

@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: elasticsearch
+  template:
+    metadata:
+      labels:
+        app: elasticsearch
+    spec:
+      containers:
+        - name: elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:7.14.0
+          env:
+            - name: cluster.name
+              value: elasticsearch
+            #  value: k8s-logs
+            - name: node.name
+              value: elasticsearch
+            #  valueFrom:
+            #    fieldRef:
+            #      fieldPath: metadata.name
+            - name: discovery.seed_hosts
+              value: "elasticsearch"
+              #value: "es-cluster-0.elasticsearch,es-cluster-1.elasticsearch,es-cluster-2.elasticsearch"
+            - name: cluster.initial_master_nodes
+              value: "elasticsearch"
+              #value: "es-cluster-0,es-cluster-1,es-cluster-2"
+            - name: ES_JAVA_OPTS
+              value: "-Xms512m -Xmx512m"
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+          #command: [ "/bin/sh", "-c" ]
+          #args:
+          #  - |
+          #    sleep infinity
+          #    resources: {}
+          volumeMounts:
+            - name: elasticsearch-configmap-volume
+              mountPath: /opt/elasticsearch/conf/elasticsearch.yaml
+              subPath: elasticsearch.yaml
+            - name: elasticsearch-storage-volume
+              mountPath: "/data"
+      restartPolicy: Always
+      volumes:
+        - name: elasticsearch-configmap-volume
+          configMap:
+            name: elasticsearch-configmap
+        - name: elasticsearch-storage-volume
+          persistentVolumeClaim:
+            claimName: elasticsearch-pvc
