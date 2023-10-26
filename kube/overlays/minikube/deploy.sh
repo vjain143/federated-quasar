@@ -19,6 +19,10 @@ echo "Setting the default namespace to $NAMESPACE"
 kubectl config set-context --current --namespace=$NAMESPACE
 echo "Namespace set successfully."
 echo "-----------------------------------------------------------------------------------------------------------------"
+#echo "Setting the cluster-admin for namespace to $NAMESPACE"
+#kubectl config set-context --current --user=docker-desktop
+#echo "cluster-admin set successfully."
+#echo "-----------------------------------------------------------------------------------------------------------------"
 # kubectl delete job.batch/hive-metastore-init-schema
 # echo "Cleaning namespace"
 echo "-----------------------------------------------------------------------------------------------------------------"

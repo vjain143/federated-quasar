@@ -18,3 +18,4 @@ resources:
   #- ../../components/sqlpad
   #- ../../components/superset
   - ../../components/grafana
+  - ../../components/kiali

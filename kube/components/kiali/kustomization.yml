@@ -1,0 +1,5 @@
+resources:
+  - kiali-egress-network-policy.yml
+  - kiali-ingress-network-policy.yml
+  - kiali-deployment.yml
+  - kiali-service.yml

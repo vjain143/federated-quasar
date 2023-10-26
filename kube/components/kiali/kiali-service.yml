@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kiali
+  labels:
+    app: kiali
+spec:
+  type: NodePort
+  ports:
+    - protocol: TCP
+      port: 20001
+      nodePort: 30201
+      targetPort: 20001
+  selector:
+    app: kiali
