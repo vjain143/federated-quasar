@@ -14,6 +14,7 @@ resources:
 # Trino Web Based Client Components - Working
   #- ../../components/cloudbeaver
 # Trino Web Based Client Components - To Do - Not Worked/Working
+  - ../../components/metabase
   #- ../../components/redash
   #- ../../components/sqlpad
   #- ../../components/superset

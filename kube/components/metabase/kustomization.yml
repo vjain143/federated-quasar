@@ -1,0 +1,5 @@
+resources:
+  - metabase-deployment.yml
+  - metabase-pv.yml
+  - metabase-pvc.yml
+  - metabase-service.yml

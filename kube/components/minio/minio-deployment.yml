@@ -36,5 +36,3 @@ spec:
         - name: minio-storage-volume
           persistentVolumeClaim:
             claimName: minio-pvc
-
-
