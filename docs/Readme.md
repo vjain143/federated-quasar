@@ -1,3 +1,5 @@
+![img.png](img.png)
+
 # Grafana - prometheus key metrics with trino
 When monitoring Trino (formerly known as Presto) with Prometheus, it's important to collect relevant metrics to gain insights into the performance and health of your Trino cluster. Here are some key metrics to consider:
 

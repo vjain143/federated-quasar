@@ -2,19 +2,19 @@ resources:
 # Common Database Components
   - ../../components/mysql
 # Trino Components
-  #- ../../components/minio
-  #- ../../components/hive-metastore
-  #- ../../overlays/minikube/trino
+  - ../../components/minio
+  - ../../components/hive-metastore
+  - ../../overlays/minikube/trino
 # Additional Trino Components - Working
 # - ../../components/steampipe
 # Open-metadata Components
-  - ../../components/openmetadata
-  - ../../components/elasticsearch
-  - ../../components/airflow
+  #- ../../components/openmetadata
+  #- ../../components/elasticsearch
+  #- ../../components/airflow
 # Trino Web Based Client Components - Working
   #- ../../components/cloudbeaver
-# Trino Web Based Client Components - To Do - Not Worked/Working
-  - ../../components/metabase
+# Trino Web Based Client Components - To Do - Not Worked/Not Working
+  #- ../../components/metabase
   #- ../../components/redash
   #- ../../components/sqlpad
   #- ../../components/superset
@@ -24,3 +24,5 @@ resources:
 # AU/AZ -Security
 #  - ../../components/openldap
 #  - ../../components/ranger
+# Workflow Components
+#  - ../../components/kestra
