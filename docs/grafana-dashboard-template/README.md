@@ -1,3 +1,4 @@
+
 ![img.png](img.png)
 
 # Grafana - prometheus key metrics with trino
@@ -57,8 +58,18 @@ When monitoring Trino (formerly known as Presto) with Prometheus, it's important
     - `presto_disk_read_bytes`: Bytes read from disk.
     - `presto_disk_write_bytes`: Bytes written to disk.
 
-Remember to configure Prometheus to scrape these metrics from your Trino cluster. 
-You may need to set up a suitable exporter or instrument Trino to expose these metrics in a format that Prometheus understands.
+Remember to configure Prometheus to scrape these metrics from your Trino cluster. You may need to set up a suitable exporter or instrument Trino to expose these metrics in a format that Prometheus understands.
 
-Additionally, adjust the metric selection based on your specific monitoring goals and the aspects of Trino performance you're most interested in. 
-Always refer to the Trino and Prometheus documentation for detailed information on metric names and configurations.
+Additionally, adjust the metric selection based on your specific monitoring goals and the aspects of Trino performance you're most interested in. Always refer to the Trino and Prometheus documentation for detailed information on metric names and configurations.
+
+
+--------------
+helm install nfs-subdir-external-provisioner nfs-subdir-external-provisioner/nfs-subdir-external-provisioner \
+--create-namespace \
+--namespace nfs-provisioner \
+--set nfs.server=localhost<NFS_HOSTNAME_OR_IP> \
+--set nfs.path=/airflow
+
+
+https://docs.open-metadata.org/v1.1.x/quick-start/local-kubernetes-deployment
+
