@@ -3,7 +3,7 @@ info:
   title: trino
   version: 1.0.0
 servers:
-  - url: http://localhost:8080
+  - url: https://localhost:8080
 components:
   securitySchemes:
     bearerAuth:
@@ -15,7 +15,7 @@ paths:
   /v1/statement:
     post:
       tags:
-        - default
+        - Statement
       summary: Post sql statement
       requestBody:
         content:
@@ -90,7 +90,7 @@ paths:
   /v1/statement/{nextRelativeUri}:
     get:
       tags:
-        - default
+        - Statement
       summary: Get sql statement results
       security:
         - bearerAuth: []
@@ -337,7 +337,7 @@ paths:
                     warnings: []
     delete:
       tags:
-        - default
+        - Statement
       summary: Delete trino running query
       parameters:
         - name: nextRelativeUri
@@ -356,7 +356,7 @@ paths:
   /v1/status:
     get:
       tags:
-        - default
+        - Status
       summary: Get trino status
       responses:
         '200':
@@ -420,7 +420,7 @@ paths:
   /v1/info:
     get:
       tags:
-        - default
+        - Info
       summary: Get trino info
       responses:
         '200':
@@ -464,7 +464,7 @@ paths:
   /v1/info/state:
     get:
       tags:
-        - default
+        - Info
       summary: Get node
       responses:
         '200':
@@ -498,7 +498,7 @@ paths:
   /v1/node/failed:
     get:
       tags:
-        - default
+        - Info
       summary: Get thread
       parameters:
         - name: X-Trino-Original-User
