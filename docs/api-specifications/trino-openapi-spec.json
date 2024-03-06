@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:8080"
+      "url": "https://localhost:8080"
     }
   ],
   "security": [
@@ -18,7 +18,7 @@
     "/v1/statement": {
       "post": {
         "tags": [
-          "default"
+          "Statement"
         ],
         "summary": "Post sql statement",
         "parameters": [
@@ -137,7 +137,7 @@
     "/v1/statement/{nextRelativeUri}": {
       "get": {
         "tags": [
-          "default"
+          "Statement"
         ],
         "summary": "Get sql statement results",
         "parameters": [
@@ -457,7 +457,7 @@
       },
       "delete": {
         "tags": [
-          "default"
+          "Statement"
         ],
         "summary": "Delete trino running query",
         "parameters": [
@@ -489,7 +489,7 @@
     "/v1/status": {
       "get": {
         "tags": [
-          "default"
+          "Status"
         ],
         "summary": "Get trino status",
         "responses": {
@@ -590,7 +590,7 @@
     "/v1/info": {
       "get": {
         "tags": [
-          "default"
+          "Info"
         ],
         "summary": "Get trino info",
         "responses": {
@@ -669,7 +669,7 @@
     "/v1/info/state": {
       "get": {
         "tags": [
-          "default"
+          "Info"
         ],
         "summary": "Get node",
         "responses": {
@@ -732,7 +732,7 @@
     "/v1/node/failed": {
       "get": {
         "tags": [
-          "default"
+          "Info"
         ],
         "summary": "Get thread",
         "parameters": [
