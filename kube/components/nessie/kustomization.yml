@@ -1,0 +1,12 @@
+resources:
+  opa-deployment.yml
+  opa-egress-network-policy.yml
+  opa-ingress-network-policy.yml
+  opa-service.yml
+configMapGenerator:
+  - name: opa-policy
+    files:
+      - opa-config/policy.rego
+  - name: opa-configmap
+    files:
+      - opa-config/config.yaml

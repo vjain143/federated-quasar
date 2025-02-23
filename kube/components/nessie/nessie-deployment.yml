@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nessie
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nessie
+  template:
+    metadata:
+      labels:
+        app: nessie
+    spec:
+      containers:
+        - name: nessie
+          image: projectnessie/nessie:latest
+          ports:
+            - containerPort: 19120
+          volumeMounts:
+            - mountPath: /data
+              name: nessie-storage
+      volumes:
+        - name: nessie-storage
+          persistentVolumeClaim:
+            claimName: nessie-pvc

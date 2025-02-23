@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gravitino
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gravitino
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: gravitino
+    spec:
+      containers:
+      - name: gravitino
+        image: vjain143/fq-gravitino:0.8.0
+        env:
+          - name: METADATA_STORE_TYPE
+            value: "jdbc"
+          - name: METADATA_STORE_JDBC_URL
+            value: "jdbc:mysql://mysql:3306/gravitino_db?useSSL=false&serverTimezone=UTC"
+          - name: METADATA_STORE_JDBC_USER
+            value: "gravitino"
+          - name: METADATA_STORE_JDBC_PASSWORD
+            value: "password"
+          - name: MINIO_ROOT_USER
+            value: minio
+          - name: MINIO_ROOT_PASSWORD
+            value: minio123
+
+          # Default Catalog Configuration (Iceberg)
+          - name: CATALOG_DEFAULT.name
+            value: "default_iceberg"
+          - name: CATALOG_DEFAULT.type
+            value: "iceberg"
+          - name: CATALOG_DEFAULT.warehouse
+            value: "s3://gravitino-iceberg/"
+          - name: CATALOG_DEFAULT.catalog-impl
+            value: "org.apache.iceberg.jdbc.JdbcCatalog"
+          - name: CATALOG_DEFAULT.uri
+            value: "jdbc:mysql://mysql:3306/gravitino"
+        ports: 
+          - containerPort: 8090
+        #command: ["/bin/sh", "-c", "sleep 600"]
+        command: [ "/bin/sh", "-c" ]
+        args:
+          - |            
+            export JAVA_OPTS="-Dcom.sun.management.jmxremote.port=9999 -XX:+UnlockExperimentalVMOptions -XX:-UseContainerSupport -Dcom.sun.management.jmxremote=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+            export JAVA_TOOL_OPTIONS="-Djdk.internal.platform.cgroupv2.disable=true"
+            /opt/gravitino/bin/gravitino.sh run
+        imagePullPolicy: Always
+
+

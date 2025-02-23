@@ -1,6 +1,6 @@
 # Use a base image with Java support
 FROM openjdk:11-jre-slim
-
+LABEL maintainer="Vivek Jain"
 # Set the working directory
 WORKDIR /app
 

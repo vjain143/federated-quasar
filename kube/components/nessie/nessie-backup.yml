@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nessie-backup
+spec:
+  template:
+    spec:
+      containers:
+        - name: nessie-dmin
+          image: projectnessie/nessie-cli:latest
+          command: ["nessie"]
+          args: ["dmin", "backup", "--output", "/data/backup/nessie-backup-$(date +%F).tar"]
+          env:
+            - name: NESSIE_SERVER_URL
+              value: "http://nessie-service.nessie.svc.cluster.local:19120"  # Update with your Nessie service URL
+          volumeMounts:
+            - name: backup-storage
+              mountPath: /data/backup
+      restartPolicy: OnFailure
+      volumes:
+        - name: backup-storage
+          persistentVolumeClaim:
+            claimName: nessie-backup-pvc

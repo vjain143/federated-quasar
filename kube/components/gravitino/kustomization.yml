@@ -1,0 +1,5 @@
+resources:
+  - gravitino-deployment.yml
+  - gravitino-service.yml
+  - gravitino-egress-network-policy.yml
+  - gravitino-ingress-network-policy.yml

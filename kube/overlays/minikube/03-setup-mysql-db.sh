@@ -1,4 +1,4 @@
-kubectl exec -it <mysql-pod-name> -n <namespace> -- bash
+kubectl exec -it service/mysql  -n lab -- bash
 
 # Connect to MySQL server using MySQL CLI
 mysql -u root -p
@@ -17,7 +17,12 @@ commit;
 
 CREATE DATABASE airflow;
 CREATE USER 'airflow'@'%' IDENTIFIED BY 'airflow123';
-GRANT ALL PRIVILEGES ON openmetadata.* TO 'airflow'@'%' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON airflow.* TO 'airflow'@'%' WITH GRANT OPTION;
+commit;
+
+CREATE DATABASE gravitino;
+CREATE USER 'gravitino'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON gravitino.* TO 'gravitino'@'%' WITH GRANT OPTION;
 commit;
 
 exit

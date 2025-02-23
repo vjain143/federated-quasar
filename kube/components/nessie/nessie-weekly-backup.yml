@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nessie-weekly-backup
+spec:
+  schedule: "0 0 * * 0"  # Runs weekly on Sundays at midnight
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: nessie-dmin
+              image: projectnessie/nessie-cli:latest
+              command: ["nessie"]
+              args: ["dmin", "backup", "--output", "/data/backup/weekly-nessie-backup.tar"]
+              volumeMounts:
+                - name: backup-storage
+                  mountPath: /data/backup
+          restartPolicy: OnFailure
+          volumes:
+            - name: backup-storage
+              persistentVolumeClaim:
+                claimName: nessie-backup-pvc

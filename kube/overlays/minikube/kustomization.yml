@@ -1,12 +1,13 @@
 resources:
 # Common Database Components
-  - ../../components/mysql
+  #- ../../components/mysql
 # Trino Components
-  - ../../components/minio
-  - ../../components/hive-metastore
+  #- ../../components/minio
+  #- ../../components/gravitino
+  #- ../../components/hive-metastore
   - ../../overlays/minikube/trino
 # Additional Trino Components - Working
-# - ../../components/steampipe
+ #- ../../components/steampipe
 # Open-metadata Components
   #- ../../components/openmetadata
   #- ../../components/elasticsearch

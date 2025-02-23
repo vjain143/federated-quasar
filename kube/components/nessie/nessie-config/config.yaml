@@ -1,0 +1,9 @@
+services:
+  nessie:
+    url: http://nessie:8080
+  bundles:
+    authz:
+      service: nessie
+      resource: /policy/policy.rego
+  decision_logs:
+    console: true

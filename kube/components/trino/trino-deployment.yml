@@ -15,12 +15,19 @@ spec:
         app: trino-coordinator
     spec:
       containers:
-      - image: trinodb/trino:latest
+      - image: trinodb/trino:471
+      #- image: vjain143/fq-trino:471.0.1
         imagePullPolicy: Always
         name: trino
         ports:
           - containerPort: 8080
         env:
+          - name: API_MODEL
+            value: "gpt-3.5-turbo-16k"
+          - name: API_KEY
+            value: ""
+          - name: API_ENDPOINT
+            value: ""
           - name: MYSQL_ROOT_USER
             value: root
           - name: MYSQL_ROOT_PASSWORD
@@ -48,25 +55,34 @@ spec:
           - name: trino-configmap-volume
             mountPath: etc/trino/password.db
             subPath: password.db
-          - name: trino-configmap-volume
-            mountPath: etc/trino/access-control.properties
-            subPath: access-control.properties
-          - name: trino-configmap-volume
-            mountPath: etc/trino/opa-authorization.properties
-            subPath: opa-authorization.properties
+          #- name: trino-configmap-volume
+          #  mountPath: etc/trino/access-control.properties
+          #  subPath: access-control.properties
+          #- name: trino-configmap-volume
+          #  mountPath: etc/trino/opa-authorization.properties
+          #  subPath: opa-authorization.properties
           # trino-datasource-configmap files
+          #- name: trino-datasource-configmap-volume
+          #  mountPath: etc/trino/catalog/gravitino.properties
+          #  subPath: gravitino.properties
           - name: trino-datasource-configmap-volume
-            mountPath: etc/trino/catalog/hive_metastore_mysql.properties
-            subPath: hive_metastore_mysql.properties
+            mountPath: etc/trino/catalog/hms_db.properties
+            subPath: hms_db.properties
           - name: trino-datasource-configmap-volume
-            mountPath: etc/trino/catalog/iceberg.properties
-            subPath: iceberg.properties
-          - name: trino-datasource-configmap-volume
-            mountPath: etc/trino/catalog/minio.properties
-            subPath: minio.properties
-          - name: trino-datasource-configmap-volume
-            mountPath: etc/trino/catalog/steampipe_postgres.properties
-            subPath: steampipe_postgres.properties
+            mountPath: etc/trino/catalog/llm.properties
+            subPath: llm.properties
+          #- name: trino-datasource-configmap-volume
+          #  mountPath: etc/trino/catalog/iceberg.properties
+          #  subPath: iceberg.properties
+         # - name: trino-datasource-configmap-volume
+          #  mountPath: etc/trino/catalog/minio.properties
+         #   subPath: minio.properties
+          #- name: trino-datasource-configmap-volume
+          #  mountPath: etc/trino/catalog/steampipe_postgres.properties
+          #  subPath: steampipe_postgres.properties
+          #- name: trino-datasource-configmap-volume
+          #  mountPath: etc/trino/catalog/trino.properties
+          #  subPath: trino.properties
       volumes:
         - name: trino-configmap-volume
           configMap:

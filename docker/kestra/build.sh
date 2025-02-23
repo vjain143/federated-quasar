@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Building hive-metastore image"
+echo "Building kestra image"
 docker build --tag kestra:0.13.1 --no-cache .
 echo "Image built successfully."
 

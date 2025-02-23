@@ -1,0 +1,16 @@
+config:
+  send_anonymous_usage_stats: False
+  use_colors: True
+
+jaffle_shop:
+  target: postgres
+  outputs:
+    postgres:
+      type: postgres
+      host: "{{ env_var('DB_HOST') }}"
+      user: "{{ env_var('DB_USER') }}"
+      pass: "{{ env_var('DB_PASSWORD') }}"
+      port: "{{ env_var('DB_PORT') | int }}"
+      dbname: "{{ env_var('DB_NAME') }}"
+      schema: public
+      threads: 4

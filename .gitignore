@@ -40,3 +40,4 @@ hs_err_pid*
 !/kube/components/trino/trino-cli-380-executable.jar
 !/docker/trino/trino
 !/docker/trino/trino
+/docker/trino/gravitino-trino-connector-0.8.0-incubating/

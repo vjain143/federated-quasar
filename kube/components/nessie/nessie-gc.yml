@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: nessie-gc
+spec:
+  schedule: "0 0 * * *"  # Runs daily at midnight
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: nessie-gc
+              image: projectnessie/nessie-cli
+              command: ["/bin/sh", "-c"]
+              args:
+                - "nessie gc mark --all && nessie gc sweep"
+              env:
+                - name: NESSIE_URI
+                  value: "http://nessie-service.nessie.svc.cluster.local:19120"
+          restartPolicy: OnFailure

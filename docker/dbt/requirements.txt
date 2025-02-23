@@ -1,0 +1,5 @@
+dbt==0.21.0
+dbt-core==0.21.0
+dbt-trino==0.21.0
+dbt-postgres==0.21.0
+dbt-redshift==0.21.0
