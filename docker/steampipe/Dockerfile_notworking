@@ -1,0 +1,20 @@
+FROM turbot/steampipe:latest
+
+# Ensure correct permissions
+USER steampipe
+
+# Ensure the Steampipe config directory exists and set permissions
+RUN mkdir -p /home/steampipe/.steampipe && \
+    chmod -R 755 /home/steampipe/.steampipe
+
+# Install required Steampipe plugins
+RUN steampipe plugin install ip2location/ip2locationio aws azure azuread kubernetes whois trivy bitbucket cs imap jira ldap net virustotal shodan splunk steampipe plugin update --all
+
+# Set working directory (ensure it exists)
+WORKDIR /home/steampipe
+
+# Switch back to non-root user (if applicable)
+USER steampipe
+
+# Verify plugins are installed
+RUN steampipe --debug plugin list

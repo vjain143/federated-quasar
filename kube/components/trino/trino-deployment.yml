@@ -77,9 +77,9 @@ spec:
          # - name: trino-datasource-configmap-volume
           #  mountPath: etc/trino/catalog/minio.properties
          #   subPath: minio.properties
-          #- name: trino-datasource-configmap-volume
-          #  mountPath: etc/trino/catalog/steampipe_postgres.properties
-          #  subPath: steampipe_postgres.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/steampipe_db.properties
+            subPath: steampipe_db.properties
           #- name: trino-datasource-configmap-volume
           #  mountPath: etc/trino/catalog/trino.properties
           #  subPath: trino.properties

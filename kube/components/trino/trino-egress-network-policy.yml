@@ -12,6 +12,8 @@ spec:
     - to:
         - ipBlock:
             cidr: 10.1.0.0/24
+      domain:
+        - api.openai.com
       ports:
         - protocol: TCP
           port: 9083
