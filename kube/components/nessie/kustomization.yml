@@ -1,12 +1,15 @@
 resources:
-  opa-deployment.yml
-  opa-egress-network-policy.yml
-  opa-ingress-network-policy.yml
-  opa-service.yml
+  - nessie-deployment.yml
+  - nessie-egress-network-policy.yml
+  - nessie-ingress-network-policy.yml
+  - nessie-service.yml
+  - nessie-gc.yml
+  - nessie-pvc.yml
+  - nessie-weekly-backup.yml
 configMapGenerator:
-  - name: opa-policy
+  - name: nessie-config
     files:
-      - opa-config/policy.rego
-  - name: opa-configmap
+      - nessie-config/policy.rego
+  - name: nessie-configmap
     files:
-      - opa-config/config.yaml
+      - nessie-config/config.yaml

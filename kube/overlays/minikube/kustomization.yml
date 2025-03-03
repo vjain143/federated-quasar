@@ -7,7 +7,8 @@ resources:
   #- ../../components/hive-metastore
   - ../../overlays/minikube/trino
 # Additional Trino Components - Working
-  - ../../components/steampipe
+  - ../../components/nessie
+  #- ../../components/steampipe
 # Open-metadata Components
   #- ../../components/openmetadata
   #- ../../components/elasticsearch

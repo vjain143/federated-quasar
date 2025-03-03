@@ -17,16 +17,19 @@ RUN apt-get update && \
 #    && chmod a+x klogin  \
 #    && rm -rf klogin-0.6.9-linux-amd64. tar.gz
 
+RUN chown -R steampipe:steampipe /home/steampipe/.steampipe
+COPY --chown=steampipe:steampipe . /home/steampipe/.steampipe
+
 RUN \
     chmod 777 /usr/local/bin/docker-entrypoint.sh  \
-    && sed 's/steampipe:0/fquser:999/g' /usr/local/bin/docker-entrypoint.sh > /usr/local/bin/steampipe-entrypoint.sh \
-    && sed -i 's/\/home\/steampipe/\/home\/fquser/g' /usr/local/bin/steampipe-entrypoint.sh \
+    && sed 's/steampipe:0/steampipe:999/g' /usr/local/bin/docker-entrypoint.sh > /usr/local/bin/steampipe-entrypoint.sh \
+    && sed -i 's/\/home\/steampipe/\/home\/steampipe/g' /usr/local/bin/steampipe-entrypoint.sh \
     && cat /usr/local/bin/steampipe-entrypoint.sh \
     && chmod a+x /usr/local/bin/steampipe-entrypoint.sh \
-    && chown -R 999:999 /home/fquser/.steampipe \
-    && 1s -al ~fquser/.steampipe
+    && chown -R 999:999 /home/steampipe/.steampipe \
+    && 1s -al ~steampipe/.steampipe
 
-USER fquser
+USER steampipe
 
 #ENV https_proxy=http://myproxy.net:10443
 

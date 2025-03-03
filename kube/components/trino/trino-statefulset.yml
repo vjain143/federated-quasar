@@ -60,18 +60,21 @@ spec:
           - name: trino-datasource-configmap-volume
             mountPath: etc/trino/catalog/hms_db.properties
             subPath: hms_db.properties
+         # - name: trino-datasource-configmap-volume
+         #   mountPath: etc/trino/catalog/llm.properties
+         #   subPath: llm.properties
           - name: trino-datasource-configmap-volume
-            mountPath: etc/trino/catalog/llm.properties
-            subPath: llm.properties
-         # - name: trino-datasource-configmap-volume
-         #   mountPath: etc/trino/catalog/iceberg.properties
-         #   subPath: iceberg.properties
-         # - name: trino-datasource-configmap-volume
-         ##   mountPath: etc/trino/catalog/minio.properties
-         #   subPath: minio.properties
+            mountPath: etc/trino/catalog/iceberg.properties
+            subPath: iceberg.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/minio.properties
+            subPath: minio.properties
           - name: trino-datasource-configmap-volume
             mountPath: etc/trino/catalog/steampipe_db.properties.properties
             subPath: steampipe_db.properties.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/nessie.properties
+            subPath: nessie.properties
           #- name: trino-datasource-configmap-volume
           #  mountPath: etc/trino/catalog/trino.properties
           #  subPath: trino.properties

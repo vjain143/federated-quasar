@@ -4,11 +4,11 @@ configMapGenerator:
   - name: trino-datasource-configmap
     behavior: merge
     files:
-      - trino-datasource-config/llm.properties
+      #- trino-datasource-config/llm.properties
       - trino-datasource-config/gravitino.properties
       - trino-datasource-config/hms_db.properties
       - trino-datasource-config/minio.properties
       - trino-datasource-config/iceberg.properties
-
+      - trino-datasource-config/nessie.properties
       - trino-datasource-config/steampipe_db.properties
       #- trino-datasource-config/trino.properties

@@ -5,7 +5,7 @@ metadata:
 spec:
   podSelector:
     matchExpressions:
-      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, steampipe, superset, openmetadata, metabase, opa ] }
+      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, steampipe, superset, openmetadata, metabase, opa, nessie ] }
   policyTypes:
     - Egress
   egress:
@@ -25,3 +25,7 @@ spec:
           port: 3306
         - protocol: TCP
           port: 8080
+        - protocol: TCP
+          port: 19120
+        - protocol: TCP
+          port: 30120
