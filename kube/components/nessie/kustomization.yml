@@ -3,13 +3,11 @@ resources:
   - nessie-egress-network-policy.yml
   - nessie-ingress-network-policy.yml
   - nessie-service.yml
-  - nessie-gc.yml
+  #- nessie-gc.yml
   - nessie-pvc.yml
-  - nessie-weekly-backup.yml
+  #- nessie-weekly-backup.yml
 configMapGenerator:
-  - name: nessie-config
-    files:
-      - nessie-config/policy.rego
   - name: nessie-configmap
     files:
       - nessie-config/config.yaml
+      - nessie-config/policy.rego
