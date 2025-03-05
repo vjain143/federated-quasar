@@ -8,7 +8,7 @@ resources:
   - ../../overlays/minikube/trino
 # Additional Trino Components - Working
   - ../../components/nessie
-  #- ../../components/steampipe
+  - ../../components/steampipe
 # Open-metadata Components
   #- ../../components/openmetadata
   #- ../../components/elasticsearch

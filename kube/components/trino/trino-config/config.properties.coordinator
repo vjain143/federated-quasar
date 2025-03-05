@@ -9,3 +9,6 @@ http-server.authentication.type=PASSWORD
 sql.default-function-catalog=ai
 sql.default-function-schema=default
 sql.path=llm.ai
+# Dynamic catalog
+catalog.config-dir=/etc/trino/catalog
+enable-dynamic-catalogs=true
