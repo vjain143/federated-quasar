@@ -12,15 +12,55 @@ spec:
       labels:
         app: nessie
     spec:
+      initContainers:
+        - name: init-mysql-driver
+          image: curlimages/curl:latest
+          command: [ "sh", "-c" ]
+          args:
+            - |
+              curl -L -o /drivers/mysql-connector-java-8.0.28.jar \
+              https://repo1.maven.org/maven2/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar
+          volumeMounts:
+            - name: mysql-driver
+              mountPath: /drivers
       containers:
         - name: nessie
           image: projectnessie/nessie:latest
           ports:
             - containerPort: 19120
+          env:
+            - name: QUARKUS_OIDC_ENABLED
+              value: "false"
+            - name: QUARKUS_OIDC_AUTH_SERVER_URL
+              value: "http://localhost:9999" # Use localhost to prevent external lookup
+            - name: QUARKUS_OIDC_TENANT_ENABLED
+              value: "false"
+            - name: QUARKUS_HTTP_AUTH_POLICY_DEFAULT
+              value: "permit"
+            - name: QUARKUS_SECURITY_AUTHORIZATION_ENABLED
+              value: "false"
+            #- name: QUARKUS_DATASOURCE_JDBC_URL
+            #  value: "jdbc:mysql://mysql:3306/nessie"
+            #- name: QUARKUS_DATASOURCE_USERNAME
+            #  value: "nessie"
+            #- name: QUARKUS_DATASOURCE_PASSWORD
+            #  value: "password"
+            #- name: QUARKUS_DATASOURCE_DRIVER
+            #  value: "com.mysql.cj.jdbc.Driver"
+            #- name: QUARKUS_DATASOURCE_DB_KIND
+            #  value: "mysql"
+            #- name: NESSIE_VERSION_STORE_TYPE
+            #  value: "JDBC"
+            #- name: QUARKUS_PROFILE
+            #  value: "prod"
           volumeMounts:
             - mountPath: /data
               name: nessie-storage
+            - name: mysql-driver
+              mountPath: /opt/nessie/lib
       volumes:
         - name: nessie-storage
           persistentVolumeClaim:
             claimName: nessie-pvc
+        - name: mysql-driver
+          emptyDir: { }

@@ -25,6 +25,12 @@ CREATE USER 'gravitino'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON gravitino.* TO 'gravitino'@'%' WITH GRANT OPTION;
 commit;
 
+
+CREATE DATABASE nessie;
+CREATE USER 'nessie'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON nessie.* TO 'nessie'@'%' WITH GRANT OPTION;
+commit;
+
 exit
 
 
