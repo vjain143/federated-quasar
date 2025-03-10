@@ -123,9 +123,7 @@ database:
   driverClass: com.mysql.cj.jdbc.Driver
   # the username and password
   user: openmetadata
-  password: openmetadata_password
-  host: mysql
-  port: 3306
+  password: openmetadata123
   # the JDBC URL; the database is called openmetadata_db
   url: jdbc:mysql://mysql:3306/openmetadata?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
 
@@ -248,10 +246,9 @@ eventHandlerConfiguration:
 pipelineServiceClientConfiguration:
   #enabled: true
   # If we don't need this, set "org.openmetadata.service.clients.pipeline.noop.NoopClient" "default config "org.openmetadata.service.clients.pipeline.airflow.AirflowRESTClient
-  #className: org.openmetadata.service.clients.pipeline.noop.NoopClient"
-  className: org.openmetadata.service.clients.pipeline.airflow.AirflowRESTClient"
-  apiEndpoint: http://openmetadata-ingestion:8080
-  metadataApiEndpoint: http://openmetadata-server:8585/api
+  className: org.openmetadata.service.clients.pipeline.noop.NoopClient"
+  apiEndpoint: http://localhost:8080
+  metadataApiEndpoint: http://localhost:8585/api
   ingestionIpInfoEnabled: false
   hostIp: ""
   healthCheckInterval: 300
@@ -352,5 +349,5 @@ web:
 
 
 changeEventConfig:
-  omUri: "http://openmetadata-server:8585"
+  omUri: "http://localhost:8585"
   #openmetadata in om uri for eg http://localhost:8585

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openmetadata-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openmetadata-server
+  template:
+    metadata:
+      labels:
+        app: openmetadata-server
+    spec:
+      containers:
+        - name: openmetadata-server
+          image: openmetadata/server:latest
+          ports:
+            - containerPort: 8585
+          env:
+            - name: DB_DRIVER_CLASS
+              value: com.mysql.cj.jdbc.Driver
+            - name: DB_HOST
+              value: mysql
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_SCHEME
+              value: mysql
+            - name: DB_USER
+              value: openmetadata
+            - name: DB_USER_PASSWORD
+              value: openmetadata_password
+            - name: DB_USE_SSL
+              value: "false"
+            - name: DATABASE
+              value: openmetadata_db
+            - name: OM_DATABASE
+              value: openmetadata_db
+            - name: TRINO_HOST
+              value: trino
+          command: [ "/bin/sh", "-c" ]
+          #args:
+          #  - |
+          #    ./bootstrap/openmetadata-ops.sh migrate
+          args:
+            - |
+              ./bootstrap/openmetadata-ops.sh migrate
+              ./bin/./openmetadata-server-start.sh ./conf/openmetadata.yaml
+      volumes:
+        - name: openmetadata-configmap-volume
+          configMap:
+            name: openmetadata-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openmetadata-service
+spec:
+  selector:
+    app: openmetadata-server
+  ports:
+    - protocol: TCP
+      port: 8585
+      nodePort: 30085
+      targetPort: 8585
+  type: NodePort

@@ -1,11 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-external-traffic-to-openmetadata
+  name: allow-external-traffic-to-postgres
 spec:
   podSelector:
     matchExpressions:
-      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, superset, openmetadata-server, elasticsearch, openmetadata-ingestion ] }
+      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, superset, openmetadata, postgres ] }
   policyTypes:
     - Egress
   egress:

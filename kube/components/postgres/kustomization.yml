@@ -1,0 +1,8 @@
+resources:
+  - postgres-pv.yml
+  - postgres-pvc.yml
+  - postgres-deployment.yml
+  - postgres-egress-network-policy.yml
+  - postgres-ingress-network-policy.yml
+  - postgres-service.yml
+  - postgres-configmap.yml

@@ -39,6 +39,14 @@ spec:
               value: "permit"
             - name: QUARKUS_SECURITY_AUTHORIZATION_ENABLED
               value: "false"
+            - name: QUARKUS_DATASOURCE_JDBC_URL
+              value: "jdbc:postgresql://postgres:5432/nessiedb"
+            - name: QUARKUS_DATASOURCE_USERNAME
+              value: "nessie"
+            - name: QUARKUS_DATASOURCE_PASSWORD
+              value: "nessiepassword"
+            - name: QUARKUS_DATASOURCE_DB_KIND
+              value: "postgresql"
             #- name: QUARKUS_DATASOURCE_JDBC_URL
             #  value: "jdbc:mysql://mysql:3306/nessie"
             #- name: QUARKUS_DATASOURCE_USERNAME

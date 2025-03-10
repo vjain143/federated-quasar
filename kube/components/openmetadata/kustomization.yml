@@ -1,11 +1,13 @@
 resources:
-  - openmetadata-deployment.yml
-  - openmetadata-egress-network-policy.yml
+  - elasticsearch-deployment.yaml
+  - openmetadata-ingestion.yaml
+  - openmetadata-server-deployment.yaml
+  #- openmetadata-ui-deployment.yaml
   - openmetadata-ingress-network-policy.yml
-  - openmetadata-service.yaml
+  - openmetadata-egress-network-policy.yml
 configMapGenerator:
-  - name: openmetadata-configmap
+  - name: openmetadata-config
     files:
       - openmetadata-config/openmetadata.yaml
-      - openmetadata-config/private_key.der
-      - openmetadata-config/public_key.der
+      #- openmetadata-config/private_key.der
+     # - openmetadata-config/public_key.der
