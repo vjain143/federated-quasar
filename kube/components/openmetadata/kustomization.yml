@@ -11,3 +11,6 @@ configMapGenerator:
       - openmetadata-config/openmetadata.yaml
       #- openmetadata-config/private_key.der
      # - openmetadata-config/public_key.der
+  - name: airflow-config
+    files:
+      - openmetadata-config/airflow.cfg

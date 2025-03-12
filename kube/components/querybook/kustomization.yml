@@ -1,0 +1,5 @@
+resources:
+  - querybook-scheduler-deployment.yaml
+  - querybook-service.yaml
+  - querybook-web-deployment.yaml
+  - querybook-worker-deployment.yaml

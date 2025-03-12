@@ -25,24 +25,30 @@ spec:
             - name: DB_SCHEME
               value: mysql
             - name: DB_USER
-              value: openmetadata
+              value: airflow
             - name: DB_USER_PASSWORD
-              value: openmetadata_password
+              value: airflow123
             - name: DB_USE_SSL
               value: "false"
             - name: OM_DATABASE
-              value: openmetadata_db
+              value: airflow
             - name: TRINO_HOST
               value: trino
           command: [ "/bin/sh", "-c" ]
           args:
             - |
-              airflow db init
+              airflow db init       
+              airflow users create --username admin --firstname Admin --lastname User --role Admin --email admin@example.com --password admin
               airflow webserver
+          volumeMounts:
+            - name: airflow-config-volume
+              mountPath: /opt/airflow/airflow.cfg  # Mounts the file in the same place
+              subPath: airflow.cfg  # Ensures only this file is mounted
       volumes:
-        - name: openmetadata-configmap-volume
+        - name: airflow-config-volume
           configMap:
-            name: openmetadata-config
+            name: airflow-config
+
 ---
 apiVersion: v1
 kind: Service

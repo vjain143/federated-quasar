@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: querybook-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: querybook-scheduler
+  template:
+    metadata:
+      labels:
+        app: querybook-scheduler
+    spec:
+      containers:
+        - name: scheduler
+          image: pinterest/querybook:latest
+          command: ["python", "querybook/scripts/scheduler.py"]
+          env:
+            - name: DATABASE_URI
+              value: "postgresql://querybook:querybookpassword@querybook-postgres:5432/querybook"
+            - name: REDIS_URI
+              value: "redis://querybook-redis:6379/0"

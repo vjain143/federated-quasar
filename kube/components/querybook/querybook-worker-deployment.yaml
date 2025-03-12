@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: querybook-worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: querybook-worker  # Selector should match template labels
+  template:
+    metadata:
+      labels:
+        app: querybook-worker  # Labels should match selector
+    spec:
+      containers:
+        - name: querybook-worker
+          image: pinterest/querybook:latest
+          command: ["python", "querybook/run_worker.py"]  # Ensure worker process runs
+          env:
+            - name: DATABASE_URI
+              value: "postgresql://querybook:querybookpassword@querybook-postgres:5432/querybookdb"
+            - name: REDIS_URI
+              value: "redis://:querybookredis@querybook-redis-master:6379/0"
+            - name: ELASTICSEARCH_HOST
+              value: "http://querybook-elasticsearch:9200"
+            - name: SECRET_KEY
+              value: "your-secret-key"
+          resources:
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+            requests:
+              cpu: "250m"
+              memory: "256Mi"

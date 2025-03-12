@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: querybook
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: querybook
+  template:
+    metadata:
+      labels:
+        app: querybook
+    spec:
+      containers:
+        - name: querybook
+          image: pinterest/querybook:latest
+          env:
+            - name: DATABASE_URI
+              value: "postgresql://querybook:querybookpassword@querybook-postgres:5432/querybookdb"
+            - name: REDIS_URI
+              value: "redis://:querybookredis@querybook-redis-master:6379/0"
+            - name: ELASTICSEARCH_HOST
+              value: "http://querybook-elasticsearch:9200"
+            - name: SECRET_KEY
+              value: "your-secret-key"
+          ports:
+            - containerPort: 10001

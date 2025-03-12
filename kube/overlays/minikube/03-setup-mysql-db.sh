@@ -31,9 +31,9 @@ CREATE USER 'nessie'@'%' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON nessie.* TO 'nessie'@'%' WITH GRANT OPTION;
 commit;
 
-CREATE DATABASE openmetadata_db;
+CREATE DATABASE openmetadata;
 CREATE USER 'openmetadata'@'%' IDENTIFIED BY 'openmetadata_password';
-GRANT ALL PRIVILEGES ON openmetadata_db.* TO 'openmetadata'@'%';
+GRANT ALL PRIVILEGES ON openmetadata.* TO 'openmetadata'@'%';
 FLUSH PRIVILEGES;
 
 exit
