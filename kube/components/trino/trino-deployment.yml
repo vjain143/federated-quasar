@@ -15,7 +15,7 @@ spec:
         app: trino-coordinator
     spec:
       containers:
-      - image: trinodb/trino:471
+      - image: trinodb/trino:472
       #- image: vjain143/fq-trino:471.0.1
         imagePullPolicy: Always
         name: trino

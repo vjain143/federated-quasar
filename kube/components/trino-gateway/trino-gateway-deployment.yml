@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: trino-gateway
+  labels:
+    app: trino-gateway
+spec:
+  replicas: 1  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: trino-gateway
+  template:
+    metadata:
+      labels:
+        app: trino-gateway
+    spec:
+      containers:
+        - name: trino-gateway
+          image: vjain143/fq-trino-gateway:0.8.0  # Replace with your actual image name if pushed to a registry
+          ports:
+            - containerPort: 8080  # Adjust if your application runs on a different port
+          env:
+            - name: JAVA_OPTS
+              value: "-XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80"
+          volumeMounts:
+            - name: config-volume
+              mountPath: /opt/trino-gateway/config.yaml
+              subPath: config.yaml
+      volumes:
+        - name: config-volume
+          configMap:
+            name: trino-gateway-config

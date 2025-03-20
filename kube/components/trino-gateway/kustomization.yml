@@ -1,0 +1,7 @@
+resources:
+  - trino-gateway-deployment.yml
+  - trino-gateway-service.yml
+configMapGenerator:
+  - name: trino-gateway-config
+    files:
+      - trino-gateway-config/config.yaml
