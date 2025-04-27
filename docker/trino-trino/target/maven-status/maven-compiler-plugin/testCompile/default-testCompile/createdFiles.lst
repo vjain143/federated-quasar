@@ -1,0 +1,3 @@
+io/trino/plugin/trino/TestTrinoPlugin.class
+io/trino/plugin/trino/TestTrinoAggregatePushdown.class
+io/trino/plugin/trino/TestTrinoRemoteConfig.class
