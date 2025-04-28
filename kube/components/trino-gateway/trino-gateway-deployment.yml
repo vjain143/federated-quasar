@@ -16,7 +16,8 @@ spec:
     spec:
       containers:
         - name: trino-gateway
-          image: vjain143/fq-trino-gateway:0.8.0  # Replace with your actual image name if pushed to a registry
+          #image: trinodb/trino-gateway:latest
+          image: docker.io/vjain143/fq-trino-gateway:1.15.0
           ports:
             - containerPort: 8080  # Adjust if your application runs on a different port
           env:
@@ -24,8 +25,14 @@ spec:
               value: "-XX:MinRAMPercentage=50 -XX:MaxRAMPercentage=80"
           volumeMounts:
             - name: config-volume
-              mountPath: /opt/trino-gateway/config.yaml
+              mountPath: /etc/trino-gateway/config.yaml
               subPath: config.yaml
+            - name: config-volume
+              mountPath: /etc/trino-gateway/selfSignKey.pem
+              subPath: selfSignKey.pem
+            - name: config-volume
+              mountPath: /etc/trino-gateway/selfSignCert.pem
+              subPath: selfSignCert.pem
       volumes:
         - name: config-volume
           configMap:

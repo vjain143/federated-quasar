@@ -5,3 +5,5 @@ configMapGenerator:
   - name: trino-gateway-config
     files:
       - trino-gateway-config/config.yaml
+      - trino-gateway-config/selfSignKey.pem
+      - trino-gateway-config/selfSignCert.pem

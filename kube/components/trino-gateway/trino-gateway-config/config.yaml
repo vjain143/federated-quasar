@@ -1,38 +1,33 @@
 serverConfig:
   port: 8080  # Adjust based on your setup
 
-dataStore:
-  jdbcUrl: "jdbc:h2:mem:testdb"  # Replace with actual database URL
-  driver: "org.h2.Driver"  # Use "com.mysql.cj.jdbc.Driver" for MySQL, "org.postgresql.Driver" for PostgreSQL
-  user: "admin"
-  password: "password"
-  runMigrationsEnabled: true
-  queryHistoryHoursRetention: 24
-
 authentication:
-  defaultType: "BASIC"  # Options: BASIC, FORM, OAUTH
   form:
-    selfSignKeyPair: "/path/to/selfSignKey.pem"  # Required for self-signed JWT authentication
-    ldapConfigPath: "/path/to/ldap-config.yaml"  # Optional: Required if using LDAP authentication
+    selfSignKeyPair:
+      privateKeyRsa: "/etc/trino-gateway/selfSignKey.pem"
+      publicKeyRsa: "/etc/trino-gateway/selfSignCert.pem"
+      
+form-auth:
+  enabled: true
+  public-key-file: /path/to/gateway-public.key
 
-  oauth:
-    clientId: "your-client-id"
-    clientSecret: "your-client-secret"
-    tokenEndpoint: "https://your-oauth-provider.com/token"
-    authorizationEndpoint: "https://your-oauth-provider.com/auth"
-    userInfoEndpoint: "https://your-oauth-provider.com/userinfo"
-
-authorization:
-  enabled: false
+  #defaultType: "BASIC"  # Options: BASIC, FORM, OAUTH
+  #form:
+   # selfSignKeyPair: "/etc/trino-gateway/selfSignKey.pem"  # Required for self-signed JWT authentication
+    #ldapConfigPath: "/path/to/ldap-config.yaml"  # Optional: Required if using LDAP authentication
 
 routing:
-  loadBalancingStrategy: "round_robin"
-  clusters:
-    - name: "trino-cluster-1"
-      url: "http://trino-coordinator-1:8080"
-    - name: "trino-cluster-2"
-      url: "http://trino-coordinator-2:8080"
+  asyncTimeout: 3000ms
+  addXForwardedHeaders: true
 
 monitor:
-  enabled: true
   metricsEndpoint: "/metrics"
+
+dataStore:
+  #jdbc:mysql:mysql:3306/gateway?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+  jdbcUrl: "jdbc:mysql://mysql:3306/gateway?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC"  # Replace with actual database URL
+  driver: "com.mysql.cj.jdbc.Driver"  # Use "com.mysql.cj.jdbc.Driver" for MySQL, "org.postgresql.Driver" for PostgreSQL
+  user: "gateway"
+  password: "gateway123"
+  runMigrationsEnabled: true
+  queryHistoryHoursRetention: 24

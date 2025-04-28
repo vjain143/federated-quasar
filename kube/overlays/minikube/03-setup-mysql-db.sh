@@ -36,6 +36,11 @@ CREATE USER 'openmetadata'@'%' IDENTIFIED BY 'openmetadata_password';
 GRANT ALL PRIVILEGES ON openmetadata.* TO 'openmetadata'@'%';
 FLUSH PRIVILEGES;
 
+CREATE DATABASE gateway;
+CREATE USER 'gateway'@'%' IDENTIFIED BY 'gateway123';
+GRANT ALL PRIVILEGES ON gateway.* TO 'gateway'@'%';
+FLUSH PRIVILEGES;
+
 exit
 
 

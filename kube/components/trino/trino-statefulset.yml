@@ -13,8 +13,8 @@ spec:
         app: trino-worker
     spec:
       containers:
-      - image: trinodb/trino:472
-      #- image: vjain143/fq-trino:471.0.1
+      - image: trinodb/trino:473
+      #- image: vjain143/fq-trino:472.0.2
         imagePullPolicy: Always
         name: trino
         ports:
@@ -78,6 +78,9 @@ spec:
           #- name: trino-datasource-configmap-volume
           #  mountPath: etc/trino/catalog/trino.properties
           #  subPath: trino.properties
+          - name: trino-datasource-configmap-volume
+            mountPath: etc/trino/catalog/redact-udf.properties
+            subPath: redact-udf.properties
       volumes:
         - name: trino-configmap-volume
           configMap:
