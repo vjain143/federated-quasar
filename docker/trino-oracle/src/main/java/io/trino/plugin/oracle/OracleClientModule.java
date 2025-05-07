@@ -24,7 +24,6 @@ import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.instrumentation.jdbc.datasource.OpenTelemetryDataSource;
 import io.trino.plugin.jdbc.BaseJdbcConfig;
 import io.trino.plugin.jdbc.ConnectionFactory;
-import io.trino.plugin.jdbc.DriverConnectionFactory;
 import io.trino.plugin.jdbc.ForBaseJdbc;
 import io.trino.plugin.jdbc.JdbcClient;
 import io.trino.plugin.jdbc.MaxDomainCompactionThreshold;
@@ -32,6 +31,7 @@ import io.trino.plugin.jdbc.RetryStrategy;
 import io.trino.plugin.jdbc.TimestampTimeZoneDomain;
 import io.trino.plugin.jdbc.credential.CredentialProvider;
 import io.trino.plugin.jdbc.ptf.Query;
+import io.trino.spi.connector.ConnectorSession;
 import io.trino.spi.function.table.ConnectorTableFunction;
 import oracle.jdbc.OracleConnection;
 import oracle.jdbc.datasource.impl.OracleDataSource;
@@ -120,8 +120,10 @@ public class OracleClientModule implements Module {
             });
 
             if (oracleConfig.isConnectionPoolEnabled()) {
-                // Use GssCredentialDataSource if pooling logic is needed later
-                return new OpenTelemetryDataSource(new GssCredentialDataSource(oracleDs, gssCredential), openTelemetry)::getConnection;
+                return session -> {
+                    return new OpenTelemetryDataSource(new GssCredentialDataSource(oracleDs, gssCredential), openTelemetry)
+                            .getConnection();
+                };
             } else {
                 return session -> {
                     OracleConnection conn = oracleDs.createConnectionBuilder()
