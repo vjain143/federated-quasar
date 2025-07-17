@@ -1,0 +1,10 @@
+resources:
+  - polaris-deployment.yml
+  - polaris-egress-network-policy.yml
+  - polaris-ingress-network-policy.yml
+  - polaris-pvc.yml
+  - polaris-service.yml
+configMapGenerator:
+  - name: polaris-config
+    files:
+      - polaris-config/config.yml
