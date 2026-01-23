@@ -1,11 +1,11 @@
 resources:
 # Common Database Components
-  #- ../../components/mysql
+  - ../../components/mysql
 # Trino Components
   #- ../../components/minio
   #- ../../components/gravitino
-  #- ../../components/hive-metastore
-  - ../../overlays/minikube/trino
+  - ../../components/hive-metastore
+  #- ../../overlays/minikube/trino
 # Additional Trino Components - Working
  # - ../../components/nessie
   #- ../../components/steampipe

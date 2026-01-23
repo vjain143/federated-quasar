@@ -1,0 +1,115 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: om-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: om-server
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: om-server
+    spec:
+      securityContext:
+        runAsUser: 999
+        fsGroup: 999
+      initContainers:
+        - name: db-migration
+          image: docker.io/openmetadata/server:1.11.3
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              cd /opt/openmetadata && \
+              ./bootstrap/openmetadata-ops.sh migrate || true
+          env:
+            - name: DB_HOST
+              value: "om-mysql"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: "om_user"
+            - name: DB_USER_PASSWORD
+              value: "om_password"
+            - name: DB_SCHEME
+              value: "mysql"
+            - name: OM_DATABASE
+              value: "om_db"
+            - name: ELASTICSEARCH_HOST
+              value: "om-elasticsearch"
+            - name: ELASTICSEARCH_PORT
+              value: "9200"
+          volumeMounts:
+            - name: om-server-config-volume
+              mountPath: /opt/openmetadata/conf/openmetadata.yaml
+              subPath: openmetadata.yaml
+      containers:
+        - name: om-server
+          image: docker.io/openmetadata/server:1.11.3
+          #command: ["/bin/sh"]
+          #args: ["-c", "sleep infinity"]
+          env:
+            # Core Database Configuration - Overridable
+            - name: DB_HOST
+              value: "om-mysql"
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: "om_user"
+            - name: DB_USER_PASSWORD
+              value: "om_password"
+            - name: DB_SCHEME
+              value: "mysql"
+            - name: OM_DATABASE
+              value: "om_db"
+
+            # Core Service Connections - Overridable
+            - name: ELASTICSEARCH_HOST
+              value: "om-elasticsearch"
+            - name: ELASTICSEARCH_PORT
+              value: "9200"
+            - name: PIPELINE_SERVICE_CLIENT_ENDPOINT
+              value: "http://om-airflow:8080"
+            - name: SERVER_HOST_API_URL
+              value: "http://om-server:8585/api"
+            # Core Server Settings - Overridable
+            - name: OPENMETADATA_CLUSTER_NAME
+              value: "openmetadata"
+            - name: LOG_LEVEL
+              value: "INFO"
+            # Java Heap Settings
+            - name: SERVER_HEAP_OPTS
+              value: "-Xmx1G -Xms1G"
+
+          ports:
+            - containerPort: 80
+            - containerPort: 8585
+              protocol: TCP
+            - containerPort: 8586
+              protocol: TCP
+
+          resources:
+            requests:
+              cpu: 500m
+              memory: 1Gi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+          volumeMounts:
+            - name: om-server-config-volume
+              mountPath: /opt/openmetadata/conf/openmetadata.yaml
+              subPath: openmetadata.yaml
+            - name: om-server-logs-volume
+              mountPath: /opt/openmetadata/logs
+
+      restartPolicy: Always
+      volumes:
+        - name: om-server-config-volume
+          configMap:
+            name: om-server-config
+        - name: om-server-logs-volume
+          persistentVolumeClaim:
+            claimName: om-server-logs-pvc

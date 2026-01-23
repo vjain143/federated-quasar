@@ -1,0 +1,72 @@
+openapi: 3.0.3
+info:
+  title: Team Sync API
+  version: 0.1.0
+paths:
+  /api/trino/rows:
+    get:
+      summary: Read rows from Trino
+      parameters:
+        - in: query
+          name: catalog
+          schema: { type: string }
+        - in: query
+          name: schema
+          schema: { type: string }
+        - in: query
+          name: table
+          schema: { type: string }
+        - in: query
+          name: limit
+          schema: { type: integer, default: 50 }
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrinoRow"
+  /api/job/run:
+    post:
+      summary: Execute wiring job (Trino -> producer MySQL -> consumer MySQL)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/JobRequest"
+      responses:
+        "200":
+          description: Plain text job summary
+          content:
+            text/plain:
+              schema: { type: string }
+  /api/hms/databases:
+    get:
+      summary: List databases from Hive Metastore
+      responses:
+        "200":
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { type: string }
+components:
+  schemas:
+    TrinoRow:
+      type: object
+      properties:
+        id: { type: string }
+        producerTeam: { type: string }
+        consumerTeam: { type: string }
+    JobRequest:
+      type: object
+      required: [catalog, schema, table]
+      properties:
+        catalog: { type: string }
+        schema: { type: string }
+        table: { type: string }
+        limit: { type: integer, default: 50 }

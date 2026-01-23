@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: om-mysql
+  labels:
+    app: om-mysql
+spec:
+  type: NodePort
+  ports:
+    - name: mysql
+      port: 3306
+      nodePort: 30306
+      targetPort: 3306
+      protocol: TCP
+  selector:
+    app: om-mysql

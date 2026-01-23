@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: om-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: om-mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: om-mysql
+    spec:
+      containers:
+        - name: om-mysql
+          image: mysql:8.0.28-oracle
+          env:
+            - name: MYSQL_ROOT_USER
+              value: root
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+          ports:
+            - containerPort: 3306
+              name: mysql
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+          volumeMounts:
+            - name: om-mysql-storage
+              mountPath: "/data"
+            - name: mysql-init-script
+              mountPath: /docker-entrypoint-initdb.d/
+      volumes:
+        - name: om-mysql-storage
+          persistentVolumeClaim:
+            claimName: om-mysql-pvc
+        - name: mysql-init-script
+          configMap:
+            name: mysql-init-script

@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: om-airflow
+  labels:
+    app: om-airflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: om-airflow
+  template:
+    metadata:
+      labels:
+        app: om-airflow
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 50000
+        runAsGroup: 50000
+        fsGroup: 50000
+      tolerations:
+        - key: node.kubernetes.io/disk-pressure
+          operator: Exists
+          effect: NoSchedule
+        - key: node.kubernetes.io/memory-pressure
+          operator: Exists
+          effect: NoSchedule
+        - key: node.kubernetes.io/not-ready
+          operator: Exists
+          effect: NoExecute
+          tolerationSeconds: 300
+
+      containers:
+        - name: om-airflow
+          image: docker.io/openmetadata/ingestion
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+
+          command:
+            - /bin/bash
+          args:
+            - /opt/airflow/ingestion_dependency.sh
+
+          env:
+            - name: AIRFLOW_DB
+              value: airflow
+
+            - name: AIRFLOW__CORE__EXECUTOR
+              value: LocalExecutor
+
+            - name: AIRFLOW__CORE__AUTH_MANAGER
+              value: airflow.providers.fab.auth_manager.fab_auth_manager.FabAuthManager
+
+            - name: AIRFLOW__API__AUTH_BACKENDS
+              value: airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session
+
+            - name: AIRFLOW__OPENMETADATA_AIRFLOW_APIS__DAG_GENERATED_CONFIGS
+              value: /opt/airflow/dag_generated_configs
+
+            - name: AIRFLOW__DATABASE__SQL_ALCHEMY_CONN
+              value: "mysql+pymysql://airflow_user:airflow_pass@om-mysql:3306/airflow"
+
+            - name: DB_SCHEME
+              value: mysql+pymysql
+
+            - name: DB_HOST
+              value: om-mysql
+
+            - name: DB_PORT
+              value: "3306"
+
+            - name: DB_USER
+              value: airflow_user
+
+            - name: DB_PASSWORD
+              value: airflow_pass
+
+            - name: AIRFLOW__WEBSERVER__BASE_URL
+              value: http://om-airflow:8080
+
+            - name: AIRFLOW_ADMIN_USER
+              value: admin
+
+            - name: AIRFLOW_ADMIN_PASSWORD
+              value: admin
+
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+
+          volumeMounts:
+            - name: airflow-init-script
+              mountPath: /opt/airflow/ingestion_dependency.sh
+              subPath: ingestion_dependency.sh
+
+            - name: airflowdata
+              mountPath: /opt/airflow/dag_generated_configs
+
+            - name: airflowdata-dags
+              mountPath: /opt/airflow/dags
+
+            - name: airflowdata-tmp
+              mountPath: /tmp
+
+            - name: airflowdata-logs
+              mountPath: /opt/airflow/logs
+
+      restartPolicy: Always
+
+      volumes:
+        - name: airflow-init-script
+          configMap:
+            name: om-airflow-config
+            defaultMode: 0755
+
+        - name: airflowdata
+          persistentVolumeClaim:
+            claimName: om-airflow-pvc
+
+        - name: airflowdata-dags
+          persistentVolumeClaim:
+            claimName: om-airflow-dags-pvc
+
+        - name: airflowdata-tmp
+          emptyDir: {}
+
+        - name: airflowdata-logs
+          emptyDir: {}

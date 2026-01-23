@@ -1,0 +1,181 @@
+teams:
+- name: team1
+  mysql:
+    driver: mariadb
+    mode: KERBEROS_GSSAPI
+    url: jdbc:mariadb://db1.example.com:3306/team1_db
+    user: team1_user
+    password: ''
+    gssService: mariadb
+    useTicketCache: true
+    extras:
+      useSsl: 'true'
+  schema: team1_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team2
+  mysql:
+    driver: mysql
+    mode: PASSWORD
+    url: jdbc:mysql://db2.example.com:3306/team2_db
+    user: team2_user
+    password: changeme
+    gssService: ''
+    useTicketCache: false
+    extras:
+      useSsl: 'true'
+  schema: team2_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team3
+  mysql:
+    driver: mysql
+    mode: PASSWORD
+    url: jdbc:mysql://db3.example.com:3306/team3_db
+    user: team3_user
+    password: changeme
+    gssService: ''
+    useTicketCache: false
+    extras:
+      useSsl: 'true'
+  schema: team3_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team4
+  mysql:
+    driver: mariadb
+    mode: PASSWORD
+    url: jdbc:mariadb://db4.example.com:3306/team4_db
+    user: team4_user
+    password: changeme
+    gssService: ''
+    useTicketCache: false
+    extras:
+      useSsl: 'true'
+  schema: team4_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team5
+  mysql:
+    driver: mysql
+    mode: KERBEROS_GSSAPI
+    url: jdbc:mysql://db5.example.com:3306/team5_db
+    user: team5_user
+    password: ''
+    gssService: mariadb
+    useTicketCache: true
+    extras:
+      useSsl: 'true'
+  schema: team5_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team6
+  mysql:
+    driver: mysql
+    mode: PASSWORD
+    url: jdbc:mysql://db6.example.com:3306/team6_db
+    user: team6_user
+    password: changeme
+    gssService: ''
+    useTicketCache: false
+    extras:
+      useSsl: 'true'
+  schema: team6_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team7
+  mysql:
+    driver: mariadb
+    mode: PASSWORD
+    url: jdbc:mariadb://db7.example.com:3306/team7_db
+    user: team7_user
+    password: changeme
+    gssService: ''
+    useTicketCache: false
+    extras:
+      useSsl: 'true'
+  schema: team7_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team8
+  mysql:
+    driver: mysql
+    mode: PASSWORD
+    url: jdbc:mysql://db8.example.com:3306/team8_db
+    user: team8_user
+    password: changeme
+    gssService: ''
+    useTicketCache: false
+    extras:
+      useSsl: 'true'
+  schema: team8_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team9
+  mysql:
+    driver: mysql
+    mode: KERBEROS_GSSAPI
+    url: jdbc:mysql://db9.example.com:3306/team9_db
+    user: team9_user
+    password: ''
+    gssService: mariadb
+    useTicketCache: true
+    extras:
+      useSsl: 'true'
+  schema: team9_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team10
+  mysql:
+    driver: mariadb
+    mode: PASSWORD
+    url: jdbc:mariadb://db10.example.com:3306/team10_db
+    user: team10_user
+    password: changeme
+    gssService: ''
+    useTicketCache: false
+    extras:
+      useSsl: 'true'
+  schema: team10_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team11
+  mysql:
+    driver: mysql
+    mode: PASSWORD
+    url: jdbc:mysql://db11.example.com:3306/team11_db
+    user: team11_user
+    password: changeme
+    gssService: ''
+    useTicketCache: false
+    extras:
+      useSsl: 'true'
+  schema: team11_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest
+- name: team12
+  mysql:
+    driver: mysql
+    mode: PASSWORD
+    url: jdbc:mysql://db12.example.com:3306/team12_db
+    user: team12_user
+    password: changeme
+    gssService: ''
+    useTicketCache: false
+    extras:
+      useSsl: 'true'
+  schema: team12_db
+  tables:
+    producerTable: items
+    consumerTable: items_ingest

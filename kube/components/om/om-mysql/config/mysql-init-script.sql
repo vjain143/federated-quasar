@@ -1,0 +1,13 @@
+CREATE DATABASE om;
+CREATE DATABASE airflow CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+CREATE USER 'admin'@'%' IDENTIFIED BY 'admin_password';
+CREATE USER 'om_user'@'%' IDENTIFIED BY 'om_password';
+CREATE USER 'airflow_user'@'%' IDENTIFIED BY 'airflow_pass';
+
+GRANT ALL PRIVILEGES ON om.* TO 'admin'@'%' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON airflow.* TO 'admin'@'%' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON om.* TO 'om_user'@'%' WITH GRANT OPTION;
+GRANT ALL PRIVILEGES ON airflow.* TO 'airflow_user'@'%' WITH GRANT OPTION;
+
+commit;

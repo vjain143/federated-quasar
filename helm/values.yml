@@ -1,0 +1,11 @@
+openmetadata:
+  config:
+    authentication:
+      provider: basic
+      enableSelfSignup: true
+
+      # keep unused SSO fields non-null (empty is OK)
+      authority: ""
+      clientId: ""
+      callbackUrl: ""
+      jwtPrincipalClaims: []

@@ -1,0 +1,13 @@
+resources:
+  - om-airflow-pv.yml
+  - om-airflow-pvc.yml
+  - om-airflow-dags-pv.yml
+  - om-airflow-dags-pvc.yml
+  - om-airflow-deployment.yml
+  - om-airflow-egress-network-policy.yml
+  - om-airflow-ingress-network-policy.yml
+  - om-airflow-service.yaml
+configMapGenerator:
+  - name: om-airflow-config
+    files:
+      - config/ingestion_dependency.sh

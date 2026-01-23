@@ -1,0 +1,7 @@
+common.db_connection_string: "sqlite:///:memory:"
+common.super_secret: "https:/domain?username=$FLASK_SECRET_KEY"
+logger.root_level: "INFO"
+common.overridden: "base"
+
+common.boolean_value: "true"
+common.int_value: "345"

@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: om-elasticsearch
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: om-elasticsearch
+  template:
+    metadata:
+      labels:
+        app: om-elasticsearch
+    spec:
+      containers:
+        - name: om-elasticsearch
+          image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
+          env:
+            - name: discovery.type
+              value: single-node
+            - name: xpack.security.enabled
+              value: "false"
+            - name: ES_JAVA_OPTS
+              value: "-Xms512m -Xmx512m"
+          ports:
+            - containerPort: 9200
+            - containerPort: 9300
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 1024Mi
+          volumeMounts:
+            - name: om-elasticsearch-config-volume
+              mountPath: /opt/elasticsearch/conf/elasticsearch.yaml
+              subPath: elasticsearch.yaml
+            - name: om-elasticsearch-storage-volume
+              mountPath: "/om-elasticsearch/data"
+      restartPolicy: Always
+      volumes:
+        - name: om-elasticsearch-config-volume
+          configMap:
+            name: om-elasticsearch-config-map
+        - name: om-elasticsearch-storage-volume
+          persistentVolumeClaim:
+            claimName: om-elasticsearch-pvc

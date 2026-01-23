@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: om-server
+  labels:
+    app: om-server
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8585
+      nodePort: 30585
+      targetPort: 8585
+    - name: admin
+      protocol: TCP
+      port: 8586
+      nodePort: 30586
+      targetPort: 8586
+  selector:
+    app: om-server

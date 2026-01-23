@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-external-traffic-from-om-airflow
+spec:
+  podSelector:
+    matchLabels:
+      app: om-airflow
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - ipBlock:
+            cidr: 10.1.0.0/24
+      ports:
+        - protocol: TCP
+          port: 3306  # MySQL
+        - protocol: TCP
+          port: 8080  # Airflow
+        - protocol: TCP
+          port: 8585  # OM Server
+    - to:
+        - podSelector:
+            matchExpressions:
+              - { key: app, operator: In, values: [ om-mysql, om-server ] }
+      ports:
+        - protocol: TCP
+          port: 3306
+        - protocol: TCP
+          port: 8585

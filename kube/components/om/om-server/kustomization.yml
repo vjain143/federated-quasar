@@ -1,0 +1,11 @@
+resources:
+  - om-server-pv.yml
+  - om-server-logs-pvc.yml
+  - om-server-deployment.yaml
+  - om-server-egress-network-policy.yml
+  - om-server-ingress-network-policy.yml
+  - om-server-service.yaml
+configMapGenerator:
+  - name: om-server-config
+    files:
+      - openmetadata.yaml

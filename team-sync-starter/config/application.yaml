@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+trino:
+  jdbcUrl: "jdbc:trino://localhost:8443/hive/default?SSL=true&KerberosRemoteServiceName=trino"
+  useKerberos: true
+  principal: "user@EXAMPLE.COM"
+  keytab: "/path/to/user.keytab"
+  useTicketCache: true
+  # If SSL uses custom truststore
+  truststorePath: ""
+  truststorePassword: ""
+
+hms:
+  uris: "thrift://localhost:9083"
+  useKerberos: true
+  principal: "hive/_HOST@EXAMPLE.COM"
+  useTicketCache: true
+
+email:
+  enabled: false
+  smtpHost: "smtp.example.com"
+  smtpPort: 587
+  username: ""
+  password: ""
+  from: "noreply@example.com"
+  to:
+    - "admin@example.com"

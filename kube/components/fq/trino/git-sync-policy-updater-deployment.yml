@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: git-sync-policy-updater
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: git-sync-policy-updater
+  template:
+    metadata:
+      labels:
+        app: git-sync-policy-updater
+    spec:
+      serviceAccountName: network-policy-updater
+      volumes:
+      - name: policy-repo
+        emptyDir: {}
+      - name: git-credentials
+        secret:
+          secretName: git-credentials
+
+      containers:
+      # Container running Git Sync
+      - name: git-sync
+        image: registry.k8s.io/git-sync/git-sync:v4.1.0
+        args:
+        - "--repo=https://bitbucket.org/your-org/my-repo.git"
+        - "--branch=main"
+        - "--root=/git"
+        - "--dest=repo"
+        - "--wait=60"                  # poll interval (every 60 sec)
+        - "--username=$(GIT_USERNAME)"
+        - "--password=$(GIT_PASSWORD)"
+        env:
+        - name: GIT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: git-credentials
+              key: username
+        - name: GIT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: git-credentials
+              key: password
+        volumeMounts:
+        - name: policy-repo
+          mountPath: /git
+
+      # Container applying network policies
+      - name: policy-updater
+        image: bitnami/kubectl:latest
+        command:
+        - "/bin/sh"
+        - "-c"
+        - |
+          while true; do
+            echo "Applying network policies..."
+            kubectl apply -f /git/repo/network-policies/
+            sleep 60
+          done
+        volumeMounts:
+        - name: policy-repo
+          mountPath: /git

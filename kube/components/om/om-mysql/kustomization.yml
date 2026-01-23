@@ -1,0 +1,11 @@
+resources:
+  - om-mysql-pv.yml
+  - om-mysql-pvc.yml
+  - om-mysql-deployment.yml
+  - om-mysql-egress-network-policy.yml
+  - om-mysql-ingress-network-policy.yml
+  - om-mysql-service.yml
+configMapGenerator:
+  - name: mysql-init-script
+    files:
+      - config/mysql-init-script.sql

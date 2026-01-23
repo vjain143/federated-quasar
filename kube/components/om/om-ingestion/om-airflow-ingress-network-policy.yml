@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-internal-traffic-to-om-airflow
+spec:
+  podSelector:
+    matchLabels:
+      app: om-airflow
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - ipBlock:
+            cidr: 10.1.0.0/24
+      ports:
+        - protocol: TCP
+          port: 8080
+    - from:
+        - podSelector:
+            matchExpressions:
+              - { key: app, operator: In, values: [ om-server, om-mysql, om-elasticsearch, trino, superset, openmetadata ] }
