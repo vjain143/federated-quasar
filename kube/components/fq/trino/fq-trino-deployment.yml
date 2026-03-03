@@ -54,12 +54,12 @@ spec:
           - name: trino-configmap-volume
             mountPath: etc/trino/password.db
             subPath: password.db
-          #- name: trino-configmap-volume
-          #  mountPath: etc/trino/access-control.properties
-          #  subPath: access-control.properties
-          #- name: trino-configmap-volume
-          #  mountPath: etc/trino/opa-authorization.properties
-          #  subPath: opa-authorization.properties
+          - name: trino-configmap-volume
+            mountPath: etc/trino/access-control.properties
+            subPath: access-control.properties
+          - name: trino-configmap-volume
+            mountPath: etc/trino/rules.json
+            subPath: rules.json
           # trino-datasource-configmap files
           #- name: trino-datasource-configmap-volume
           #  mountPath: etc/trino/catalog/gravitino.properties
@@ -82,9 +82,6 @@ spec:
           - name: trino-datasource-configmap-volume
             mountPath: etc/trino/catalog/nessie.properties
             subPath: nessie.properties
-          - name: trino-datasource-configmap-volume
-            mountPath: etc/trino/catalog/redact-udf.properties
-            subPath: redact-udf.properties
           #- name: trino-datasource-configmap-volume
           #  mountPath: etc/trino/catalog/trino.properties
           #  subPath: trino.properties

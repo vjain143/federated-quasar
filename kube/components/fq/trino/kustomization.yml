@@ -1,16 +1,24 @@
 resources:
-  - trino-deployment.yml
-  - trino-egress-network-policy.yml
-  - trino-ingress-network-policy.yml
-  - trino-service.yml
-  - trino-statefulset.yml
+  - fq-trino-deployment.yml
+  - fq-trino-egress-network-policy.yml
+  - fq-trino-ingress-network-policy.yml
+  - fq-trino-service.yml
+  - fq-trino-statefulset.yml
 configMapGenerator:
   - name: trino-configmap
     files:
       - trino-config/config.properties.coordinator
       - trino-config/config.properties.worker
+      - trino-config/node.properties
       - trino-config/jvm.config
+      - password.db
       - trino-config/password-authenticator.properties
       - trino-config/access-control.properties
-      - trino-config/opa-authorization.properties
+      - trino-config/rules.json
   - name: trino-datasource-configmap
+    files:
+      - trino-config/hms_db.properties
+      - trino-config/iceberg.properties
+      - trino-config/minio.properties
+      - trino-config/steampipe_db.properties
+      - trino-config/nessie.properties

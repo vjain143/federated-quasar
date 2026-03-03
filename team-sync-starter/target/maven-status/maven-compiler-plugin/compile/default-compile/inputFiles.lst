@@ -1,0 +1,12 @@
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/App.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/api/JobApi.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/api/MetastoreApi.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/api/TrinoApi.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/model/TrinoRow.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/service/EmailService.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/service/HiveMetaService.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/service/KerberosAuth.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/service/MySqlService.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/service/TrinoService.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/service/WiringService.java
+/Users/vivek/Lab/GitHub/federated-quasar/team-sync-starter/src/main/java/com/example/teamsync/util/ConfigService.java

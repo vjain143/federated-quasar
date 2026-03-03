@@ -33,7 +33,7 @@ spec:
 
       containers:
         - name: om-airflow
-          image: docker.io/openmetadata/ingestion
+          image: openmetadata/ingestion:1.11.3
           ports:
             - containerPort: 8080
               protocol: TCP

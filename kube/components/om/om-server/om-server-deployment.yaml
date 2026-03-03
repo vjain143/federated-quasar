@@ -19,7 +19,7 @@ spec:
         fsGroup: 999
       initContainers:
         - name: db-migration
-          image: docker.io/openmetadata/server:1.11.3
+          image: docker.io/openmetadata/ingestion:1.11.3
           command: ["/bin/bash", "-c"]
           args:
             - |

@@ -1,0 +1,32 @@
+{
+  "catalogs": [
+    {
+      "catalog": ".*",
+      "allow": "all"
+    }
+  ],
+  "queries": [
+    {
+      "allow": ["execute", "view", "kill"]
+    }
+  ],
+  "system_information": [
+    {
+      "user": ".*",
+      "allow": ["read", "write"]
+    }
+  ],
+  "catalog_session_properties": [
+    {
+      "catalog": ".*",
+      "property": ".*",
+      "allow": true
+    }
+  ],
+  "system_session_properties": [
+    {
+      "property": ".*",
+      "allow": true
+    }
+  ]
+}
