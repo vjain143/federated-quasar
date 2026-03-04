@@ -1,0 +1,21 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: aix
+
+resources:
+  - aix-moat-secret.yaml
+  - aix-moat-deployment.yaml
+  - aix-moat-service.yaml
+  - aix-moat-ingress-network-policy.yaml
+  - aix-moat-egress-network-policy.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: moat-api-config
+    files:
+      - configs/config.yaml
+  - name: moat-config-trino-policy
+    files:
+      - configs/policy.rego

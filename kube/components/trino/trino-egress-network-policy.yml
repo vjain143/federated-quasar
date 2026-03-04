@@ -1,26 +1,75 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-external-traffic-to-trino
+  name: trino-egress-policy
 spec:
   podSelector:
-    matchExpressions:
-      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, trino, steampipe, superset, openmetadata-server, openmetadata-ingestion, metabase, opa, nessie, polaris ] }
+    matchLabels:
+      app: trino-coordinator
   policyTypes:
     - Egress
   egress:
+    # Allow DNS lookups for in-cluster services.
     - to:
-        - ipBlock:
-            cidr: 10.1.0.0/24
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+
+    # Allow Trino to communicate with OPA
+    - to:
+        - podSelector:
+            matchLabels:
+              app: opa
+          namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: aix
+      ports:
+        - protocol: TCP
+          port: 8181
+    
+    # Allow Trino to communicate with MySQL
+    - to:
+        - podSelector:
+            matchLabels:
+              app: mysql
+      ports:
+        - protocol: TCP
+          port: 3306
+    
+    # Allow Trino to communicate with Hive Metastore
+    - to:
+        - podSelector:
+            matchLabels:
+              app: hive-metastore
       ports:
         - protocol: TCP
           port: 9083
+    
+    # Allow Trino to communicate with MinIO
+    - to:
+        - podSelector:
+            matchLabels:
+              app: minio
+      ports:
         - protocol: TCP
           port: 9000
         - protocol: TCP
           port: 9001
-        - protocol: TCP
-          port: 3306
+    
+    # Allow Trino to communicate with other services
+    - to:
+        - podSelector:
+            matchExpressions:
+              - { key: app, operator: In, values: [ steampipe, superset, openmetadata-server, openmetadata-ingestion, metabase, nessie, polaris ] }
+      ports:
         - protocol: TCP
           port: 8080
         - protocol: TCP

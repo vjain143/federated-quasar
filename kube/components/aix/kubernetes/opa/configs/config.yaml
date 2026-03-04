@@ -1,0 +1,13 @@
+services:
+  - name: moat
+    url: http://moat:8000/api/v1/opa/
+    credentials:
+      bearer:
+        token: bearer-token
+bundles:
+  trino:
+    service: moat
+    resource: bundle/trino
+    polling:
+      min_delay_seconds: 10
+      max_delay_seconds: 30

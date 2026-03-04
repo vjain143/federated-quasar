@@ -1,0 +1,23 @@
+logger.root_level: "INFO"
+
+flask.secret_key: "$FLASK_SECRET_KEY"
+flask.environment: "Production"
+
+database.protocol: "mysql+pymysql"
+database.user: "moat_user"
+database.password: "$DATABASE_PASSWORD"
+database.host: "mysql"
+database.port: "3306"
+database.database: "moat"
+
+bundle_generator.temp_directory: /tmp
+bundle_generator.static_rego_file_path: "/opt/moat"
+bundler.bundle_directory: "/opt/moat/bundles"
+
+api.healthcheck.auth_method: none
+api.scim.auth_method: none
+
+api.opa.auth_method: api-key
+api.opa.api_key: bearer-token
+
+worker.interval_s: "5"

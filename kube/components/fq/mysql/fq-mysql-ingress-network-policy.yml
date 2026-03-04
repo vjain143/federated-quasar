@@ -1,11 +1,11 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: fq-allow-internal-traffic-from-fq-trino
+  name: fq-allow-internal-traffic-to-mysql
 spec:
   podSelector:
     matchExpressions:
-      - { key: app, operator: In, values: [ fq-hms, fq-minio, fq-mysql, fq-trino-coordinator, steampipe, superset, openmetadata-server, openmetadata-ingestion, metabase, opa, nessie, polaris] }
+      - { key: app, operator: In, values: [ fq-hms, fq-minio, fq-mysql, fq-trino-coordinator, superset, openmetadata, trino-gateway ] }
   policyTypes:
     - Ingress
   ingress:
@@ -23,7 +23,3 @@ spec:
           port: 3306
         - protocol: TCP
           port: 8080
-        - protocol: TCP
-          port: 19120
-        - protocol: TCP
-          port: 30120

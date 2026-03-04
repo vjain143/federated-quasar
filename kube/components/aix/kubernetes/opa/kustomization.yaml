@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: aix
+
+resources:
+  - aix-opa-deployment.yaml
+  - aix-opa-service.yaml
+  - aix-opa-ingress-network-policy.yaml
+  - aix-opa-egress-network-policy.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+configMapGenerator:
+  - name: opa-config
+    files:
+      - configs/config.yaml

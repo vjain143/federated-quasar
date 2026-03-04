@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: aix
+
+resources:
+  - aix-mysql-secret.yaml
+  - aix-mysql-deployment.yaml
+  - aix-mysql-service.yaml
+  - aix-mysql-ingress-network-policy.yaml
+  - aix-mysql-egress-network-policy.yaml

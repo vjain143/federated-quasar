@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa
+  namespace: aix
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opa
+  template:
+    metadata:
+      labels:
+        app: opa
+    spec:
+      containers:
+        - name: opa
+          image: openpolicyagent/opa:1.7.1-static
+          args:
+            - "run"
+            - "--server"
+            - "--addr=0.0.0.0:8181"
+            - "--config-file=/config/config.yaml"
+          ports:
+            - containerPort: 8181
+          volumeMounts:
+            - name: opa-config
+              mountPath: /config
+              readOnly: true
+      volumes:
+        - name: opa-config
+          configMap:
+            name: opa-config

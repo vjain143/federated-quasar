@@ -1,16 +1,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: trino
+  name: fq-minio
   labels:
-    app: trino
+    app: fq-minio
 spec:
   type: NodePort
   ports:
     - name: https
-      port: 8080
-      targetPort: 8080
-      nodePort: 30082
+      port: 9000
+      targetPort: 9000
+      nodePort: 30990
       protocol: TCP
   selector:
-    app: trino-coordinator
+    app: fq-minio

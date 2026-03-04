@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: fq
+
+resources:
+  - fq-hms-deployment.yml
+  - fq-hms-service.yml
+  - fq-hms-egress-network-policy.yml
+  - fq-hms-ingress-network-policy.yml
+configMapGenerator:
+  - name: fq-hms-configs
+    files:
+      - configs/metastore-log4j2.properties
+      - configs/core-site.xml
+      - configs/metastore-site.xml

@@ -1,14 +1,36 @@
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
 metadata:
-  name: allow-external-traffic-to-fq-trino
+  name: fq-allow-external-traffic-to-fq-trino
 spec:
   podSelector:
     matchExpressions:
-      - { key: app, operator: In, values: [ hive-metastore, minio, mysql, fq-trino-coordinator, steampipe, superset, openmetadata-server, openmetadata-ingestion, metabase, opa, nessie, polaris ] }
+      - { key: app, operator: In, values: [ fq-hms, fq-minio, fq-mysql, fq-trino-coordinator, steampipe, superset, openmetadata-server, openmetadata-ingestion, metabase, opa, nessie, polaris ] }
   policyTypes:
     - Egress
   egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: aix
+          podSelector:
+            matchLabels:
+              app: opa
+      ports:
+        - protocol: TCP
+          port: 8181
     - to:
         - ipBlock:
             cidr: 10.1.0.0/24

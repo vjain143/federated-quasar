@@ -1,9 +1,0 @@
-services:
-  trino:
-    url: http://trino:8080
-  bundles:
-    authz:
-      service: trino
-      resource: /policy/policy.rego
-  decision_logs:
-    console: true

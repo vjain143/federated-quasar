@@ -1,3 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: fq
+
 resources:
   - fq-trino-deployment.yml
   - fq-trino-egress-network-policy.yml
@@ -5,20 +9,20 @@ resources:
   - fq-trino-service.yml
   - fq-trino-statefulset.yml
 configMapGenerator:
-  - name: trino-configmap
+  - name: fq-trino-configs
     files:
-      - trino-config/config.properties.coordinator
-      - trino-config/config.properties.worker
-      - trino-config/node.properties
-      - trino-config/jvm.config
+      - configs/config.properties.coordinator
+      - configs/config.properties.worker
+      - configs/node.properties
+      - configs/jvm.config
       - password.db
-      - trino-config/password-authenticator.properties
-      - trino-config/access-control.properties
-      - trino-config/rules.json
-  - name: trino-datasource-configmap
+      - configs/password-authenticator.properties
+      - configs/access-control.properties
+      - configs/rules.json
+  - name: fq-trino-datasource-configs
     files:
-      - trino-config/hms_db.properties
-      - trino-config/iceberg.properties
-      - trino-config/minio.properties
-      - trino-config/steampipe_db.properties
-      - trino-config/nessie.properties
+      - configs/hms_db.properties
+      - configs/iceberg.properties
+      - configs/minio.properties
+      - configs/steampipe_db.properties
+      - configs/nessie.properties
