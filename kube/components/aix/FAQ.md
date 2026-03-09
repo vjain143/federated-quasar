@@ -256,3 +256,27 @@ Expected:
 
 - DNS resolution succeeds
 - OPA returns JSON such as `{"result":false}`
+
+## Can I use dbt with Trino and then feed metadata to Moat through OpenMetadata?
+
+Yes. A working pattern is:
+
+1. Run dbt against Trino to materialize tables.
+2. Ingest Trino metadata into OpenMetadata (database service + schema + tables).
+3. Ingest dbt artifacts (`manifest.json`, `catalog.json`, `run_results.json`)
+   into OpenMetadata for model-level context.
+4. Pull OpenMetadata attributes/tags into Moat resource attributes and enforce
+   them in OPA policy.
+
+In this repo, the ready-to-use files are:
+
+- dbt project:
+  - [kube/components/fq/dbt](/Users/vivek/Lab/GitHub/federated-quasar/kube/components/fq/dbt)
+- OpenMetadata workflows:
+  - [trino-metadata.yaml](/Users/vivek/Lab/GitHub/federated-quasar/kube/components/om/workflows/fq/trino-metadata.yaml)
+  - [dbt-metadata.yaml](/Users/vivek/Lab/GitHub/federated-quasar/kube/components/om/workflows/fq/dbt-metadata.yaml)
+
+Important: with OPA auth enabled in Trino, policy responses must match Trino's
+expected shape. If optional endpoints like `columnMask` are configured, the
+returned object must be valid for Trino or requests can fail with deserialization
+errors.

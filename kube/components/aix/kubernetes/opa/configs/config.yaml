@@ -1,6 +1,6 @@
 services:
   - name: moat
-    url: http://moat:8000/api/v1/opa/
+    url: http://moat.aix.svc.cluster.local:8000/api/v1/opa/
     credentials:
       bearer:
         token: bearer-token

@@ -8,6 +8,7 @@ The stack currently includes:
 - `minio`
 - `mysql`
 - `hms`
+- `kestra`
 - `opa` (shared component used for Trino authorization)
 
 All `fq` resources now target the `fq` namespace.
@@ -23,6 +24,7 @@ These values come from the service manifests under this folder.
 | MinIO Console | `fq-minio-console` | `9001` | `30991` | `http://localhost:30991` | Browser admin console |
 | MySQL | `fq-mysql` | `3306` | `30336` | `mysql://localhost:30336` | External MySQL access |
 | Hive Metastore | `fq-hms` | `9083` | `30983` | `thrift://localhost:30983` | Thrift metastore endpoint |
+| Kestra | `fq-kestra` | `8080` | `30882` | `http://localhost:30882` | Workflow UI/API for dbt + metadata orchestration |
 | OPA | `opa` | `8181` | `30081` | `http://localhost:30081` | Trino authorization policy API |
 
 Although several service ports are named `https` in the manifests, the configured endpoints here are plain TCP/HTTP unless your app layer adds TLS separately.
@@ -133,6 +135,23 @@ kubectl get svc -n aix opa
 curl -s http://localhost:30081/v1/data/trino/allow
 ```
 
+### Kestra
+
+- Folder: `kube/components/fq/kestra`
+- Service: `fq-kestra`
+- URL: `http://localhost:30882`
+
+This service orchestrates dbt and OpenMetadata ingestion through flow:
+
+- `fq.orchestration.fq_dbt_to_openmetadata_sync`
+
+Validate:
+
+```bash
+kubectl get svc -n fq fq-kestra
+curl -s http://localhost:30882/api/v1/flows/fq.orchestration/fq_dbt_to_openmetadata_sync
+```
+
 ## Quick checks
 
 List all fq-related services:
@@ -150,6 +169,7 @@ fq-minio        9000:30990/TCP
 fq-minio-console   9001:30991/TCP
 fq-mysql           3306:30336/TCP
 fq-hms             9083:30983/TCP
+fq-kestra          8080:30882/TCP
 opa             8181:30081/TCP
 ```
 
@@ -160,4 +180,5 @@ opa             8181:30081/TCP
 - `kube/components/fq/minio/fq-minio-console-service.yml`
 - `kube/components/fq/mysql/fq-mysql-service.yml`
 - `kube/components/fq/hms/fq-hms-service.yml`
+- `kube/components/fq/kestra/fq-kestra-service.yml`
 - `kube/components/opa/opa-service.yml`

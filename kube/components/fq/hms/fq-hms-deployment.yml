@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hive-metastore
-        image: vjain143/hive-metastore:3.0.0
+        image: vjain143/hive-metastore:4.2.0
         env:
           - name: MYSQL_USER
             value: root
@@ -26,8 +26,46 @@ spec:
             value: minio
           - name: MINIO_ROOT_PASSWORD
             value: minio123
+          - name: JMX_EXPORTER_ENABLE
+            value: "false"
+          - name: JMX_EXPORTER_PORT
+            value: "9404"
+          - name: JMX_EXPORTER_CONFIG
+            value: /opt/hive-metastore/conf/jmx-exporter.yaml
+          - name: ENABLE_JMX_REMOTE
+            value: "false"
+          - name: JMX_PORT
+            value: "9010"
+          - name: JMX_RMI_PORT
+            value: "9010"
+          - name: DT_ONEAGENT_ENABLE
+            value: "false"
+          - name: DT_ONEAGENT_PATH
+            value: /opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so
         ports: 
-          - containerPort: 9083
+          - name: thrift
+            containerPort: 9083
+          - name: metrics
+            containerPort: 9404
+          - name: jmx
+            containerPort: 9010
+        startupProbe:
+          tcpSocket:
+            port: thrift
+          failureThreshold: 30
+          periodSeconds: 10
+        readinessProbe:
+          tcpSocket:
+            port: thrift
+          periodSeconds: 10
+          timeoutSeconds: 2
+          failureThreshold: 6
+        livenessProbe:
+          tcpSocket:
+            port: thrift
+          periodSeconds: 20
+          timeoutSeconds: 2
+          failureThreshold: 3
         volumeMounts:
           - name: fq-hms-configs-volume
             mountPath: /opt/hive-metastore/conf/metastore-site.xml
@@ -38,7 +76,10 @@ spec:
           - name: fq-hms-configs-volume
             mountPath: /opt/hive-metastore/conf/metastore-log4j2.properties
             subPath: metastore-log4j2.properties
-        command: ["/opt/hive-metastore/bin/start-metastore"]
+          - name: fq-hms-configs-volume
+            mountPath: /opt/hive-metastore/conf/jmx-exporter.yaml
+            subPath: jmx-exporter.yaml
+        command: ["/opt/hive-metastore/bin/entrypoint.sh"]
         args: ["-p","9083","--skiphadoopversion"]
         imagePullPolicy: Always
       volumes:

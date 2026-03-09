@@ -23,4 +23,12 @@ Resources in this folder:
 - `configs/core-site.xml`: Hadoop S3/MinIO configuration.
 - `configs/metastore-site.xml`: Hive Metastore JDBC and service configuration.
 - `configs/metastore-log4j2.properties`: Hive Metastore logging configuration.
+- `configs/jmx-exporter.yaml`: Prometheus JMX exporter configuration.
 - `kustomization.yml`: Builds the component and generates the HMS configmap.
+
+Operational notes:
+
+- The deployment uses `/opt/hive-metastore/bin/entrypoint.sh` so monitoring hooks from the image are applied.
+- `startupProbe`, `readinessProbe`, and `livenessProbe` use TCP checks on the HMS Thrift port `9083`.
+- Prometheus JMX exporter and remote JMX are disabled by default and can be enabled through env vars in the deployment.
+- Dynatrace OneAgent is only attached if its shared library is mounted into the container and `DT_ONEAGENT_ENABLE=true`.

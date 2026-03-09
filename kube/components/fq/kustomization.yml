@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - fq-platform-namespace.yaml
   - hms
+  - kestra
   - minio
   - mysql
   - trino

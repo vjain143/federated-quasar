@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: fq
+
+resources:
+  - fq-kestra-service-account.yml
+  - fq-kestra-role.yml
+  - fq-kestra-role-binding.yml
+  - fq-kestra-service.yml
+  - fq-kestra-deployment.yml
+
+configMapGenerator:
+  - name: fq-kestra-flows
+    files:
+      - flows/fq_dbt_to_openmetadata_sync.yml

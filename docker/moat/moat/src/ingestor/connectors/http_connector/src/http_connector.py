@@ -207,7 +207,11 @@ class HttpConnector(ConnectorBase):
                 "Authorization": f"Bearer {self._get_access_token()}",
             }
 
-        if self.config.pagination_enabled:
+        if self.config.group_membership_enabled:
+            self.source_data = self._acquire_group_membership_data(
+                headers=headers, auth=auth
+            )
+        elif self.config.pagination_enabled:
             page_size: int = self.config.pagination_size
             offset: int = 0
             logger.info(f"Pagination enabled, page size: {page_size}")
@@ -244,6 +248,51 @@ class HttpConnector(ConnectorBase):
             )
         logger.info(f"Retrieved total {len(self.source_data)} records from source.")
 
+    def _acquire_group_membership_data(
+        self, headers: dict, auth: tuple[str, str] | None
+    ) -> list[dict]:
+        assert (
+            self.config.group_membership_url_template
+        ), "http_connector.group_membership_url_template is required when group_membership_enabled=true"
+        assert (
+            self.config.group_membership_groups
+        ), "http_connector.group_membership_groups is required when group_membership_enabled=true"
+
+        groups: list[str] = [
+            group.strip()
+            for group in str(self.config.group_membership_groups).split(",")
+            if group and group.strip()
+        ]
+        data: list[dict] = []
+
+        for group in groups:
+            group_url: str = str(self.config.group_membership_url_template).replace(
+                self.config.group_membership_group_placeholder, group
+            )
+            response = requests.get(
+                url=group_url,
+                headers=headers,
+                auth=auth,
+                params={},
+                verify=self.config.ssl_verify,
+                cert=self.config.certificate_path,
+            )
+            response.raise_for_status()
+            response_json = response.json()
+            members: list[dict] = self.handle_response_json(
+                self.config.group_membership_content_pattern, response_json
+            )
+            logger.info(
+                f"Retrieved {len(members)} members for group {group} from source"
+            )
+
+            for member in members:
+                # Keep the original payload and inject group context used for principal attributes.
+                if not isinstance(member, dict):
+                    continue
+                data.append(member | {"__moat_group": group})
+        return data
+
     def get_principals(self) -> list[PrincipalDio]:
         principals: list[PrincipalDio] = []
 
@@ -263,6 +312,9 @@ class HttpConnector(ConnectorBase):
         return principals
 
     def get_principal_attributes(self) -> list[PrincipalAttributeDio]:
+        if self.config.group_membership_enabled:
+            return self._get_group_membership_principal_attributes()
+
         principal_attributes: list[PrincipalAttributeDio] = []
 
         @dataclass
@@ -305,4 +357,43 @@ class HttpConnector(ConnectorBase):
                 )
                 principal_attributes.append(principal_attribute)
 
+        return principal_attributes
+
+    def _get_group_membership_principal_attributes(self) -> list[PrincipalAttributeDio]:
+        principal_attributes: list[PrincipalAttributeDio] = []
+        merged: dict[str, set[str]] = {}
+        principal_fq_name_mapping = HttpConnectorConfig.attribute_jsonpath_mapping(
+            prefix="group_membership_principal",
+            attributes_to_map=["fq_name"],
+        )
+        if not principal_fq_name_mapping["fq_name"].jsonpath:
+            principal_fq_name_mapping = HttpConnectorConfig.attribute_jsonpath_mapping(
+                prefix="principal",
+                attributes_to_map=["fq_name"],
+            )
+
+        for principal in self.source_data:
+            if "__moat_group" not in principal:
+                continue
+            principal_obj: PrincipalDio = self._populate_object_from_json(
+                json_obj=principal,
+                attribute_mapping=principal_fq_name_mapping,
+                target_class=PrincipalDio,
+            )
+            if not principal_obj.fq_name:
+                continue
+            group_name: str = str(principal["__moat_group"])
+            if principal_obj.fq_name not in merged:
+                merged[principal_obj.fq_name] = set()
+            merged[principal_obj.fq_name].add(group_name)
+
+        for fq_name, groups in merged.items():
+            principal_attributes.append(
+                PrincipalAttributeDio(
+                    fq_name=fq_name,
+                    platform=self.platform,
+                    attribute_key=self.config.group_membership_attribute_key,
+                    attribute_value=",".join(sorted(groups)),
+                )
+            )
         return principal_attributes

@@ -1,0 +1,29 @@
+source:
+  type: dbt
+  serviceName: fq_trino
+  sourceConfig:
+    config:
+      type: DBT
+      dbtConfigSource:
+        dbtConfigType: local
+        dbtCatalogFilePath: /tmp/fq-dbt-project/target/catalog.json
+        dbtManifestFilePath: /tmp/fq-dbt-project/target/manifest.json
+        dbtRunResultsFilePath: /tmp/fq-dbt-project/target/run_results.json
+      dbtUpdateDescriptions: true
+      includeTags: true
+      dbtClassificationName: dbtTags
+      schemaFilterPattern:
+        includes:
+          - fq_dbt
+      tableFilterPattern:
+        includes:
+          - fq_orders
+sink:
+  type: metadata-rest
+  config: {}
+workflowConfig:
+  openMetadataServerConfig:
+    hostPort: http://om-server:8585/api
+    authProvider: openmetadata
+    securityConfig:
+      jwtToken: "<OM_JWT_TOKEN>"

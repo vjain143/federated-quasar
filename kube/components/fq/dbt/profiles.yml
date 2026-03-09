@@ -1,0 +1,13 @@
+fq_dbt:
+  target: dev
+  outputs:
+    dev:
+      type: trino
+      method: none
+      host: "{{ env_var('TRINO_HOST', 'localhost') }}"
+      port: "{{ env_var('TRINO_PORT', '30080') | int }}"
+      user: "{{ env_var('TRINO_USER', 'dbt') }}"
+      catalog: "{{ env_var('TRINO_CATALOG', 'hms_db') }}"
+      schema: "{{ env_var('TRINO_SCHEMA', 'fq_dbt') }}"
+      threads: 4
+      http_scheme: http

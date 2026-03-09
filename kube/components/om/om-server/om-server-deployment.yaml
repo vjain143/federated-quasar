@@ -19,12 +19,12 @@ spec:
         fsGroup: 999
       initContainers:
         - name: db-migration
-          image: docker.io/openmetadata/ingestion:1.11.3
+          image: docker.io/openmetadata/server:1.11.7
           command: ["/bin/bash", "-c"]
           args:
             - |
               cd /opt/openmetadata && \
-              ./bootstrap/openmetadata-ops.sh migrate || true
+              ./bootstrap/openmetadata-ops.sh migrate
           env:
             - name: DB_HOST
               value: "om-mysql"
@@ -48,7 +48,7 @@ spec:
               subPath: openmetadata.yaml
       containers:
         - name: om-server
-          image: docker.io/openmetadata/server:1.11.3
+          image: docker.io/openmetadata/server:1.11.7
           #command: ["/bin/sh"]
           #args: ["-c", "sleep infinity"]
           env:

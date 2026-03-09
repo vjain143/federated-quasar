@@ -34,6 +34,14 @@ class HttpConnectorConfig(AppConfigModelBase):
     pagination_key_location: str = None
     pagination_key_name: str = None
     pagination_offset_key: str = None
+    group_membership_enabled: bool = False
+    group_membership_groups: str | None = None
+    group_membership_url_template: str | None = None
+    group_membership_group_placeholder: str = "{group}"
+    group_membership_content_pattern: str = "$[*]"
+    group_membership_attribute_key: str = "ad_group"
+    group_membership_principal_fq_name_jsonpath: str | None = None
+    group_membership_principal_fq_name_regex: str = ".*"
 
     @staticmethod
     def attribute_jsonpath_mapping(

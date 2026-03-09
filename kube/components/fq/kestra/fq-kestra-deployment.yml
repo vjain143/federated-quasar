@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fq-kestra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fq-kestra
+  template:
+    metadata:
+      labels:
+        app: fq-kestra
+    spec:
+      serviceAccountName: fq-kestra
+      containers:
+        - name: fq-kestra
+          image: kestra/kestra:latest
+          imagePullPolicy: IfNotPresent
+          args:
+            - server
+            - local
+            - -f
+            - /app/flows
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 250m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 2048Mi
+          volumeMounts:
+            - name: fq-kestra-flows-volume
+              mountPath: /app/flows
+            - name: fq-kestra-storage-volume
+              mountPath: /app/storage
+      volumes:
+        - name: fq-kestra-flows-volume
+          configMap:
+            name: fq-kestra-flows
+        - name: fq-kestra-storage-volume
+          emptyDir: {}

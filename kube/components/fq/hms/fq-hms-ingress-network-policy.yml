@@ -16,6 +16,10 @@ spec:
         - protocol: TCP
           port: 9083
         - protocol: TCP
+          port: 9404
+        - protocol: TCP
+          port: 9010
+        - protocol: TCP
           port: 9000
         - protocol: TCP
           port: 9001

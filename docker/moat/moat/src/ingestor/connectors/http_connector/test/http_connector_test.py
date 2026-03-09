@@ -569,3 +569,66 @@ def test_acquire_data_paginated():
             verify=True,
             cert=None,
         )
+
+
+def test_acquire_data_group_membership_mode():
+    config = HttpConnectorConfig()
+    config.auth_method = "none"
+    config.group_membership_enabled = True
+    config.group_membership_groups = "rwx,analyst"
+    config.group_membership_url_template = "https://example.com/groups/{group}/members"
+    config.group_membership_content_pattern = "$.members[*]"
+
+    connector = HttpConnector()
+    connector.config = config
+
+    with mock.patch("requests.get") as requests_get_mock:
+        requests_get_mock.side_effect = [
+            mock.Mock(
+                json=mock.Mock(
+                    return_value={"members": [{"login": "alice"}, {"login": "bob"}]}
+                ),
+                raise_for_status=mock.Mock(),
+            ),
+            mock.Mock(
+                json=mock.Mock(return_value={"members": [{"login": "alice"}]}),
+                raise_for_status=mock.Mock(),
+            ),
+        ]
+
+        connector.acquire_data(platform="idp")
+
+        assert len(connector.source_data) == 3
+        assert connector.source_data[0]["login"] == "alice"
+        assert connector.source_data[0]["__moat_group"] == "rwx"
+        assert connector.source_data[2]["__moat_group"] == "analyst"
+
+        assert requests_get_mock.call_count == 2
+        first_url = requests_get_mock.call_args_list[0].kwargs["url"]
+        second_url = requests_get_mock.call_args_list[1].kwargs["url"]
+        assert first_url.endswith("/groups/rwx/members")
+        assert second_url.endswith("/groups/analyst/members")
+
+
+def test_get_principal_attributes_group_membership_mode():
+    connector = HttpConnector()
+    connector.platform = "idp"
+    connector.config.group_membership_enabled = True
+    connector.config.group_membership_attribute_key = "ad_group"
+    connector.source_data = [
+        {"attributes": {"loginID": "alice"}, "__moat_group": "rwx"},
+        {"attributes": {"loginID": "alice"}, "__moat_group": "analytics"},
+        {"attributes": {"loginID": "bob"}, "__moat_group": "rwx"},
+    ]
+
+    with mock.patch.object(AppConfigModelBase, "_load_yaml_file") as load_yaml_mock:
+        # no group_membership_principal mapping set; should fallback to principal mapping
+        load_yaml_mock.return_value = {
+            "http_connector.principal_fq_name_jsonpath": "$.attributes.loginID",
+            "http_connector.principal_fq_name_regex": ".*",
+        }
+        attrs = connector.get_principal_attributes()
+
+    attrs_by_user = {item.fq_name: item.attribute_value for item in attrs}
+    assert attrs_by_user["alice"] == "analytics,rwx"
+    assert attrs_by_user["bob"] == "rwx"

@@ -10,6 +10,18 @@ spec:
     - Egress
   egress:
     - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
         - ipBlock:
             cidr: 10.1.0.0/24
       ports:
@@ -19,12 +31,16 @@ spec:
           port: 8080  # Airflow
         - protocol: TCP
           port: 8585  # OM Server
+        - protocol: TCP
+          port: 8080  # Trino
     - to:
         - podSelector:
             matchExpressions:
-              - { key: app, operator: In, values: [ om-mysql, om-server ] }
+              - { key: app, operator: In, values: [ om-mysql, om-server, fq-trino-coordinator ] }
       ports:
         - protocol: TCP
           port: 3306
         - protocol: TCP
           port: 8585
+        - protocol: TCP
+          port: 8080

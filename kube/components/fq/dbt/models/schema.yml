@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: fq_orders
+    description: "Demo model created by dbt in Trino for metadata-driven policy enforcement."
+    meta:
+      policy_domain: enterprise
+      policy_sensitivity: confidential
+      policy_owner_team: finance-analytics
+    columns:
+      - name: order_id
+        tests:
+          - not_null

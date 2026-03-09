@@ -12,7 +12,7 @@ spec:
        # runAsUser: 999
       containers:
         - name: hive-metastore-init-schema
-          image: vjain143/hive-metastore:3.0.0
+          image: vjain143/hive-metastore:4.2.0
           env:
             - name: MYSQL_USER
               value: root

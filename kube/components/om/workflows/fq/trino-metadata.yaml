@@ -1,0 +1,31 @@
+source:
+  type: trino
+  serviceName: fq_trino
+  serviceConnection:
+    config:
+      type: Trino
+      hostPort: fq-trino:8080
+      username: openmetadata
+      catalog: hms_db
+      # Keep this open during initial setup, then narrow down.
+      databaseSchema: fq_dbt
+      connectionOptions: {}
+      connectionArguments: {}
+  sourceConfig:
+    config:
+      type: DatabaseMetadata
+      schemaFilterPattern:
+        includes:
+          - fq_dbt
+      tableFilterPattern:
+        includes:
+          - fq_orders
+sink:
+  type: metadata-rest
+  config: {}
+workflowConfig:
+  openMetadataServerConfig:
+    hostPort: http://om-server:8585/api
+    authProvider: openmetadata
+    securityConfig:
+      jwtToken: "<OM_JWT_TOKEN>"
