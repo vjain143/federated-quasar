@@ -1,13 +1,13 @@
-# Use a lightweight Java 11 runtime
-FROM openjdk:17-jdk-slim
+# Use a maintained Java 17 runtime
+FROM eclipse-temurin:17-jdk-jammy
 
 RUN apt-get update && apt-get install -y wget tar procps bash && rm -rf /var/lib/apt/lists/*
 
 # Set environment variables (Change as needed)
-ENV GRAVITINO_VERSION=0.8.0
+ENV GRAVITINO_VERSION=1.2.0
 ENV GRAVITINO_HOME=/opt/gravitino
-ENV GRAVITINO_BINARY_URL="https://dlcdn.apache.org/incubator/gravitino/0.8.0-incubating/gravitino-${GRAVITINO_VERSION}-incubating-bin.tar.gz"
-ENV GRAVITINO_ICEBERG_URL="https://dlcdn.apache.org/incubator/gravitino/0.8.0-incubating/gravitino-iceberg-rest-server-${GRAVITINO_VERSION}-incubating-bin.tar.gz"
+ENV GRAVITINO_BINARY_URL="https://github.com/apache/gravitino/releases/download/v1.2.0/gravitino-${GRAVITINO_VERSION}-bin.tar.gz"
+ENV GRAVITINO_ICEBERG_URL="https://github.com/apache/gravitino/releases/download/v1.2.0/gravitino-iceberg-rest-server-${GRAVITINO_VERSION}-bin.tar.gz"
 
 
 

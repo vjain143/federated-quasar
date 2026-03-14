@@ -1,23 +1,21 @@
-# Use the official Trino image as the base
-FROM trinodb/trino:471
+ARG TRINO_VERSION=472
+ARG GRAVITINO_CONNECTOR_URL=https://github.com/apache/gravitino/releases/download/v1.2.0/gravitino-trino-connector-469-472-1.2.0.tar.gz
 
-# Set environment variables
-ENV GRAVITINO_VERSION=0.8.0-incubating
-ENV GRAVITINO_CONNECTOR_URL="https://dlcdn.apache.org/incubator/gravitino/${GRAVITINO_VERSION}/gravitino-trino-connector-${GRAVITINO_VERSION}.tar.gz"
-#https://dlcdn.apache.org/incubator/gravitino/0.8.0-incubating/gravitino-trino-connector-0.8.0-incubating.tar.gz
+FROM alpine:3.21 AS connector
+ARG GRAVITINO_CONNECTOR_URL
+RUN apk add --no-cache curl tar gzip
+RUN mkdir -p /opt/gravitino && \
+    curl -fL "${GRAVITINO_CONNECTOR_URL}" -o /tmp/gravitino-connector.tar.gz && \
+    tar -xzf /tmp/gravitino-connector.tar.gz -C /opt/gravitino --strip-components=1 && \
+    rm -f /tmp/gravitino-connector.tar.gz
+
+FROM trinodb/trino:${TRINO_VERSION}
 ENV TRINO_PLUGIN_DIR=/usr/lib/trino/plugin
-
-# Install wget and extract the Gravitino connector
 USER root
 
-# Create Gravitino plugin directory
-RUN mkdir -p ${TRINO_PLUGIN_DIR}/gravitino
+RUN mkdir -p "${TRINO_PLUGIN_DIR}/gravitino"
+COPY --from=connector /opt/gravitino/ "${TRINO_PLUGIN_DIR}/gravitino/"
 
-# Copy the Gravitino-Trino connector from the local machine into the Trino image
-COPY gravitino-trino-connector-0.8.0-incubating/ ${TRINO_PLUGIN_DIR}/gravitino
+COPY gravitino.properties /etc/trino/catalog/gravitino.properties
 
-# Copy the Gravitino catalog configuration
-#COPY gravitino.properties /etc/trino/catalog/
-
-# Set Trino user back for security
 USER trino

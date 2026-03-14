@@ -3,12 +3,10 @@ node-scheduler.include-coordinator=true
 http-server.http.port=8080
 query.max-memory=5GB
 query.max-memory-per-node=1GB
-query.max-total-memory-per-node=2GB
 discovery.uri=http://fq-trino:8080
 http-server.authentication.type=PASSWORD
-sql.default-function-catalog=ai
-sql.default-function-schema=default
-sql.path=llm.ai
+internal-communication.shared-secret=fq-trino-shared-secret-2026
 # Dynamic catalog
-catalog.config-dir=/etc/trino/catalog
-enable-dynamic-catalogs=true
+catalog.management=dynamic
+catalog.store=file
+catalog.prune.update-interval=5s

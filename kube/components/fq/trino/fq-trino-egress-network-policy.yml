@@ -49,3 +49,5 @@ spec:
           port: 19120
         - protocol: TCP
           port: 30120
+        - protocol: TCP
+          port: 8090

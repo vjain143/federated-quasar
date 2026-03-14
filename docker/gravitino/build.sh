@@ -1,5 +1,9 @@
 #!/bin/bash
-echo "Building trino image"
-docker build --tag fq-gravitino:0.8.0 --no-cache .
-echo "Image built successfully."
+set -euo pipefail
 
+IMAGE_NAME="${IMAGE_NAME:-fq-gravitino}"
+IMAGE_TAG="${IMAGE_TAG:-1.2.0}"
+
+echo "Building Gravitino image ${IMAGE_NAME}:${IMAGE_TAG}"
+docker build --tag "${IMAGE_NAME}:${IMAGE_TAG}" --no-cache .
+echo "Image built successfully."

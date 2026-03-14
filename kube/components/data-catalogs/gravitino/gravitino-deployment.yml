@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: gravitino
-        image: vjain143/fq-gravitino:0.8.0
+        image: fq-gravitino:1.2.0
         env:
           - name: METADATA_STORE_TYPE
             value: "jdbc"
@@ -51,6 +51,4 @@ spec:
             export JAVA_OPTS="-Dcom.sun.management.jmxremote.port=9999 -XX:+UnlockExperimentalVMOptions -XX:-UseContainerSupport -Dcom.sun.management.jmxremote=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
             export JAVA_TOOL_OPTIONS="-Djdk.internal.platform.cgroupv2.disable=true"
             /opt/gravitino/bin/gravitino.sh run
-        imagePullPolicy: Always
-
-
+        imagePullPolicy: IfNotPresent

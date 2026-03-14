@@ -15,7 +15,7 @@ spec:
         app: fq-trino-coordinator
     spec:
       containers:
-      - image: trinodb/trino:471
+      - image: fq-trino:472.1.2
         imagePullPolicy: IfNotPresent
         name: trino
         ports:
@@ -40,47 +40,47 @@ spec:
         volumeMounts:
           # trino config files
           - name: fq-trino-configs-volume
-            mountPath: /home/trino/config/config.properties
+            mountPath: /etc/trino/config.properties
             subPath: config.properties.coordinator
           - name: fq-trino-configs-volume
-            mountPath: /home/trino/config/jvm.config
+            mountPath: /etc/trino/jvm.config
             subPath: jvm.config
           - name: fq-trino-configs-volume
-            mountPath: /home/trino/config/node.properties
+            mountPath: /etc/trino/node.properties
             subPath: node.properties
           - name: fq-trino-configs-volume
-            mountPath: etc/trino/password-authenticator.properties
+            mountPath: /etc/trino/password-authenticator.properties
             subPath: password-authenticator.properties
           - name: fq-trino-configs-volume
-            mountPath: etc/trino/password.db
+            mountPath: /etc/trino/password.db
             subPath: password.db
           - name: fq-trino-configs-volume
-            mountPath: etc/trino/access-control.properties
+            mountPath: /etc/trino/access-control.properties
             subPath: access-control.properties
           - name: fq-trino-configs-volume
-            mountPath: etc/trino/rules.json
+            mountPath: /etc/trino/rules.json
             subPath: rules.json
           # trino datasource config files
-          #- name: trino-datasource-configmap-volume
-          #  mountPath: etc/trino/catalog/gravitino.properties
-          #  subPath: gravitino.properties
           - name: fq-trino-datasource-configs-volume
-            mountPath: etc/trino/catalog/hms_db.properties
+            mountPath: /etc/trino/catalog/gravitino.properties
+            subPath: gravitino.properties
+          - name: fq-trino-datasource-configs-volume
+            mountPath: /etc/trino/catalog/hms_db.properties
             subPath: hms_db.properties
           #- name: trino-datasource-configmap-volume
            # mountPath: etc/trino/catalog/llm.properties
            # subPath: llm.properties
           - name: fq-trino-datasource-configs-volume
-            mountPath: etc/trino/catalog/iceberg.properties
+            mountPath: /etc/trino/catalog/iceberg.properties
             subPath: iceberg.properties
           - name: fq-trino-datasource-configs-volume
-            mountPath: etc/trino/catalog/minio.properties
+            mountPath: /etc/trino/catalog/minio.properties
             subPath: minio.properties
           - name: fq-trino-datasource-configs-volume
-            mountPath: etc/trino/catalog/steampipe_db.properties
+            mountPath: /etc/trino/catalog/steampipe_db.properties
             subPath: steampipe_db.properties
           - name: fq-trino-datasource-configs-volume
-            mountPath: etc/trino/catalog/nessie.properties
+            mountPath: /etc/trino/catalog/nessie.properties
             subPath: nessie.properties
           #- name: trino-datasource-configmap-volume
           #  mountPath: etc/trino/catalog/trino.properties

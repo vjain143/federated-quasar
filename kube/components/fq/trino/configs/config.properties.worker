@@ -2,5 +2,5 @@ coordinator=false
 http-server.http.port=8080
 query.max-memory=5GB
 query.max-memory-per-node=1GB
-query.max-total-memory-per-node=2GB
 discovery.uri=http://fq-trino:8080
+internal-communication.shared-secret=fq-trino-shared-secret-2026
