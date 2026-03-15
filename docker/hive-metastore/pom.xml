@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>io.federatedquasar</groupId>
-    <artifactId>hive-metastore-image-deps</artifactId>
+    <artifactId>hive-metastore</artifactId>
     <version>4.2.0</version>
     <packaging>pom</packaging>
 
