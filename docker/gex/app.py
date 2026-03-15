@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import base64
 import copy
+import json
 import os
 import shutil
 import subprocess
@@ -113,6 +114,7 @@ def _discover_models(project_dir: Path | None = None) -> Dict[str, Any]:
                 "directory": model_dir,
                 "selector": model_path.stem,
                 "pathSelector": f"path:models/{rel_posix}",
+                "defaultTableName": model_path.stem,
             }
         )
 
@@ -304,7 +306,77 @@ def _login_openmetadata(api_base: str, email: str, password: str) -> str:
     return token
 
 
-def _build_trino_ingest_config(request: "RunRequest", jwt_token: str) -> Dict[str, Any]:
+def _safe_load_json(path: str) -> Dict[str, Any]:
+    with open(path, "r", encoding="utf-8") as handle:
+        value = json.load(handle)
+    if not isinstance(value, dict):
+        return {}
+    return value
+
+
+def _selector_matches_model(request_selector: str, node: Dict[str, Any]) -> bool:
+    selector = request_selector.strip()
+    if not selector:
+        return False
+
+    name = str(node.get("name", "")).strip()
+    alias = str(node.get("alias", "")).strip()
+    unique_id = str(node.get("unique_id", "")).strip()
+    original_file_path = str(node.get("original_file_path", "")).strip().lstrip("./")
+    model_path = str(node.get("path", "")).strip().lstrip("./")
+
+    if selector.startswith("path:"):
+        expected = selector[len("path:") :].strip().lstrip("./")
+        candidates = [original_file_path, model_path]
+        return any(candidate == expected or candidate.endswith(expected) for candidate in candidates if candidate)
+
+    # For simple selectors, support direct model name, alias, and fully-qualified unique_id.
+    return selector in {name, alias, unique_id}
+
+
+def _resolve_table_filter_includes(request: "RunRequest", artifacts: Dict[str, str]) -> list[str] | None:
+    includes: list[str] = []
+    explicit_table = request.dbt_table_name.strip()
+    if explicit_table:
+        includes.append(explicit_table)
+
+    try:
+        manifest = _safe_load_json(artifacts["manifest"])
+    except Exception:
+        return includes or None
+
+    nodes = manifest.get("nodes", {})
+    if not isinstance(nodes, dict):
+        return includes or None
+
+    for node in nodes.values():
+        if not isinstance(node, dict):
+            continue
+        if node.get("resource_type") != "model":
+            continue
+        if str(node.get("schema", "")).strip() != request.trino_schema:
+            continue
+        if not _selector_matches_model(request.model_selector, node):
+            continue
+        alias = str(node.get("alias") or node.get("name") or "").strip()
+        if alias and alias not in includes:
+            includes.append(alias)
+
+    return includes or None
+
+
+def _build_trino_ingest_config(
+    request: "RunRequest",
+    jwt_token: str,
+    table_filter_includes: list[str] | None,
+) -> Dict[str, Any]:
+    source_config: Dict[str, Any] = {
+        "type": "DatabaseMetadata",
+        "schemaFilterPattern": {"includes": [request.trino_schema]},
+    }
+    if table_filter_includes:
+        source_config["tableFilterPattern"] = {"includes": table_filter_includes}
+
     return {
         "source": {
             "type": "trino",
@@ -321,11 +393,7 @@ def _build_trino_ingest_config(request: "RunRequest", jwt_token: str) -> Dict[st
                 }
             },
             "sourceConfig": {
-                "config": {
-                    "type": "DatabaseMetadata",
-                    "schemaFilterPattern": {"includes": [request.trino_schema]},
-                    "tableFilterPattern": {"includes": [request.dbt_table_name]},
-                }
+                "config": source_config
             },
         },
         "sink": {"type": "metadata-rest", "config": {}},
@@ -343,26 +411,30 @@ def _build_dbt_ingest_config(
     request: "RunRequest",
     jwt_token: str,
     artifacts: Dict[str, str],
+    table_filter_includes: list[str] | None,
 ) -> Dict[str, Any]:
+    source_config: Dict[str, Any] = {
+        "type": "DBT",
+        "dbtConfigSource": {
+            "dbtConfigType": "local",
+            "dbtCatalogFilePath": artifacts["catalog"],
+            "dbtManifestFilePath": artifacts["manifest"],
+            "dbtRunResultsFilePath": artifacts["runResults"],
+        },
+        "dbtUpdateDescriptions": True,
+        "includeTags": True,
+        "dbtClassificationName": "dbtTags",
+        "schemaFilterPattern": {"includes": [request.trino_schema]},
+    }
+    if table_filter_includes:
+        source_config["tableFilterPattern"] = {"includes": table_filter_includes}
+
     return {
         "source": {
             "type": "dbt",
             "serviceName": request.om_service_name,
             "sourceConfig": {
-                "config": {
-                    "type": "DBT",
-                    "dbtConfigSource": {
-                        "dbtConfigType": "local",
-                        "dbtCatalogFilePath": artifacts["catalog"],
-                        "dbtManifestFilePath": artifacts["manifest"],
-                        "dbtRunResultsFilePath": artifacts["runResults"],
-                    },
-                    "dbtUpdateDescriptions": True,
-                    "includeTags": True,
-                    "dbtClassificationName": "dbtTags",
-                    "schemaFilterPattern": {"includes": [request.trino_schema]},
-                    "tableFilterPattern": {"includes": [request.dbt_table_name]},
-                }
+                "config": source_config
             },
         },
         "sink": {"type": "metadata-rest", "config": {}},
@@ -396,7 +468,7 @@ def _run_ingest(config: Dict[str, Any], timeout_seconds: int, run_id: str) -> Di
 
 class RunRequest(BaseModel):
     project_id: str | None = None
-    model_selector: str = _env("DBT_MODEL_SELECTOR", "fq_orders")
+    model_selector: str = _env("DBT_MODEL_SELECTOR", "")
     dbt_project_dir: str = _env("DBT_PROJECT_DIR", "/app/dbt")
     dbt_profiles_dir: str = _env("DBT_PROFILES_DIR", "/app/dbt")
     dbt_timeout_seconds: int = int(_env("DBT_RUN_TIMEOUT_SECONDS", "1800"))
@@ -405,7 +477,7 @@ class RunRequest(BaseModel):
     trino_user: str = _env("TRINO_USER", "dbt")
     trino_catalog: str = _env("TRINO_CATALOG", "hms_db")
     trino_schema: str = _env("TRINO_SCHEMA", "fq_dbt")
-    dbt_table_name: str = _env("DBT_TABLE_NAME", "fq_orders_as_select")
+    dbt_table_name: str = _env("DBT_TABLE_NAME", "")
     ingest_openmetadata: bool = True
     om_server_api: str = _env("OM_SERVER_API", "http://om-server.openmetadata.svc.cluster.local:8585/api")
     om_admin_email: str = _env("OM_ADMIN_EMAIL", "admin@open-metadata.org")
@@ -458,6 +530,8 @@ def _execute_pipeline(run: Dict[str, Any], request: RunRequest, started_epoch: f
 
     if not project_dir.exists():
         raise RuntimeError(f"dbt project directory not found: {project_dir}")
+    if not request.model_selector.strip():
+        raise RuntimeError("model_selector is required. Select a model in UI or pass model_selector in API payload.")
 
     dbt_env = os.environ.copy()
     dbt_env.update(
@@ -492,6 +566,8 @@ def _execute_pipeline(run: Dict[str, Any], request: RunRequest, started_epoch: f
 
     artifacts = _validate_artifacts(project_dir)
     run["artifacts"] = artifacts
+    resolved_table_filters = _resolve_table_filter_includes(request=request, artifacts=artifacts)
+    run["resolvedDbtTableFilters"] = resolved_table_filters or []
     _append_step(
         run,
         {
@@ -500,7 +576,10 @@ def _execute_pipeline(run: Dict[str, Any], request: RunRequest, started_epoch: f
             "startedAt": _now_iso(),
             "finishedAt": _now_iso(),
             "durationSeconds": 0.0,
-            "details": artifacts,
+            "details": {
+                **artifacts,
+                "resolvedTableFilterIncludes": resolved_table_filters or [],
+            },
         },
     )
 
@@ -525,7 +604,11 @@ def _execute_pipeline(run: Dict[str, Any], request: RunRequest, started_epoch: f
         )
 
         trino_ingest = _run_ingest(
-            _build_trino_ingest_config(request=request, jwt_token=token),
+            _build_trino_ingest_config(
+                request=request,
+                jwt_token=token,
+                table_filter_includes=resolved_table_filters,
+            ),
             timeout_seconds=request.om_ingest_timeout_seconds,
             run_id=run["runId"],
         )
@@ -540,7 +623,12 @@ def _execute_pipeline(run: Dict[str, Any], request: RunRequest, started_epoch: f
             raise RuntimeError("Trino metadata ingestion failed")
 
         dbt_ingest = _run_ingest(
-            _build_dbt_ingest_config(request=request, jwt_token=token, artifacts=artifacts),
+            _build_dbt_ingest_config(
+                request=request,
+                jwt_token=token,
+                artifacts=artifacts,
+                table_filter_includes=resolved_table_filters,
+            ),
             timeout_seconds=request.om_ingest_timeout_seconds,
             run_id=run["runId"],
         )
@@ -1009,13 +1097,13 @@ _INDEX_HTML = """
           <div id="model-path" class="model-path">No model selected.</div>
 
           <label for="model_selector">Model Selector (Auto from model selection)</label>
-          <input id="model_selector" name="model_selector" value="fq_orders" />
+          <input id="model_selector" name="model_selector" value="" />
 
           <label for="trino_schema">Trino Schema</label>
           <input id="trino_schema" name="trino_schema" value="fq_dbt" />
 
-          <label for="dbt_table_name">dbt Table Name</label>
-          <input id="dbt_table_name" name="dbt_table_name" value="fq_orders_as_select" />
+          <label for="dbt_table_name">dbt Table Name (Optional Override)</label>
+          <input id="dbt_table_name" name="dbt_table_name" value="" />
 
           <label for="ingest_openmetadata">OpenMetadata Ingest</label>
           <select id="ingest_openmetadata" name="ingest_openmetadata">
@@ -1078,6 +1166,7 @@ _INDEX_HTML = """
     const modelFile = document.getElementById("model-file");
     const modelPath = document.getElementById("model-path");
     const modelSelector = document.getElementById("model_selector");
+    const dbtTableName = document.getElementById("dbt_table_name");
     const runSelect = document.getElementById("run-select");
     const stepSelect = document.getElementById("step-select");
     const consoleTitle = document.getElementById("console-title");
@@ -1150,6 +1239,7 @@ _INDEX_HTML = """
         return;
       }
       modelSelector.value = selectedModel.pathSelector;
+      dbtTableName.value = selectedModel.defaultTableName || selectedModel.name || "";
       modelPath.textContent = `Selected model: ${selectedModel.file} | selector: ${selectedModel.pathSelector}`;
       refreshCli();
     };
@@ -1266,6 +1356,7 @@ _INDEX_HTML = """
         lines.push(`status: ${run.status}`);
         lines.push(`modelSelector: ${run.modelSelector}`);
         lines.push(`table: ${run.dbtTableName}`);
+        lines.push(`resolvedTableFilters: ${(run.resolvedDbtTableFilters || []).join(", ") || "-"}`);
         lines.push(`startedAt: ${run.startedAt || "-"}`);
         lines.push(`finishedAt: ${run.finishedAt || "-"}`);
         lines.push(`durationSeconds: ${run.durationSeconds ?? "-"}`);

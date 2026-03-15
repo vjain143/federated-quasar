@@ -41,9 +41,9 @@ IMAGE_TAG=my-registry.example.com/fq-gex:1.0.2 ./docker/gex/build.sh
 
 - `DBT_PROJECT_DIR` (default `/app/dbt`)
 - `DBT_PROFILES_DIR` (default `/app/dbt`)
-- `DBT_MODEL_SELECTOR` (default `fq_orders`)
+- `DBT_MODEL_SELECTOR` (required if not set by API/UI payload)
 - `TRINO_HOST`, `TRINO_PORT`, `TRINO_USER`, `TRINO_CATALOG`, `TRINO_SCHEMA`
-- `DBT_TABLE_NAME`
+- `DBT_TABLE_NAME` (optional table filter override; leave empty to auto-resolve from selected model)
 - `OM_SERVER_API`, `OM_ADMIN_EMAIL`, `OM_ADMIN_PASSWORD`
 - `OM_SERVICE_NAME`, `OM_TRINO_USERNAME`
 - `RUN_HISTORY_LIMIT` (default `200`)

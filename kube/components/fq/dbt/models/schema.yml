@@ -11,3 +11,16 @@ models:
       - name: order_id
         tests:
           - not_null
+  - name: fq_orders_summary
+    description: "Summary model built from fq_orders for reporting and policy demos."
+    meta:
+      policy_domain: enterprise
+      policy_sensitivity: confidential
+      policy_owner_team: finance-analytics
+    columns:
+      - name: business_domain
+        tests:
+          - not_null
+      - name: total_orders
+        tests:
+          - not_null

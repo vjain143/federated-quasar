@@ -24,6 +24,9 @@ Runtime defaults are provided via:
 - ConfigMap: `fq-gex-config`
 - Secret: `fq-gex-secrets`
 
+`DBT_MODEL_SELECTOR` and `DBT_TABLE_NAME` can be left empty in ConfigMap defaults.
+The UI/API payload will set `model_selector`, and GEX will auto-resolve table filters from the selected dbt model.
+
 ## Enterprise scaling notes
 
 Current implementation keeps run history in memory (single replica behavior).

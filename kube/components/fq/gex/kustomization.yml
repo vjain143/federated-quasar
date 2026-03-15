@@ -17,8 +17,8 @@ configMapGenerator:
       - TRINO_USER=dbt
       - TRINO_CATALOG=hms_db
       - TRINO_SCHEMA=fq_dbt
-      - DBT_MODEL_SELECTOR=fq_orders
-      - DBT_TABLE_NAME=fq_orders_as_select
+      - DBT_MODEL_SELECTOR=
+      - DBT_TABLE_NAME=
       - OM_SERVER_API=http://om-server.openmetadata.svc.cluster.local:8585/api
       - OM_ADMIN_EMAIL=admin@open-metadata.org
       - OM_SERVICE_NAME=fq_trino
