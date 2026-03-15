@@ -3,9 +3,20 @@
 This folder contains a minimal dbt project that materializes a table in
 `fq-trino`, then publishes metadata to OpenMetadata.
 
+## One-command run
+
+If your OpenMetadata is deployed in namespace `openmetadata` and Trino in `fq`,
+run the end-to-end flow script:
+
+```bash
+./kube/components/om/workflows/fq/run-dbt-trino-openmetadata-flow.sh
+```
+
+This executes dbt, ingests Trino metadata, and ingests dbt metadata.
+
 ## What this flow does
 
-1. dbt runs a model against Trino (`hms_db.fq_dbt.fq_orders`).
+1. dbt runs a model against Trino (`hms_db.fq_dbt.fq_orders_as_select`).
 2. OpenMetadata ingests Trino metadata (service + database/schema/table).
 3. OpenMetadata ingests dbt artifacts (`manifest.json`, `catalog.json`,
    `run_results.json`) and enriches the same table metadata.
@@ -14,14 +25,15 @@ This folder contains a minimal dbt project that materializes a table in
 
 ## Prerequisites
 
-- `fq-trino`, `om-server`, and `om-airflow` are running in namespace `fq`.
+- `fq-trino` is running in namespace `fq`.
+- `om-server` and `om-airflow` are running in namespace `openmetadata`.
 - OPA policy must allow dbt DDL operations in Trino.
 
 If you want to run dbt inside `om-airflow` (recommended for direct artifact
 ingestion), install the adapter once:
 
 ```bash
-kubectl exec -n fq deploy/om-airflow -- /home/airflow/.local/bin/pip install dbt-trino
+kubectl exec -n openmetadata deploy/om-airflow -- /home/airflow/.local/bin/pip install dbt-trino
 ```
 
 ## Step 1: Prepare local dbt runtime
@@ -66,7 +78,7 @@ dbt docs generate
 
 Expected table:
 
-- `hms_db.fq_dbt.fq_orders`
+- `hms_db.fq_dbt.fq_orders_as_select`
 
 ## Step 5: Ingest Trino metadata into OpenMetadata
 

@@ -2,174 +2,44 @@ id: fq_dbt_to_openmetadata_sync
 namespace: fq.orchestration
 
 description: >
-  Run dbt against fq-trino and ingest Trino + dbt metadata into OpenMetadata.
+  Trigger the governance orchestrator service to run dbt on Trino and ingest metadata into OpenMetadata.
+
+inputs:
+  - id: model_selector
+    type: STRING
+    defaults: fq_orders
+  - id: trino_schema
+    type: STRING
+    defaults: fq_dbt
+  - id: dbt_table_name
+    type: STRING
+    defaults: fq_orders_as_select
 
 tasks:
-  - id: run_dbt_and_ingest_metadata
-    type: io.kestra.plugin.kubernetes.core.PodCreate
-    namespace: fq
-    spec:
-      restartPolicy: Never
-      containers:
-        - name: dbt-om-sync
-          image: openmetadata/ingestion:1.11.3
-          command:
-            - /bin/bash
-            - /workspace/run.sh
-          volumeMounts:
-            - name: workspace
-              mountPath: /workspace
-      volumes:
-        - name: workspace
-          emptyDir: {}
-    inputFiles:
-      run.sh: |
-        #!/usr/bin/env bash
-        set -euo pipefail
+  - id: run_governance_orchestrator
+    type: io.kestra.plugin.core.http.Request
+    uri: http://fq-governance-orchestrator.fq.svc.cluster.local:8080/run
+    method: POST
+    timeout: PT45M
+    contentType: application/json
+    options:
+      allowFailed: true
+      readTimeout: PT45M
+    body: |
+      {
+        "model_selector": "{{ inputs.model_selector }}",
+        "trino_schema": "{{ inputs.trino_schema }}",
+        "dbt_table_name": "{{ inputs.dbt_table_name }}",
+        "ingest_openmetadata": true
+      }
 
-        mkdir -p /workspace/dbt/models
+  - id: assert_governance_orchestrator_success
+    type: io.kestra.plugin.core.execution.Assert
+    conditions:
+      - "{{ outputs.run_governance_orchestrator.code == 200 }}"
+      - "{{ outputs.run_governance_orchestrator.body.status == 'success' }}"
+    errorMessage: "{{ outputs.run_governance_orchestrator.body }}"
 
-        cat > /workspace/dbt/dbt_project.yml <<'EOF'
-        name: fq_dbt
-        version: "1.0.0"
-        config-version: 2
-        profile: fq_dbt
-        model-paths: ["models"]
-        target-path: "target"
-        clean-targets: ["target", "dbt_packages"]
-        models:
-          fq_dbt:
-            +materialized: table
-        EOF
-
-        cat > /workspace/dbt/profiles.yml <<'EOF'
-        fq_dbt:
-          target: dev
-          outputs:
-            dev:
-              type: trino
-              method: none
-              host: fq-trino
-              port: 8080
-              user: dbt
-              catalog: hms_db
-              schema: fq_dbt
-              threads: 4
-              http_scheme: http
-        EOF
-
-        cat > /workspace/dbt/models/fq_orders.sql <<'EOF'
-        select
-          1 as order_id,
-          'enterprise' as business_domain,
-          'confidential' as sensitivity_tier,
-          current_timestamp as created_at
-        EOF
-
-        cat > /workspace/dbt/models/schema.yml <<'EOF'
-        version: 2
-        models:
-          - name: fq_orders
-            description: "Demo model created by dbt in Trino for metadata-driven policy enforcement."
-            meta:
-              policy_domain: enterprise
-              policy_sensitivity: confidential
-              policy_owner_team: finance-analytics
-            columns:
-              - name: order_id
-                tests:
-                  - not_null
-        EOF
-
-        python -m pip install --no-cache-dir dbt-trino >/tmp/pip-dbt.log 2>&1 || cat /tmp/pip-dbt.log
-
-        dbt --project-dir /workspace/dbt --profiles-dir /workspace/dbt debug
-        dbt --project-dir /workspace/dbt --profiles-dir /workspace/dbt run --no-partial-parse --select fq_orders
-        dbt --project-dir /workspace/dbt --profiles-dir /workspace/dbt test --no-partial-parse
-        dbt --project-dir /workspace/dbt --profiles-dir /workspace/dbt docs generate --no-partial-parse
-
-        OM_JWT_TOKEN="$(python - <<'PY'
-        import base64
-        import requests
-
-        response = requests.post(
-            "http://om-server:8585/api/v1/users/login",
-            json={
-                "email": "admin@open-metadata.org",
-                "password": base64.b64encode(b"admin").decode(),
-            },
-            timeout=20,
-        )
-        response.raise_for_status()
-        print(response.json()["accessToken"])
-        PY
-        )"
-
-        cat > /workspace/trino-metadata.yml <<EOF
-        source:
-          type: trino
-          serviceName: fq_trino
-          serviceConnection:
-            config:
-              type: Trino
-              hostPort: fq-trino:8080
-              username: openmetadata
-              catalog: hms_db
-              databaseSchema: fq_dbt
-              connectionOptions: {}
-              connectionArguments: {}
-          sourceConfig:
-            config:
-              type: DatabaseMetadata
-              schemaFilterPattern:
-                includes:
-                  - fq_dbt
-              tableFilterPattern:
-                includes:
-                  - fq_orders
-        sink:
-          type: metadata-rest
-          config: {}
-        workflowConfig:
-          openMetadataServerConfig:
-            hostPort: http://om-server:8585/api
-            authProvider: openmetadata
-            securityConfig:
-              jwtToken: "${OM_JWT_TOKEN}"
-        EOF
-
-        metadata ingest -c /workspace/trino-metadata.yml
-
-        cat > /workspace/dbt-metadata.yml <<EOF
-        source:
-          type: dbt
-          serviceName: fq_trino
-          sourceConfig:
-            config:
-              type: DBT
-              dbtConfigSource:
-                dbtConfigType: local
-                dbtCatalogFilePath: /workspace/dbt/target/catalog.json
-                dbtManifestFilePath: /workspace/dbt/target/manifest.json
-                dbtRunResultsFilePath: /workspace/dbt/target/run_results.json
-              dbtUpdateDescriptions: true
-              includeTags: true
-              dbtClassificationName: dbtTags
-              schemaFilterPattern:
-                includes:
-                  - fq_dbt
-              tableFilterPattern:
-                includes:
-                  - fq_orders
-        sink:
-          type: metadata-rest
-          config: {}
-        workflowConfig:
-          openMetadataServerConfig:
-            hostPort: http://om-server:8585/api
-            authProvider: openmetadata
-            securityConfig:
-              jwtToken: "${OM_JWT_TOKEN}"
-        EOF
-
-        metadata ingest -c /workspace/dbt-metadata.yml
+  - id: log_orchestrator_response
+    type: io.kestra.plugin.core.log.Log
+    message: "{{ outputs.run_governance_orchestrator.body }}"

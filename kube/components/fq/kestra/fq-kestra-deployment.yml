@@ -15,13 +15,13 @@ spec:
       serviceAccountName: fq-kestra
       containers:
         - name: fq-kestra
-          image: kestra/kestra:latest
+          image: kestra/kestra:v1.3.2
           imagePullPolicy: IfNotPresent
           args:
             - server
             - local
             - -f
-            - /app/flows
+            - /app/flows/..data
           ports:
             - containerPort: 8080
               protocol: TCP

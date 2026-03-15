@@ -4,7 +4,7 @@ source:
   serviceConnection:
     config:
       type: Trino
-      hostPort: fq-trino:8080
+      hostPort: fq-trino.fq.svc.cluster.local:8080
       username: openmetadata
       catalog: hms_db
       # Keep this open during initial setup, then narrow down.
@@ -19,7 +19,7 @@ source:
           - fq_dbt
       tableFilterPattern:
         includes:
-          - fq_orders
+          - fq_orders_v2
 sink:
   type: metadata-rest
   config: {}

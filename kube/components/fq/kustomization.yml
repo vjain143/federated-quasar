@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - fq-platform-namespace.yaml
+  - governance-orchestrator
   - hms
   - kestra
   - minio

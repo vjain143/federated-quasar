@@ -2,9 +2,9 @@
 
 This component deploys Kestra in namespace `fq` and preloads a flow that:
 
-1. runs dbt against `fq-trino`
-2. ingests Trino metadata into OpenMetadata
-3. ingests dbt artifacts into OpenMetadata
+1. calls `fq-governance-orchestrator` over HTTP
+2. runs dbt against `fq-trino`
+3. ingests Trino + dbt metadata into OpenMetadata
 
 ## Resources in this folder
 
@@ -15,9 +15,24 @@ This component deploys Kestra in namespace `fq` and preloads a flow that:
 - `fq-kestra-service.yml`: NodePort service for Kestra UI/API (`30882`)
 - `flows/fq_dbt_to_openmetadata_sync.yml`: preloaded flow for dbt + OpenMetadata sync
 
-## Deploy
+## Build governance orchestrator image
+
+The governance orchestrator deployment expects this image tag:
+
+- `fq-governance-orchestrator:1.0.2`
+
+Build it from repo root:
 
 ```bash
+./docker/governance-orchestrator/build.sh
+```
+
+## Deploy governance orchestrator + Kestra
+
+```bash
+kubectl apply -k kube/components/fq/governance-orchestrator
+kubectl rollout status deployment/fq-governance-orchestrator -n fq
+
 kubectl apply -k kube/components/fq/kestra
 kubectl rollout status deployment/fq-kestra -n fq
 ```
@@ -41,7 +56,7 @@ Or run from UI:
 
 ## Validate
 
-Check execution logs in Kestra, then verify table and metadata:
+Check execution logs in Kestra, then verify table creation:
 
 ```bash
 kubectl exec -n fq deploy/fq-trino-coordinator -- trino --server localhost:8080 --user dbt --execute "SHOW TABLES FROM hms_db.fq_dbt"
@@ -49,15 +64,16 @@ kubectl exec -n fq deploy/fq-trino-coordinator -- trino --server localhost:8080 
 
 Expected table:
 
-- `fq_orders`
+- `fq_orders_as_select`
 
-OpenMetadata validation (UI/API):
+OpenMetadata validation:
 
-- service: `fq_trino`
-- table FQN: `fq_trino.hms_db.fq_dbt.fq_orders`
+- table FQN: `fq_trino.hms_db.fq_dbt.fq_orders_as_select`
+- expected dbt tags: `domain:enterprise`, `classification:confidential`, `access:finance_reader`, `access:finance_writer`
 
 ## Notes
 
-- The flow runs in a temporary pod using image `openmetadata/ingestion:1.11.3`.
-- It installs `dbt-trino` at runtime inside that execution pod.
+- Flow task type is `io.kestra.plugin.core.http.Request` (core plugin).
+- Kestra no longer needs Docker socket access for this flow.
+- dbt + metadata ingestion run inside `fq-governance-orchestrator:1.0.2`.
 - Trino OPA policy must allow dbt operations (`CREATE TABLE`, `SELECT`, etc.).

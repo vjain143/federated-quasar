@@ -17,7 +17,7 @@ source:
           - fq_dbt
       tableFilterPattern:
         includes:
-          - fq_orders
+          - fq_orders_v2
 sink:
   type: metadata-rest
   config: {}

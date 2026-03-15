@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: fq
+
+resources:
+  - fq-dbt-runner-deployment.yml
+  - fq-dbt-runner-service.yml
+
+configMapGenerator:
+  - name: fq-dbt-runner-config
+    literals:
+      - DBT_PROJECT_DIR=/app/dbt
+      - DBT_PROFILES_DIR=/app/dbt
+      - TRINO_HOST=fq-trino.fq.svc.cluster.local
+      - TRINO_PORT=8080
+      - TRINO_USER=dbt
+      - TRINO_CATALOG=hms_db
+      - TRINO_SCHEMA=fq_dbt
+      - DBT_MODEL_SELECTOR=fq_orders
+      - DBT_TABLE_NAME=fq_orders_as_select
+      - OM_SERVER_API=http://om-server.openmetadata.svc.cluster.local:8585/api
+      - OM_ADMIN_EMAIL=admin@open-metadata.org
+      - OM_SERVICE_NAME=fq_trino
+      - OM_TRINO_USERNAME=openmetadata
+      - DBT_RUN_TIMEOUT_SECONDS=1800
+      - OM_INGEST_TIMEOUT_SECONDS=1200
+
+secretGenerator:
+  - name: fq-dbt-runner-secrets
+    literals:
+      - OM_ADMIN_PASSWORD=admin
+
+generatorOptions:
+  disableNameSuffixHash: true

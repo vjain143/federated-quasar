@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
         - name: init-db
-          image: moat:local_0.21.0
+          image: moat:0.22.2
           imagePullPolicy: IfNotPresent
           command: ["/app/entrypoint.sh"]
           args: ["migrate", "upgrade"]
@@ -30,7 +30,7 @@ spec:
               mountPath: /opt/moat
       containers:
         - name: api
-          image: moat:local_0.21.0
+          image: moat:0.22.2
           imagePullPolicy: IfNotPresent
           command: ["/app/entrypoint.sh"]
           args: ["start-server"]
@@ -52,7 +52,7 @@ spec:
             - name: bundle-storage
               mountPath: /opt/moat/bundles
         - name: worker
-          image: moat:local_0.21.0
+          image: moat:0.22.2
           imagePullPolicy: IfNotPresent
           command: ["/app/entrypoint.sh"]
           args: ["start-worker"]
