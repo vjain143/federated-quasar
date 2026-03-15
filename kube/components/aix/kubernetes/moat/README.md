@@ -24,3 +24,15 @@ Resources in this folder:
 - `configs/config.yaml`: Application config mounted into the pod.
 - `configs/policy.rego`: Static policy content mounted for bundle generation.
 - `kustomization.yaml`: Builds the component and generates configmaps.
+
+Connector UI:
+
+- UI route: `/connectors`
+- API prefix: `/api/v1/connectors`
+- Runtime connector YAML location (in pod): `/opt/moat/runtime/connectors`
+- OpenMetadata actions provided:
+  - connection/auth test
+  - metadata preview and mapping to Moat resources
+  - metadata sync into `resources` + `resource_attributes`
+- Network policy includes egress to OpenMetadata (`app=openmetadata`, TCP `8585`) so the UI/API can call OpenMetadata endpoints.
+- Predefined connector files are seeded at pod startup from `configs/connectors/*.yaml` into `/opt/moat/runtime/connectors` and appear automatically in the UI selector.

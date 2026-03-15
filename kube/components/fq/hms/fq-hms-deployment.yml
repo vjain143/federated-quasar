@@ -14,58 +14,44 @@ spec:
       labels:
         app: fq-hms
     spec:
-      containers:
-      - name: hive-metastore
-        image: vjain143/hive-metastore:4.2.0
-        env:
-          - name: MYSQL_USER
-            value: root
-          - name: MYSQL_PASSWORD
-            value: password
-          - name: MINIO_ROOT_USER
-            value: minio
-          - name: MINIO_ROOT_PASSWORD
-            value: minio123
-          - name: JMX_EXPORTER_ENABLE
-            value: "false"
-          - name: JMX_EXPORTER_PORT
-            value: "9404"
-          - name: JMX_EXPORTER_CONFIG
-            value: /opt/hive-metastore/conf/jmx-exporter.yaml
-          - name: ENABLE_JMX_REMOTE
-            value: "false"
-          - name: JMX_PORT
-            value: "9010"
-          - name: JMX_RMI_PORT
-            value: "9010"
-          - name: DT_ONEAGENT_ENABLE
-            value: "false"
-          - name: DT_ONEAGENT_PATH
-            value: /opt/dynatrace/oneagent/agent/lib64/liboneagentproc.so
-        ports: 
-          - name: thrift
-            containerPort: 9083
-          - name: metrics
-            containerPort: 9404
-          - name: jmx
-            containerPort: 9010
-        startupProbe:
-          tcpSocket:
-            port: thrift
-          failureThreshold: 30
-          periodSeconds: 10
-        readinessProbe:
-          tcpSocket:
-            port: thrift
-          periodSeconds: 10
-          timeoutSeconds: 2
-          failureThreshold: 6
-        livenessProbe:
-          tcpSocket:
-            port: thrift
-          periodSeconds: 20
-          timeoutSeconds: 2
-          failureThreshold: 3
+      initContainers:
+      - name: ensure-metastore-db
+        image: mysql:8.0.28-oracle
+        command:
+          - /bin/sh
+          - -c
+          - |
+            set -eu
+            for i in $(seq 1 60); do
+              if mysqladmin ping -h fq-mysql -uroot -ppassword --silent; then
+                break
+              fi
+              echo "Waiting for MySQL fq-mysql:3306 ($i/60)..."
+              sleep 2
+            done
+            mysql -h fq-mysql -uroot -ppassword -e "CREATE DATABASE IF NOT EXISTS metastore_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+      - name: ensure-metastore-schema
+        image: vjain143/hive-metastore:3.0.0
+        command:
+          - /bin/sh
+          - -c
+          - |
+            set -eu
+            if /opt/hive-metastore/bin/schematool -dbType mysql -info >/tmp/schema-info.log 2>&1; then
+              echo "Hive metastore schema already initialized."
+              exit 0
+            fi
+
+            /opt/hive-metastore/bin/schematool -dbType mysql -initSchema || {
+              if /opt/hive-metastore/bin/schematool -dbType mysql -info >/tmp/schema-info-after.log 2>&1; then
+                echo "Hive metastore schema detected after init attempt."
+                exit 0
+              fi
+              echo "Hive metastore schema init failed."
+              cat /tmp/schema-info.log || true
+              cat /tmp/schema-info-after.log || true
+              exit 1
+            }
         volumeMounts:
           - name: fq-hms-configs-volume
             mountPath: /opt/hive-metastore/conf/metastore-site.xml
@@ -76,11 +62,37 @@ spec:
           - name: fq-hms-configs-volume
             mountPath: /opt/hive-metastore/conf/metastore-log4j2.properties
             subPath: metastore-log4j2.properties
+      containers:
+      - image: vjain143/hive-metastore:3.0.0
+        name: hive-metastore
+        env:
+          - name: MYSQL_USER
+            value: root
+          - name: MYSQL_PASSWORD
+            value: password
+          - name: MINIO_ROOT_USER
+            value: minio
+          - name: MINIO_ROOT_PASSWORD
+            value: minio123
+        ports:
+        - containerPort: 9083
+          name: thrift
+        volumeMounts:
           - name: fq-hms-configs-volume
-            mountPath: /opt/hive-metastore/conf/jmx-exporter.yaml
-            subPath: jmx-exporter.yaml
-        command: ["/opt/hive-metastore/bin/entrypoint.sh"]
-        args: ["-p","9083","--skiphadoopversion"]
+            mountPath: /opt/hive-metastore/conf/metastore-site.xml
+            subPath: metastore-site.xml
+          - name: fq-hms-configs-volume
+            mountPath: /opt/hive-metastore/conf/core-site.xml
+            subPath: core-site.xml
+          - name: fq-hms-configs-volume
+            mountPath: /opt/hive-metastore/conf/metastore-log4j2.properties
+            subPath: metastore-log4j2.properties
+        command:
+        - /opt/hive-metastore/bin/start-metastore
+        args:
+        - -p
+        - "9083"
+        - --skiphadoopversion
         imagePullPolicy: Always
       volumes:
         - name: fq-hms-configs-volume

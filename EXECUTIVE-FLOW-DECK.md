@@ -1,5 +1,5 @@
 # Slide 1: Title
-Governance Orchestrator  
+Governance Execution Engine (GEX)  
 Data Creation + Metadata + Access Governance in One Flow
 
 # Slide 2: Executive Problem
@@ -15,7 +15,7 @@ Data Creation + Metadata + Access Governance in One Flow
   4. Enforce policy in Trino via OPA.
 
 # Slide 4: Flow Sequence
-1. Load dbt project in Governance Orchestrator.
+1. Load dbt project in Governance Execution Engine (GEX).
 2. Select model and run (Play).
 3. dbt run/test/docs executes on Trino.
 4. Metadata ingested to OpenMetadata.
@@ -23,7 +23,7 @@ Data Creation + Metadata + Access Governance in One Flow
 6. OPA serves decisions for Trino authorization.
 
 # Slide 5: Platform Components
-- Governance Orchestrator: control plane + logs
+- Governance Execution Engine (GEX): control plane + logs
 - Trino: query and data execution
 - dbt: model logic + tests
 - OpenMetadata: metadata record
@@ -57,6 +57,6 @@ Data Creation + Metadata + Access Governance in One Flow
 - Same backend path for consistency
 
 # Slide 10: Executive Ask
-- Approve rollout of Governance Orchestrator as standard entry point
+- Approve rollout of Governance Execution Engine (GEX) as standard entry point
 - Track KPIs monthly at platform steering review
 - Expand metadata-to-policy coverage by domain in phased adoption

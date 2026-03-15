@@ -2,7 +2,7 @@ id: fq_dbt_to_openmetadata_sync
 namespace: fq.orchestration
 
 description: >
-  Trigger the governance orchestrator service to run dbt on Trino and ingest metadata into OpenMetadata.
+  Trigger the Governance Execution Engine (GEX) service to run dbt on Trino and ingest metadata into OpenMetadata.
 
 inputs:
   - id: model_selector
@@ -16,9 +16,9 @@ inputs:
     defaults: fq_orders_as_select
 
 tasks:
-  - id: run_governance_orchestrator
+  - id: run_gex
     type: io.kestra.plugin.core.http.Request
-    uri: http://fq-governance-orchestrator.fq.svc.cluster.local:8080/run
+    uri: http://fq-gex.fq.svc.cluster.local:8080/run
     method: POST
     timeout: PT45M
     contentType: application/json
@@ -33,13 +33,13 @@ tasks:
         "ingest_openmetadata": true
       }
 
-  - id: assert_governance_orchestrator_success
+  - id: assert_gex_success
     type: io.kestra.plugin.core.execution.Assert
     conditions:
-      - "{{ outputs.run_governance_orchestrator.code == 200 }}"
-      - "{{ outputs.run_governance_orchestrator.body.status == 'success' }}"
-    errorMessage: "{{ outputs.run_governance_orchestrator.body }}"
+      - "{{ outputs.run_gex.code == 200 }}"
+      - "{{ outputs.run_gex.body.status == 'success' }}"
+    errorMessage: "{{ outputs.run_gex.body }}"
 
-  - id: log_orchestrator_response
+  - id: log_gex_response
     type: io.kestra.plugin.core.log.Log
-    message: "{{ outputs.run_governance_orchestrator.body }}"
+    message: "{{ outputs.run_gex.body }}"

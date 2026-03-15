@@ -1,0 +1,10 @@
+connector_type: ldap
+ldap_connector:
+  user_search_base: "ou=users,dc=example,dc=org"
+  user_search_filter: "(objectClass=person)"
+  attr_user_name: "uid"
+  attr_user_id: "uidNumber"
+  attr_first_name: "givenName"
+  attr_last_name: "sn"
+  attr_email: "mail"
+  attr_groups: "memberOf"

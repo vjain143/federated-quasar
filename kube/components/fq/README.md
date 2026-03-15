@@ -4,7 +4,7 @@ This folder contains the Kubernetes manifests for the `fq` stack.
 
 The stack currently includes:
 
-- `governance-orchestrator`
+- `gex`
 - `trino`
 - `minio`
 - `mysql`
@@ -153,16 +153,16 @@ kubectl get svc -n fq fq-kestra
 curl -s http://localhost:30882/api/v1/flows/fq.orchestration/fq_dbt_to_openmetadata_sync
 ```
 
-### Governance Orchestrator
+### Governance Execution Engine (GEX)
 
-- Folder: `kube/components/fq/governance-orchestrator`
-- Service: `fq-governance-orchestrator`
-- Cluster URL: `http://fq-governance-orchestrator.fq.svc.cluster.local:8080`
+- Folder: `kube/components/fq/gex`
+- Service: `fq-gex`
+- Cluster URL: `http://fq-gex.fq.svc.cluster.local:8080`
 
 Port-forward for local UI:
 
 ```bash
-kubectl port-forward -n fq svc/fq-governance-orchestrator 38080:8080
+kubectl port-forward -n fq svc/fq-gex 38080:8080
 ```
 
 Open UI:

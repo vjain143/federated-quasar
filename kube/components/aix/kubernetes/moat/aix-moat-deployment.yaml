@@ -14,6 +14,24 @@ spec:
         app: moat
     spec:
       initContainers:
+        - name: seed-connectors
+          image: busybox:1.36.1
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              mkdir -p /opt/moat/runtime/connectors
+              for f in /seed-connectors/*; do
+                [ -f "$f" ] || continue
+                cp "$f" /opt/moat/runtime/connectors/
+              done
+          volumeMounts:
+            - name: moat-runtime-config
+              mountPath: /opt/moat/runtime
+            - name: moat-connector-seed
+              mountPath: /seed-connectors
+              readOnly: true
         - name: init-db
           image: moat:0.22.2
           imagePullPolicy: IfNotPresent
@@ -51,6 +69,8 @@ spec:
               readOnly: true
             - name: bundle-storage
               mountPath: /opt/moat/bundles
+            - name: moat-runtime-config
+              mountPath: /opt/moat/runtime
         - name: worker
           image: moat:0.22.2
           imagePullPolicy: IfNotPresent
@@ -71,6 +91,8 @@ spec:
               readOnly: true
             - name: bundle-storage
               mountPath: /opt/moat/bundles
+            - name: moat-runtime-config
+              mountPath: /opt/moat/runtime
       volumes:
         - name: moat-api-config
           configMap:
@@ -80,3 +102,8 @@ spec:
             name: moat-config-trino-policy
         - name: bundle-storage
           emptyDir: {}
+        - name: moat-runtime-config
+          emptyDir: {}
+        - name: moat-connector-seed
+          configMap:
+            name: moat-connector-seed

@@ -1,0 +1,6 @@
+connector_type: http
+http_connector:
+  auth_method: "api-key"
+  url: "https://example/api"
+  api_key: "replace-me"
+  content_pattern: "$[*]"

@@ -1,6 +1,6 @@
 {{ config(
     materialized='table',
-    alias='fq_orders_as_select',
+    alias='fq_orders_as_select2',
     tags=[
       'domain:enterprise',
       'classification:confidential',

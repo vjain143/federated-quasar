@@ -16,8 +16,15 @@ bundler.bundle_directory: "/opt/moat/bundles"
 
 api.healthcheck.auth_method: none
 api.scim.auth_method: none
+api.connectors.auth_method: none
 
 api.opa.auth_method: api-key
 api.opa.api_key: bearer-token
 
 worker.interval_s: "5"
+
+connectors_ui.config_directory: "/opt/moat/runtime/connectors"
+connectors_ui.openmetadata_default_fields: "tags,owners,domains,dataProducts"
+connectors_ui.openmetadata_default_limit: "100"
+connectors_ui.openmetadata_timeout_seconds: "30"
+connectors_ui.default_moat_platform: "trino"

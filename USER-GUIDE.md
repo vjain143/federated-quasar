@@ -43,7 +43,7 @@ Wait for readiness:
 kubectl rollout status deployment/fq-trino-coordinator -n fq
 kubectl rollout status deployment/om-server -n openmetadata
 kubectl rollout status deployment/om-airflow -n openmetadata
-kubectl rollout status deployment/fq-governance-orchestrator -n fq
+kubectl rollout status deployment/fq-gex -n fq
 kubectl rollout status deployment/fq-kestra -n fq
 kubectl rollout status deployment/moat -n aix
 kubectl rollout status deployment/opa -n aix
@@ -118,32 +118,32 @@ Flow file:
 
 This flow already does:
 
-- HTTP call from Kestra to `fq-governance-orchestrator`
-- dbt run/test/docs against Trino (inside governance-orchestrator)
-- Trino metadata ingestion into OpenMetadata (inside governance-orchestrator)
-- dbt metadata ingestion into OpenMetadata (inside governance-orchestrator)
-- run history + logs visible in governance-orchestrator UI
+- HTTP call from Kestra to `fq-gex`
+- dbt run/test/docs against Trino (inside gex)
+- Trino metadata ingestion into OpenMetadata (inside gex)
+- dbt metadata ingestion into OpenMetadata (inside gex)
+- run history + logs visible in GEX UI
 
-Build the governance orchestrator image first (version-pinned):
+Build the Governance Execution Engine (GEX) image first (version-pinned):
 
 ```bash
-./docker/governance-orchestrator/build.sh
+./docker/gex/build.sh
 ```
 
-Deploy governance-orchestrator and Kestra:
+Deploy GEX and Kestra:
 
 ```bash
-kubectl apply -k kube/components/fq/governance-orchestrator
-kubectl rollout status deployment/fq-governance-orchestrator -n fq
+kubectl apply -k kube/components/fq/gex
+kubectl rollout status deployment/fq-gex -n fq
 
 kubectl apply -k kube/components/fq/kestra
 kubectl rollout status deployment/fq-kestra -n fq
 ```
 
-Optional: open governance-orchestrator UI locally:
+Optional: open GEX UI locally:
 
 ```bash
-kubectl port-forward -n fq svc/fq-governance-orchestrator 38080:8080
+kubectl port-forward -n fq svc/fq-gex 38080:8080
 ```
 
 Then open:
@@ -152,7 +152,7 @@ Then open:
 
 ## 5) Run the model
 
-Option A (UI-first): run from governance-orchestrator UI.
+Option A (UI-first): run from GEX UI.
 
 1. Open `http://localhost:38080`
 2. Fill `model_selector`, `trino_schema`, `dbt_table_name`
@@ -224,10 +224,16 @@ Expected tags include:
 
 ## 8) Validate Moat is able to pull that metadata
 
-Run the sync helper (OpenMetadata -> Moat DB):
+Run OpenMetadata sync through Moat Connector API (OpenMetadata -> Moat DB):
 
 ```bash
-./kube/components/aix/kubernetes/moat/scripts/sync_openmetadata_table_to_moat.sh
+curl -s -X POST \
+  http://localhost:32080/api/v1/connectors/openmetadata/sync \
+  -H "Content-Type: application/json" \
+  -d '{
+    "config_name": "openmetadata-default.yaml",
+    "table_fqn": "fq_trino.hms_db.fq_dbt.fq_orders_as_select"
+  }' | python3 -m json.tool
 ```
 
 Validate Moat DB rows:
@@ -295,4 +301,4 @@ If you see `v1/data/trino/allow` requests plus bundle activation lines, Trino is
 
 ## Production note
 
-The governance-orchestrator UI currently stores execution history in memory. For enterprise multi-replica scale, externalize history/log state to persistent storage and add centralized authn/authz.
+The GEX UI currently stores execution history in memory. For enterprise multi-replica scale, externalize history/log state to persistent storage and add centralized authn/authz.

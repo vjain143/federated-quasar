@@ -1,0 +1,8 @@
+connector_type: dbapi
+dbapi_connector:
+  client_type: "trino"
+  data_object_table_column_query: "SELECT * FROM your_source_table"
+  fq_name_key: "fq_name"
+  object_type_key: "object_type"
+  attribute_key_key: "attribute_key"
+  attribute_value_key: "attribute_value"

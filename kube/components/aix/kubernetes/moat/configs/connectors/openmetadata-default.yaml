@@ -1,0 +1,15 @@
+connector_type: openmetadata
+openmetadata:
+  server_api: "http://openmetadata.openmetadata.svc.cluster.local:8585/api"
+  auth:
+    mode: "login"
+    email: "admin@open-metadata.org"
+    password: "admin"
+    jwt_token: ""
+  filters:
+    table_fqn: ""
+    table_fqn_prefix: ""
+    limit: 100
+    fields: "tags,owners,domains,dataProducts"
+  moat:
+    platform: "trino"

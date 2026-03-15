@@ -2,7 +2,7 @@
 
 This component deploys Kestra in namespace `fq` and preloads a flow that:
 
-1. calls `fq-governance-orchestrator` over HTTP
+1. calls `fq-gex` over HTTP
 2. runs dbt against `fq-trino`
 3. ingests Trino + dbt metadata into OpenMetadata
 
@@ -15,23 +15,23 @@ This component deploys Kestra in namespace `fq` and preloads a flow that:
 - `fq-kestra-service.yml`: NodePort service for Kestra UI/API (`30882`)
 - `flows/fq_dbt_to_openmetadata_sync.yml`: preloaded flow for dbt + OpenMetadata sync
 
-## Build governance orchestrator image
+## Build Governance Execution Engine (GEX) image
 
-The governance orchestrator deployment expects this image tag:
+The GEX deployment expects this image tag:
 
-- `fq-governance-orchestrator:1.0.2`
+- `fq-gex:1.0.2`
 
 Build it from repo root:
 
 ```bash
-./docker/governance-orchestrator/build.sh
+./docker/gex/build.sh
 ```
 
-## Deploy governance orchestrator + Kestra
+## Deploy GEX + Kestra
 
 ```bash
-kubectl apply -k kube/components/fq/governance-orchestrator
-kubectl rollout status deployment/fq-governance-orchestrator -n fq
+kubectl apply -k kube/components/fq/gex
+kubectl rollout status deployment/fq-gex -n fq
 
 kubectl apply -k kube/components/fq/kestra
 kubectl rollout status deployment/fq-kestra -n fq
@@ -75,5 +75,5 @@ OpenMetadata validation:
 
 - Flow task type is `io.kestra.plugin.core.http.Request` (core plugin).
 - Kestra no longer needs Docker socket access for this flow.
-- dbt + metadata ingestion run inside `fq-governance-orchestrator:1.0.2`.
+- dbt + metadata ingestion run inside `fq-gex:1.0.2`.
 - Trino OPA policy must allow dbt operations (`CREATE TABLE`, `SELECT`, etc.).

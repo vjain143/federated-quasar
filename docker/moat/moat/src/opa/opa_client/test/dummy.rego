@@ -1,1 +1,0 @@
-allow if {true}

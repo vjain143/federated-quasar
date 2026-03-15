@@ -1,4 +1,4 @@
-# Governance Orchestrator: Executive Flow
+# Governance Execution Engine (GEX): Executive Flow
 
 ## 1) Executive Summary
 
@@ -22,7 +22,7 @@ The result is a unified operating model where **data creation, metadata quality,
 
 ### Step 1: Project Intake
 
-An engineer or analyst opens **Governance Orchestrator UI** and loads a local dbt project folder.
+An engineer or analyst opens **Governance Execution Engine (GEX) UI** and loads a local dbt project folder.
 
 ### Step 2: Model Selection and Run
 
@@ -31,7 +31,7 @@ The run is tracked with run ID, status, timing, and step logs in the bottom cons
 
 ### Step 3: Data Asset Creation in Trino
 
-Governance Orchestrator executes:
+Governance Execution Engine (GEX) executes:
 
 1. `dbt run`
 2. `dbt test`
@@ -65,7 +65,7 @@ OPA evaluates policy using bundle state sourced from metadata and returns allow/
 
 | System | Primary Responsibility |
 | --- | --- |
-| Governance Orchestrator | User control plane, run orchestration, logs/history |
+| Governance Execution Engine (GEX) | User control plane, run orchestration, logs/history |
 | dbt | Data transformation and model semantics |
 | Trino | Data execution engine and query surface |
 | OpenMetadata | Metadata system of record |
@@ -77,7 +77,7 @@ OPA evaluates policy using bundle state sourced from metadata and returns allow/
 
 The flow provides clear evidence at each stage:
 
-1. Run ID + status timeline in Governance Orchestrator.
+1. Run ID + status timeline in Governance Execution Engine (GEX).
 2. dbt stdout/stderr and step-level command logs.
 3. Table existence and query validation in Trino.
 4. Tag/metadata verification in OpenMetadata.

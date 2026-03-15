@@ -1,2 +1,0 @@
-from .src.app_config_model_base import AppConfigModelBase
-from app_config.test.common_config_model import TestConfigModel

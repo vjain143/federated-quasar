@@ -19,3 +19,9 @@ configMapGenerator:
   - name: moat-config-trino-policy
     files:
       - configs/policy.rego
+  - name: moat-connector-seed
+    files:
+      - configs/connectors/openmetadata-default.yaml
+      - configs/connectors/dbapi-template.yaml
+      - configs/connectors/http-template.yaml
+      - configs/connectors/ldap-template.yaml
