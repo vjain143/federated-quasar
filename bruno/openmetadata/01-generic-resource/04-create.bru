@@ -1,0 +1,28 @@
+meta {
+  name: Create Resource
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{base_url}}{{resource_path}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "name": "{{new_name}}",
+    "displayName": "{{new_display_name}}",
+    "description": "{{new_description}}"
+  }
+}

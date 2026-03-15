@@ -1,0 +1,25 @@
+meta {
+  name: List Test Cases
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{base_url}}/v1/dataQuality/testCases
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+query {
+  limit: {{limit}}
+  include: {{include}}
+  fields: {{fields}}
+}

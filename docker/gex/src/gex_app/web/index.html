@@ -1,0 +1,741 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Governance Execution Engine (GEX)</title>
+  <style>
+    :root {
+      --bg: #0e1528;
+      --panel: #121f3c;
+      --border: #2a4369;
+      --text: #e5e7eb;
+      --muted: #94a3b8;
+      --accent: #22d3ee;
+      --ok: #10b981;
+      --fail: #ef4444;
+      --running: #f59e0b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      color: var(--text);
+      min-height: 100vh;
+      background: radial-gradient(circle at 15% 0%, #173668, var(--bg) 50%);
+    }
+    .wrap {
+      max-width: 1360px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      margin: 0 0 8px;
+      font-size: 31px;
+      letter-spacing: 0.2px;
+    }
+    .subtitle {
+      margin-bottom: 18px;
+      color: var(--muted);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 420px 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .panel {
+      background: linear-gradient(180deg, #13274a, var(--panel));
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.24);
+    }
+    .panel h2 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #dbeafe;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-size: 12px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    input, select, button, textarea {
+      width: 100%;
+      border-radius: 8px;
+      border: 1px solid #3a5987;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: var(--text);
+      background: #0f1b33;
+    }
+    button {
+      border: none;
+      cursor: pointer;
+      color: #032433;
+      background: linear-gradient(90deg, #06b6d4, #67e8f9);
+      font-weight: 700;
+    }
+    button.secondary {
+      margin-top: 8px;
+      background: linear-gradient(90deg, #0f172a, #1e293b);
+      border: 1px solid #3a5987;
+      color: #dbeafe;
+      font-weight: 600;
+    }
+    button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+    .spacer { height: 6px; }
+    .player-controls {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(80px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+      margin-bottom: 8px;
+    }
+    .control-btn {
+      border: 1px solid #3a5987;
+      color: #dbeafe;
+      background: linear-gradient(90deg, #0f172a, #1e293b);
+      font-weight: 700;
+    }
+    .control-play {
+      color: #032433;
+      border: none;
+      background: linear-gradient(90deg, #06b6d4, #67e8f9);
+    }
+    .control-stop {
+      color: #fee2e2;
+      border: 1px solid #7f1d1d;
+      background: linear-gradient(90deg, #7f1d1d, #b91c1c);
+    }
+    .meta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .history-row {
+      border: 1px solid #2f4a73;
+      border-radius: 8px;
+      background: #0e1c35;
+      padding: 10px;
+      margin-bottom: 9px;
+      cursor: pointer;
+    }
+    .history-row.active {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent) inset;
+    }
+    .row-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .badge {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .badge.success { background: rgba(16,185,129,.22); color: #6ee7b7; }
+    .badge.failed { background: rgba(239,68,68,.22); color: #fca5a5; }
+    .badge.running { background: rgba(245,158,11,.22); color: #fcd34d; }
+    .badge.cancelled { background: rgba(148,163,184,.25); color: #cbd5e1; }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .console-panel {
+      padding-top: 12px;
+    }
+    .console-toolbar {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .console-title {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #dbeafe;
+    }
+    #console-output {
+      margin: 0;
+      border-radius: 8px;
+      border: 1px solid #2f4a73;
+      background: #060f20;
+      color: #d1d5db;
+      font-family: "JetBrains Mono", "Consolas", monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      white-space: pre-wrap;
+      word-break: break-word;
+      height: 380px;
+      overflow: auto;
+      padding: 12px;
+    }
+    .model-path {
+      margin-top: 6px;
+      padding: 8px;
+      border: 1px solid #304c77;
+      border-radius: 8px;
+      background: #0b1830;
+      font-size: 12px;
+      color: #cbd5e1;
+      word-break: break-word;
+    }
+    @media (max-width: 1024px) {
+      .grid { grid-template-columns: 1fr; }
+      .console-toolbar { grid-template-columns: 1fr; }
+      .player-controls { grid-template-columns: repeat(2, minmax(80px, 1fr)); }
+      #console-output { height: 300px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Governance Execution Engine (GEX)</h1>
+    <div class="subtitle">Use music-player style controls: Load, Refresh, Play, Stop. Model selection is optional and defaults to running all models with dependency order.</div>
+
+    <div class="grid">
+      <section class="panel">
+        <h2>New Execution</h2>
+        <form id="run-form">
+          <label for="project-select">Project Source</label>
+          <select id="project-select"></select>
+          <div id="project-path" class="model-path">Using bundled project.</div>
+
+          <label for="project-folder-input">Browse Local Project Folder</label>
+          <input id="project-folder-input" type="file" webkitdirectory directory multiple />
+
+          <div class="player-controls">
+            <button id="load-project" type="button" class="control-btn">Load</button>
+            <button id="refresh-all" type="button" class="control-btn">Refresh</button>
+            <button id="play-run" type="submit" class="control-btn control-play">Play</button>
+            <button id="stop-run" type="button" class="control-btn control-stop">Stop</button>
+          </div>
+
+          <label for="model-directory">Browse Directory</label>
+          <select id="model-directory"></select>
+
+          <label for="model-file">Select Model (Optional)</label>
+          <select id="model-file"></select>
+
+          <div id="model-path" class="model-path">Default mode: all models (auto dependency order).</div>
+
+          <label for="model_selector">Model Selector (Optional: use * for all models)</label>
+          <input id="model_selector" name="model_selector" value="*" />
+
+          <label for="trino_schema">Trino Schema</label>
+          <input id="trino_schema" name="trino_schema" value="fq_dbt" />
+
+          <label for="dbt_table_name">dbt Table Name (Optional Override)</label>
+          <input id="dbt_table_name" name="dbt_table_name" value="" />
+
+          <label for="ingest_openmetadata">OpenMetadata Ingest</label>
+          <select id="ingest_openmetadata" name="ingest_openmetadata">
+            <option value="true" selected>true</option>
+            <option value="false">false</option>
+          </select>
+        </form>
+
+        <label for="cli-command">API Command</label>
+        <textarea id="cli-command" rows="8" readonly></textarea>
+      </section>
+
+      <section class="panel">
+        <div class="toolbar">
+          <h2 style="margin:0">Execution History</h2>
+          <small id="active-indicator" class="meta">No active run</small>
+        </div>
+        <div id="history"></div>
+      </section>
+    </div>
+
+    <section class="panel console-panel">
+      <h2 style="margin-bottom:8px">Run Details Console</h2>
+      <div class="console-toolbar">
+        <div>
+          <label for="run-select" style="margin-top:0">Run Selection</label>
+          <select id="run-select"></select>
+        </div>
+        <div>
+          <label for="step-select" style="margin-top:0">Details View</label>
+          <select id="step-select"></select>
+        </div>
+      </div>
+      <p id="console-title" class="console-title">Select a run to view logs.</p>
+      <pre id="console-output">Waiting for run selection...</pre>
+    </section>
+  </div>
+
+  <script>
+    let selectedRunId = null;
+    let activeRunId = null;
+    let selectedStepKey = "overview";
+    let currentRun = null;
+    let activeProjectId = "";
+    let modelCatalog = [];
+    let projectCatalog = [];
+
+    const form = document.getElementById("run-form");
+    const playRunButton = document.getElementById("play-run");
+    const stopRunButton = document.getElementById("stop-run");
+    const loadProjectButton = document.getElementById("load-project");
+    const refreshAllButton = document.getElementById("refresh-all");
+    const historyEl = document.getElementById("history");
+    const activeIndicator = document.getElementById("active-indicator");
+    const cliCommand = document.getElementById("cli-command");
+    const projectSelect = document.getElementById("project-select");
+    const projectPath = document.getElementById("project-path");
+    const projectFolderInput = document.getElementById("project-folder-input");
+    const modelDirectory = document.getElementById("model-directory");
+    const modelFile = document.getElementById("model-file");
+    const modelPath = document.getElementById("model-path");
+    const modelSelector = document.getElementById("model_selector");
+    const dbtTableName = document.getElementById("dbt_table_name");
+    const runSelect = document.getElementById("run-select");
+    const stepSelect = document.getElementById("step-select");
+    const consoleTitle = document.getElementById("console-title");
+    const consoleOutput = document.getElementById("console-output");
+    const ALL_MODELS_OPTION = "__all_models__";
+
+    const statusBadge = (status) => {
+      const safe = (status || "unknown").toLowerCase();
+      return `<span class="badge ${safe}">${safe}</span>`;
+    };
+
+    const buildPayload = () => ({
+      project_id: activeProjectId || null,
+      model_selector: document.getElementById("model_selector").value.trim(),
+      trino_schema: document.getElementById("trino_schema").value.trim(),
+      dbt_table_name: document.getElementById("dbt_table_name").value.trim(),
+      ingest_openmetadata: document.getElementById("ingest_openmetadata").value === "true"
+    });
+
+    const refreshCli = () => {
+      const payload = buildPayload();
+      cliCommand.value =
+`curl -s -X POST http://<service-host>:8080/api/runs \\
+  -H 'Content-Type: application/json' \\
+  -d '${JSON.stringify(payload, null, 2)}'`;
+    };
+
+    const renderProjectOptions = (projects) => {
+      projectCatalog = projects || [];
+      const options = ["<option value=''>Bundled Project (/app/dbt)</option>"];
+      projectCatalog.forEach((project) => {
+        options.push(`<option value="${project.projectId}">${project.projectName} (${project.projectId})</option>`);
+      });
+      projectSelect.innerHTML = options.join("");
+      if (activeProjectId && projectCatalog.some((project) => project.projectId === activeProjectId)) {
+        projectSelect.value = activeProjectId;
+      } else {
+        activeProjectId = "";
+        projectSelect.value = "";
+      }
+      if (!activeProjectId) {
+        projectPath.textContent = "Using bundled project: /app/dbt";
+      } else {
+        const selected = projectCatalog.find((project) => project.projectId === activeProjectId);
+        projectPath.textContent = selected
+          ? `Using uploaded project: ${selected.projectDir}`
+          : "Using uploaded project";
+      }
+    };
+
+    const fetchProjects = async () => {
+      const response = await fetch("/api/projects");
+      const body = await response.json();
+      renderProjectOptions(body.projects || []);
+    };
+
+    const renderDirectoryOptions = (directories) => {
+      const current = modelDirectory.value || "";
+      modelDirectory.innerHTML = directories.map((directory) => {
+        const label = directory ? directory : "(root)";
+        return `<option value="${directory}">${label}</option>`;
+      }).join("");
+      modelDirectory.value = directories.includes(current) ? current : "";
+    };
+
+    const updateModelSelectorFromChoice = () => {
+      const selectedFile = modelFile.value;
+      if (!selectedFile || selectedFile === ALL_MODELS_OPTION) {
+        modelSelector.value = "*";
+        dbtTableName.value = "";
+        modelPath.textContent = "Selected mode: all models (auto dependency order).";
+        refreshCli();
+        return;
+      }
+
+      const selectedModel = modelCatalog.find((model) => model.file === selectedFile);
+      if (!selectedModel) {
+        modelSelector.value = "*";
+        dbtTableName.value = "";
+        modelPath.textContent = "Selected mode: all models (auto dependency order).";
+        refreshCli();
+        return;
+      }
+      modelSelector.value = selectedModel.pathSelector;
+      dbtTableName.value = selectedModel.defaultTableName || selectedModel.name || "";
+      modelPath.textContent = `Selected model: ${selectedModel.file} | selector: ${selectedModel.pathSelector}`;
+      refreshCli();
+    };
+
+    const renderModelOptions = () => {
+      const currentDir = modelDirectory.value || "";
+      const models = modelCatalog.filter((model) => (model.directory || "") === currentDir);
+      const previous = modelFile.value;
+      const options = [`<option value="${ALL_MODELS_OPTION}">All Models (auto dependencies)</option>`];
+      modelFile.innerHTML = options
+        .concat(models.map((model) => `<option value="${model.file}">${model.file}</option>`))
+        .join("");
+      const nextValue = (
+        previous === ALL_MODELS_OPTION || models.some((model) => model.file === previous)
+      )
+        ? previous
+        : ALL_MODELS_OPTION;
+      modelFile.value = nextValue;
+      updateModelSelectorFromChoice();
+    };
+
+    const fetchModels = async () => {
+      const suffix = activeProjectId ? `?project_id=${encodeURIComponent(activeProjectId)}` : "";
+      const response = await fetch(`/api/models${suffix}`);
+      const body = await response.json();
+      if (response.status !== 200) {
+        modelCatalog = [];
+        modelDirectory.innerHTML = "<option value=''>Error</option>";
+        modelFile.innerHTML = "<option value=''>Error</option>";
+        modelSelector.value = "*";
+        dbtTableName.value = "";
+        modelPath.textContent = body.error || "Failed to load dbt model list.";
+        refreshCli();
+        return;
+      }
+      modelCatalog = body.models || [];
+      renderDirectoryOptions(body.directories || [""]);
+      renderModelOptions();
+    };
+
+    const renderHistory = (runs) => {
+      if (!runs.length) {
+        historyEl.innerHTML = "<div class='meta'>No executions yet.</div>";
+        return;
+      }
+      historyEl.innerHTML = runs.map((run) => {
+        const activeClass = run.runId === selectedRunId ? "active" : "";
+        return `
+          <div class="history-row ${activeClass}" data-run-id="${run.runId}">
+            <div class="row-head">
+              <strong>${run.runId}</strong>
+              ${statusBadge(run.status)}
+            </div>
+            <div class="meta">model=${run.modelSelector} table=${run.dbtTableName}</div>
+            <div class="meta">steps=${run.stepCount} duration=${run.durationSeconds ?? "-"}s</div>
+          </div>
+        `;
+      }).join("");
+    };
+
+    const populateRunSelect = (runs) => {
+      const previous = runSelect.value;
+      runSelect.innerHTML = runs.map((run) => {
+        return `<option value="${run.runId}">${run.runId} | ${run.status} | ${run.modelSelector}</option>`;
+      }).join("");
+      if (!runs.length) {
+        selectedRunId = null;
+        activeRunId = null;
+        currentRun = null;
+        runSelect.innerHTML = "<option value=''>No runs</option>";
+        stepSelect.innerHTML = "<option value='overview'>overview</option>";
+        consoleTitle.textContent = "Select a run to view logs.";
+        consoleOutput.textContent = "Waiting for run selection...";
+        return;
+      }
+      if (selectedRunId && runs.some((run) => run.runId === selectedRunId)) {
+        runSelect.value = selectedRunId;
+      } else if (previous && runs.some((run) => run.runId === previous)) {
+        runSelect.value = previous;
+        selectedRunId = previous;
+      } else {
+        runSelect.value = runs[0].runId;
+        selectedRunId = runs[0].runId;
+      }
+    };
+
+    const renderStepOptions = (run) => {
+      const options = [
+        { value: "overview", label: "overview" },
+        { value: "raw_json", label: "raw_json" }
+      ];
+      (run.steps || []).forEach((step, idx) => {
+        options.push({ value: `step:${idx}`, label: `step ${idx + 1}: ${step.name}` });
+      });
+      stepSelect.innerHTML = options.map((option) => `<option value="${option.value}">${option.label}</option>`).join("");
+      if (!options.some((option) => option.value === selectedStepKey)) {
+        selectedStepKey = "overview";
+      }
+      stepSelect.value = selectedStepKey;
+    };
+
+    const renderConsole = () => {
+      if (!currentRun) {
+        consoleTitle.textContent = "Select a run to view logs.";
+        consoleOutput.textContent = "Waiting for run selection...";
+        return;
+      }
+      const run = currentRun;
+      const steps = run.steps || [];
+      if (selectedStepKey === "raw_json") {
+        consoleTitle.textContent = `Run ${run.runId} | raw_json`;
+        consoleOutput.textContent = JSON.stringify(run, null, 2);
+        return;
+      }
+      if (selectedStepKey === "overview") {
+        const lines = [];
+        lines.push(`runId: ${run.runId}`);
+        lines.push(`status: ${run.status}`);
+        lines.push(`modelSelector: ${run.modelSelector}`);
+        lines.push(`table: ${run.dbtTableName}`);
+        lines.push(`resolvedTableFilters: ${(run.resolvedDbtTableFilters || []).join(", ") || "-"}`);
+        lines.push(`startedAt: ${run.startedAt || "-"}`);
+        lines.push(`finishedAt: ${run.finishedAt || "-"}`);
+        lines.push(`durationSeconds: ${run.durationSeconds ?? "-"}`);
+        lines.push("");
+        lines.push("steps:");
+        steps.forEach((step, idx) => {
+          lines.push(`${idx + 1}. ${step.name} | status=${step.status} | duration=${step.durationSeconds ?? "-"}s`);
+        });
+        if (run.error) {
+          lines.push("");
+          lines.push("error:");
+          lines.push(String(run.error));
+        }
+        consoleTitle.textContent = `Run ${run.runId} | overview`;
+        consoleOutput.textContent = lines.join("\\n");
+        return;
+      }
+      const stepIndex = Number(selectedStepKey.split(":")[1]);
+      const step = steps[stepIndex];
+      if (!step) {
+        consoleTitle.textContent = `Run ${run.runId} | step missing`;
+        consoleOutput.textContent = "Step not found.";
+        return;
+      }
+      const lines = [];
+      lines.push(`runId: ${run.runId}`);
+      lines.push(`step: ${step.name}`);
+      lines.push(`status: ${step.status}`);
+      lines.push(`durationSeconds: ${step.durationSeconds ?? "-"}`);
+      lines.push(`startedAt: ${step.startedAt || "-"}`);
+      lines.push(`finishedAt: ${step.finishedAt || "-"}`);
+      if (step.command) {
+        lines.push(`command: ${step.command}`);
+      }
+      if (step.details) {
+        lines.push("");
+        lines.push("details:");
+        lines.push(JSON.stringify(step.details, null, 2));
+      }
+      if (step.stdoutTail) {
+        lines.push("");
+        lines.push("stdout:");
+        lines.push(step.stdoutTail);
+      }
+      if (step.stderrTail) {
+        lines.push("");
+        lines.push("stderr:");
+        lines.push(step.stderrTail);
+      }
+      consoleTitle.textContent = `Run ${run.runId} | ${step.name}`;
+      consoleOutput.textContent = lines.join("\\n");
+    };
+
+    const fetchRunDetails = async (runId) => {
+      if (!runId) {
+        currentRun = null;
+        renderConsole();
+        return;
+      }
+      const response = await fetch(`/api/runs/${runId}`);
+      if (response.status !== 200) {
+        currentRun = null;
+        consoleTitle.textContent = `Run ${runId} not found`;
+        consoleOutput.textContent = "Run not found.";
+        return;
+      }
+      currentRun = await response.json();
+      renderStepOptions(currentRun);
+      renderConsole();
+    };
+
+    const fetchHistory = async () => {
+      const response = await fetch("/api/runs?limit=40");
+      const body = await response.json();
+      const runs = body.runs || [];
+      renderHistory(runs);
+      populateRunSelect(runs);
+      const active = runs.find((run) => run.status === "running");
+      activeRunId = active ? active.runId : null;
+      activeIndicator.textContent = active ? `Active run: ${active.runId}` : "No active run";
+      if (selectedRunId) {
+        await fetchRunDetails(selectedRunId);
+      }
+    };
+
+    const uploadLocalProject = async () => {
+      const files = projectFolderInput.files;
+      if (!files || !files.length) {
+        alert("Choose a local folder first.");
+        return;
+      }
+
+      loadProjectButton.disabled = true;
+      loadProjectButton.textContent = "Loading...";
+      try {
+        const payload = new FormData();
+        Array.from(files).forEach((file) => {
+          const rel = file.webkitRelativePath || file.name;
+          payload.append("files", file, rel);
+        });
+
+        const response = await fetch("/api/projects/upload", {
+          method: "POST",
+          body: payload,
+        });
+        const body = await response.json();
+        if (response.status !== 200) {
+          alert(body.error || "Project upload failed.");
+          return;
+        }
+
+        activeProjectId = body.project.projectId;
+        projectFolderInput.value = "";
+        await fetchProjects();
+        projectSelect.value = activeProjectId;
+        await fetchModels();
+        refreshCli();
+      } finally {
+        loadProjectButton.disabled = false;
+        loadProjectButton.textContent = "Load";
+      }
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      playRunButton.disabled = true;
+      playRunButton.textContent = "Playing...";
+      try {
+        const payload = buildPayload();
+        const response = await fetch("/api/runs", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const body = await response.json();
+        if (response.status === 202) {
+          selectedRunId = body.runId;
+          selectedStepKey = "overview";
+        } else {
+          alert(body.message || body.error || "Failed to start run.");
+        }
+        await fetchHistory();
+      } finally {
+        playRunButton.disabled = false;
+        playRunButton.textContent = "Play";
+      }
+    });
+
+    historyEl.addEventListener("click", async (event) => {
+      const target = event.target.closest("[data-run-id]");
+      if (!target) {
+        return;
+      }
+      selectedRunId = target.dataset.runId;
+      selectedStepKey = "overview";
+      runSelect.value = selectedRunId;
+      await fetchRunDetails(selectedRunId);
+      await fetchHistory();
+    });
+
+    runSelect.addEventListener("change", async () => {
+      selectedRunId = runSelect.value;
+      selectedStepKey = "overview";
+      await fetchRunDetails(selectedRunId);
+      await fetchHistory();
+    });
+
+    stepSelect.addEventListener("change", () => {
+      selectedStepKey = stepSelect.value;
+      renderConsole();
+    });
+
+    projectSelect.addEventListener("change", async () => {
+      activeProjectId = projectSelect.value || "";
+      await fetchModels();
+      refreshCli();
+    });
+
+    modelDirectory.addEventListener("change", () => {
+      renderModelOptions();
+      refreshCli();
+    });
+
+    modelFile.addEventListener("change", () => {
+      updateModelSelectorFromChoice();
+      refreshCli();
+    });
+
+    loadProjectButton.addEventListener("click", async () => {
+      await uploadLocalProject();
+    });
+
+    refreshAllButton.addEventListener("click", async () => {
+      await fetchProjects();
+      await fetchModels();
+      await fetchHistory();
+      refreshCli();
+    });
+
+    stopRunButton.addEventListener("click", async () => {
+      const targetRunId = activeRunId || selectedRunId;
+      if (!targetRunId) {
+        alert("No run selected to stop.");
+        return;
+      }
+      await fetch(`/api/runs/${targetRunId}/stop`, { method: "POST" });
+      await fetchHistory();
+      if (selectedRunId) {
+        await fetchRunDetails(selectedRunId);
+      }
+    });
+
+    document.querySelectorAll("input, select").forEach((element) => {
+      element.addEventListener("input", refreshCli);
+      element.addEventListener("change", refreshCli);
+    });
+
+    const bootstrap = async () => {
+      refreshCli();
+      await fetchProjects();
+      await fetchModels();
+      await fetchHistory();
+      setInterval(fetchHistory, 3000);
+    };
+
+    bootstrap();
+  </script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+meta {
+  name: Delete Resource By ID
+  type: http
+  seq: 6
+}
+
+delete {
+  url: {{base_url}}{{resource_path}}/{{entity_id}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+query {
+  recursive: true
+  hardDelete: false
+}

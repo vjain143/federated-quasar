@@ -1,0 +1,19 @@
+meta {
+  name: Current User
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/v1/users/loggedInUser
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+headers {
+  Accept: application/json
+}

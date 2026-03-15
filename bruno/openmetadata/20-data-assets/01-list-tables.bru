@@ -1,0 +1,25 @@
+meta {
+  name: List Tables
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/v1/tables
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+query {
+  limit: {{limit}}
+  include: {{include}}
+  fields: {{fields}}
+}

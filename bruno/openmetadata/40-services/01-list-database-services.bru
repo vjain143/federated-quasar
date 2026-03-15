@@ -1,0 +1,25 @@
+meta {
+  name: List Database Services
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{base_url}}/v1/services/databaseServices
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+query {
+  limit: {{limit}}
+  include: {{include}}
+  fields: {{fields}}
+}

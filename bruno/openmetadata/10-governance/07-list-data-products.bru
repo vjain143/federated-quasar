@@ -1,0 +1,25 @@
+meta {
+  name: List Data Products
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{base_url}}/v1/dataProducts
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+query {
+  limit: {{limit}}
+  include: {{include}}
+  fields: {{fields}}
+}

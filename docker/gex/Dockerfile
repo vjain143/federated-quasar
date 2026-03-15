@@ -15,11 +15,13 @@ RUN pip install --no-cache-dir --upgrade pip \
 COPY kube/components/fq/dbt /app/dbt
 COPY docker/gex/run-dbt.sh /app/run-dbt.sh
 COPY docker/gex/app.py /app/app.py
+COPY docker/gex/src /app/src
 
 RUN chmod +x /app/run-dbt.sh
 
 ENV DBT_PROJECT_DIR=/app/dbt
 ENV DBT_PROFILES_DIR=/app/dbt
+ENV PYTHONPATH=/app/src
 
 EXPOSE 8080
 

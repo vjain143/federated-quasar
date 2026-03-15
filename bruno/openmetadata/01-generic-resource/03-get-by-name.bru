@@ -1,0 +1,24 @@
+meta {
+  name: Get Resource By Name
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}{{resource_path}}/name/{{entity_name}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+query {
+  fields: {{fields}}
+  include: {{include}}
+}

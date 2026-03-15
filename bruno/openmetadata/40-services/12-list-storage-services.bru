@@ -1,0 +1,25 @@
+meta {
+  name: List Storage Services
+  type: http
+  seq: 12
+}
+
+get {
+  url: {{base_url}}/v1/services/storageServices
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{jwt_token}}
+}
+
+headers {
+  Accept: application/json
+}
+
+query {
+  limit: {{limit}}
+  include: {{include}}
+  fields: {{fields}}
+}

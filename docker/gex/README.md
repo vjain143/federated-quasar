@@ -37,11 +37,20 @@ IMAGE_TAG=my-registry.example.com/fq-gex:1.0.2 ./docker/gex/build.sh
 - `POST /api/projects/upload` (upload local dbt project folder from UI)
 - `POST /run` (sync compatibility endpoint for Kestra)
 
+## Code layout
+
+- `app.py`: thin entrypoint for uvicorn
+- `src/gex_app/main.py`: FastAPI app assembly
+- `src/gex_app/web/`: API routes and UI assets
+- `src/gex_app/services/`: execution and ingestion workflows
+- `src/gex_app/state.py`: in-memory run/project state
+- `src/gex_app/schemas.py`: request models
+
 ## Runtime env vars
 
 - `DBT_PROJECT_DIR` (default `/app/dbt`)
 - `DBT_PROFILES_DIR` (default `/app/dbt`)
-- `DBT_MODEL_SELECTOR` (required if not set by API/UI payload)
+- `DBT_MODEL_SELECTOR` (optional; default `*` to run all models with dependency order)
 - `TRINO_HOST`, `TRINO_PORT`, `TRINO_USER`, `TRINO_CATALOG`, `TRINO_SCHEMA`
 - `DBT_TABLE_NAME` (optional table filter override; leave empty to auto-resolve from selected model)
 - `OM_SERVER_API`, `OM_ADMIN_EMAIL`, `OM_ADMIN_PASSWORD`
