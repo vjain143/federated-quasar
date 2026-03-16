@@ -10,10 +10,10 @@ get {
   auth: bearer
 }
 
-auth:bearer {
-  token: {{jwt_token}}
-}
-
 headers {
   Accept: application/json
+}
+
+auth:bearer {
+  token: {{jwt_token}}
 }
