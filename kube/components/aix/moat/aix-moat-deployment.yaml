@@ -33,7 +33,7 @@ spec:
               mountPath: /seed-connectors
               readOnly: true
         - name: init-db
-          image: moat:0.22.2
+          image: moat/moat:0.22.2
           imagePullPolicy: IfNotPresent
           command: ["/app/entrypoint.sh"]
           args: ["migrate", "upgrade"]
@@ -48,7 +48,7 @@ spec:
               mountPath: /opt/moat
       containers:
         - name: api
-          image: moat:0.22.2
+          image: moat/moat:0.22.2
           imagePullPolicy: IfNotPresent
           command: ["/app/entrypoint.sh"]
           args: ["start-server"]
@@ -72,7 +72,7 @@ spec:
             - name: moat-runtime-config
               mountPath: /opt/moat/runtime
         - name: worker
-          image: moat:0.22.2
+          image: moat/moat:0.22.2
           imagePullPolicy: IfNotPresent
           command: ["/app/entrypoint.sh"]
           args: ["start-worker"]

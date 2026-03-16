@@ -1,0 +1,20 @@
+meta {
+  name: Get OPA Bundle
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{base_url}}/api/v1/opa/bundle/{{platform}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{opa_api_key}}
+}
+
+headers {
+  Accept: application/octet-stream
+  If-None-Match: {{if_none_match}}
+}

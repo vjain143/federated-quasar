@@ -36,3 +36,6 @@ Connector UI:
   - metadata sync into `resources` + `resource_attributes`
 - Network policy includes egress to OpenMetadata (`app=openmetadata`, TCP `8585`) so the UI/API can call OpenMetadata endpoints.
 - Predefined connector files are seeded at pod startup from `configs/connectors/*.yaml` into `/opt/moat/runtime/connectors` and appear automatically in the UI selector.
+- Recommended OpenMetadata connector config for policy/resource loading:
+  - `openmetadata-policy-resource.yaml`
+  - Prefix-based sync target: `fq_trino.hms_db.fq_dbt.`

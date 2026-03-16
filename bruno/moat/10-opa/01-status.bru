@@ -1,0 +1,37 @@
+meta {
+  name: OPA Status Update
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{base_url}}/api/v1/opa/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{opa_api_key}}
+}
+
+headers {
+  Content-Type: application/json
+  Accept: application/json
+}
+
+body:json {
+  {
+    "labels": {
+      "id": "opa-local",
+      "version": "1.0.0"
+    },
+    "bundles": {
+      "{{platform}}": {
+        "active_revision": "manual-check"
+      }
+    },
+    "decision_logs": {
+      "status": "ok"
+    }
+  }
+}

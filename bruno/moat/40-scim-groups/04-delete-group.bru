@@ -1,0 +1,15 @@
+meta {
+  name: Delete Group
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{base_url}}/api/scim/v2/Groups/{{scim_group_id}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/scim+json
+}

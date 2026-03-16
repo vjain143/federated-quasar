@@ -1,0 +1,32 @@
+meta {
+  name: Create Group
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{base_url}}/api/scim/v2/Groups
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/scim+json
+  Accept: application/scim+json
+}
+
+body:json {
+  {
+    "schemas": [
+      "urn:ietf:params:scim:schemas:core:2.0:Group"
+    ],
+    "id": "{{scim_group_id}}",
+    "displayName": "{{scim_group_name}}",
+    "members": [
+      {
+        "value": "{{scim_user_email}}",
+        "type": "User"
+      }
+    ]
+  }
+}

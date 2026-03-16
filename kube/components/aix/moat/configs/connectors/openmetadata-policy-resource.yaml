@@ -8,8 +8,8 @@ openmetadata:
     jwt_token: ""
   filters:
     table_fqn: ""
-    table_fqn_prefix: ""
-    limit: 100
+    table_fqn_prefix: "fq_trino.hms_db.fq_dbt."
+    limit: 500
     fields: "tags,owners,domains,dataProducts"
   moat:
     platform: "trino"

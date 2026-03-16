@@ -1,0 +1,15 @@
+meta {
+  name: Delete User
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{base_url}}/api/scim/v2/Users/{{scim_user_id}}
+  body: none
+  auth: none
+}
+
+headers {
+  Accept: application/scim+json
+}

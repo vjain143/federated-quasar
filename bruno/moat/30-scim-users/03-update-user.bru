@@ -1,0 +1,42 @@
+meta {
+  name: Update User
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{base_url}}/api/scim/v2/Users/{{scim_user_id}}
+  body: json
+  auth: none
+}
+
+headers {
+  Content-Type: application/scim+json
+  Accept: application/scim+json
+}
+
+body:json {
+  {
+    "schemas": [
+      "urn:ietf:params:scim:schemas:core:2.0:User"
+    ],
+    "id": "{{scim_user_id}}",
+    "userName": "{{scim_user_name}}",
+    "name": {
+      "givenName": "{{scim_user_given_name}}",
+      "familyName": "{{scim_user_family_name_updated}}"
+    },
+    "emails": [
+      {
+        "value": "{{scim_user_email}}",
+        "primary": true
+      }
+    ],
+    "active": true,
+    "entitlements": [
+      {
+        "value": "{{scim_user_entitlement}}"
+      }
+    ]
+  }
+}

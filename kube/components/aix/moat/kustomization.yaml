@@ -22,6 +22,7 @@ configMapGenerator:
   - name: moat-connector-seed
     files:
       - configs/connectors/openmetadata-default.yaml
+      - configs/connectors/openmetadata-policy-resource.yaml
       - configs/connectors/dbapi-template.yaml
       - configs/connectors/http-template.yaml
       - configs/connectors/ldap-template.yaml

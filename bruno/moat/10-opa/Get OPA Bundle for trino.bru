@@ -1,0 +1,20 @@
+meta {
+  name: Get OPA Bundle for trino
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{base_url}}/api/v1/opa/bundle/{{platform}}
+  body: none
+  auth: bearer
+}
+
+headers {
+  Accept: application/octet-stream
+  If-None-Match: {{if_none_match}}
+}
+
+auth:bearer {
+  token: {{opa_api_key}}
+}
