@@ -11,8 +11,9 @@ database.port: "3306"
 database.database: "moat"
 
 bundle_generator.temp_directory: /tmp
-bundle_generator.static_rego_file_path: "/opt/moat"
+bundle_generator.static_rego_file_path: "/opt/moat/trino"
 bundler.bundle_directory: "/opt/moat/bundles"
+bundler.platform_specific_bundles: "true"
 
 api.healthcheck.auth_method: none
 api.scim.auth_method: none

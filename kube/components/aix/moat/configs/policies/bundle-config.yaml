@@ -1,0 +1,35 @@
+# Trino Bundle Configuration
+bundle:
+  name: "trino-authz"
+  version: "1.0.0"
+  platform: "trino"
+  
+policies:
+  - "main.rego"
+  - "classification.rego" 
+  - "domain.rego"
+  - "access.rego"
+
+data:
+  - "test-data.json"
+
+manifest:
+  roots:
+    - "trino"
+  
+entrypoint:
+  package: "trino"
+  rule: "allow"
+
+bundle_settings:
+  decision_logs: true
+  status_codes: true
+  
+# Trino-specific configuration
+trino:
+  # Enable row-level security
+  row_filters_enabled: true
+  # Enable column masking  
+  column_masking_enabled: true
+  # Cache policies for performance
+  policy_cache_ttl: 300

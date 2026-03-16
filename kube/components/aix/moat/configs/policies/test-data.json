@@ -1,0 +1,32 @@
+{
+  "resource_attributes": {
+    "fq_trino.hms_db.fq_dbt.fq_orders_as_select": {
+      "tags": [
+        {
+          "tagFQN": "dbtTags.domain:enterprise",
+          "source": "Classification",
+          "labelType": "Automated",
+          "state": "Suggested"
+        },
+        {
+          "tagFQN": "dbtTags.classification:confidential",
+          "source": "Classification", 
+          "labelType": "Automated",
+          "state": "Suggested"
+        },
+        {
+          "tagFQN": "dbtTags.access:finance_reader",
+          "source": "Classification",
+          "labelType": "Automated",
+          "state": "Suggested"
+        },
+        {
+          "tagFQN": "dbtTags.access:finance_writer",
+          "source": "Classification",
+          "labelType": "Automated",
+          "state": "Suggested"
+        }
+      ]
+    }
+  }
+}

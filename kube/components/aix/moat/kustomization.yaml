@@ -18,7 +18,12 @@ configMapGenerator:
       - configs/config.yaml
   - name: moat-config-trino-policy
     files:
-      - configs/policy.rego
+      - configs/policies/main.rego
+      - configs/policies/classification.rego
+      - configs/policies/domain.rego
+      - configs/policies/access.rego
+      - configs/policies/test-data.json
+      - configs/policies/bundle-config.yaml
   - name: moat-connector-seed
     files:
       - configs/connectors/openmetadata-default.yaml
