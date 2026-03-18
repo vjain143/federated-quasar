@@ -1,0 +1,21 @@
+source,target,interaction,protocol,phase
+ext_data_engineer,fq_gex,Interactive run trigger,HTTP,L3-governed-flow
+ext_data_engineer,fq_kestra,Scheduled run trigger,HTTP,L3-governed-flow
+ext_data_analyst,fq_trino_coordinator,Query submission,HTTP,L3-query-auth
+fq_kestra,fq_gex,Flow invokes /run,HTTP,L3-governed-flow
+fq_gex,fq_trino_coordinator,dbt run/test/docs,Trino,L3-governed-flow
+fq_gex,om_server,Metadata ingestion,HTTP,L3-governed-flow
+fq_trino_coordinator,fq_trino_worker,Distributed query scheduling,internal,L2-runtime
+fq_trino_coordinator,fq_hms,Metastore lookup,Thrift,L2-runtime
+fq_trino_coordinator,fq_minio,Object storage IO,S3 API,L2-runtime
+fq_trino_coordinator,aix_opa,Authorization check,HTTP,L3-query-auth
+fq_trino_coordinator,fq_gravitino,Catalog connector,HTTP,L2-runtime
+fq_hms,fq_mysql,Schema metadata persistence,MySQL,L2-runtime
+fq_gravitino,fq_mysql,Catalog metadata persistence,MySQL,L2-runtime
+om_airflow,fq_trino_coordinator,Trino metadata extraction,HTTP,L3-governed-flow
+om_airflow,om_server,Metadata workflow callback,HTTP,L3-governed-flow
+om_server,om_mysql,Entity persistence,MySQL,L2-runtime
+om_server,om_elasticsearch,Search indexing,HTTP,L2-runtime
+aix_moat,om_server,Metadata connector sync,HTTP,L3-governed-flow
+aix_moat,aix_mysql,Policy metadata persistence,MySQL,L2-runtime
+aix_opa,aix_moat,Bundle polling,HTTP,L3-query-auth

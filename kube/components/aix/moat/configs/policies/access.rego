@@ -69,13 +69,13 @@ allow if {
 
 # Helper functions to determine required access level
 requires_finance_reader_access if {
-  resource_tags := get_resource_tags()
+  resource_tags := get_resource_tags
   some tag in resource_tags
   contains(tag.tagFQN, "access:finance_reader")
 }
 
 requires_finance_writer_access if {
-  resource_tags := get_resource_tags()
+  resource_tags := get_resource_tags
   some tag in resource_tags
   contains(tag.tagFQN, "access:finance_writer")
 }

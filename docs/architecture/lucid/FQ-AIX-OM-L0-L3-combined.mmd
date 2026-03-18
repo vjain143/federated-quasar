@@ -1,0 +1,125 @@
+flowchart TB
+  %% ----------------------------
+  %% L0: System Context
+  %% ----------------------------
+  subgraph L0["L0 - System Context"]
+    DE[Data Engineers]
+    AN[Data Analysts and BI]
+    GOV[Governance and Security Admins]
+    AUD[Audit and Compliance]
+    SRC[External Data Sources]
+    APPS[AI Apps and Reports]
+    PLATFORM[(Federated Quasar Platform)]
+
+    DE --> PLATFORM
+    AN --> PLATFORM
+    GOV --> PLATFORM
+    AUD --> PLATFORM
+    SRC --> PLATFORM
+    PLATFORM --> APPS
+  end
+
+  %% ----------------------------
+  %% L1: Domain Decomposition
+  %% ----------------------------
+  subgraph L1["L1 - Domain Decomposition"]
+    FQD["fq namespace\nData Execution Plane"]
+    OMD["openmetadata namespace\nMetadata Plane"]
+    AIXD["aix namespace\nGovernance Plane"]
+  end
+
+  PLATFORM --> FQD
+  PLATFORM --> OMD
+  PLATFORM --> AIXD
+
+  %% ----------------------------
+  %% L2: Service/Container View
+  %% ----------------------------
+  subgraph L2["L2 - Service and Container View"]
+    subgraph FQNS["fq namespace"]
+      GEX[fq-gex :8080]
+      KES[fq-kestra :8080]
+      TRI[fq-trino-coordinator :8080]
+      TWR[fq-trino-worker]
+      HMS[fq-hms :9083]
+      MIN[fq-minio :9000]
+      FQDB[fq-mysql :3306]
+      GRA[fq-gravitino :8090]
+    end
+
+    subgraph OMNS["openmetadata namespace"]
+      OMS[om-server :8585]
+      OMA[om-airflow :8080]
+      OMDB[om-mysql :3306]
+      OME[om-elasticsearch :9200]
+    end
+
+    subgraph AIXNS["aix namespace"]
+      MOAT[moat :8000]
+      OPA[opa :8181]
+      AIXDB[aix-mysql :3306]
+    end
+  end
+
+  FQD --> GEX
+  FQD --> KES
+  FQD --> TRI
+  OMD --> OMS
+  OMD --> OMA
+  AIXD --> MOAT
+  AIXD --> OPA
+
+  KES --> GEX
+  GEX --> TRI
+  GEX --> OMS
+  OMA --> TRI
+  OMA --> OMS
+  TRI --> TWR
+  TRI --> HMS
+  TRI --> MIN
+  TRI --> OPA
+  TRI -. catalog connector .-> GRA
+  HMS --> FQDB
+  GRA --> FQDB
+  OMS --> OMDB
+  OMS --> OME
+  MOAT --> OMS
+  MOAT --> AIXDB
+  OPA --> MOAT
+
+  %% ----------------------------
+  %% L3: Runtime Flows
+  %% ----------------------------
+  subgraph L3["L3 - Runtime and Policy Flows"]
+    subgraph FLOWA["L3-A Governed Data Build and Policy Publication"]
+      A1["1 Trigger run (GEX or Kestra)"]
+      A2["2 dbt run/test/docs"]
+      A3["3 Create/Update tables in Trino"]
+      A4["4 Publish metadata to OpenMetadata"]
+      A5["5 Moat connector sync from OpenMetadata"]
+      A6["6 Generate policy bundle"]
+      A7["7 OPA pulls and activates bundle"]
+
+      A1 --> A2 --> A3 --> A4 --> A5 --> A6 --> A7
+    end
+
+    subgraph FLOWB["L3-B Query-time Authorization"]
+      B1["1 User submits SQL"]
+      B2["2 Trino asks OPA allow decision"]
+      B3["3 OPA evaluates Rego + bundle data"]
+      B4["4 Trino allow or deny"]
+
+      B1 --> B2 --> B3 --> B4
+    end
+  end
+
+  A1 -. via .-> GEX
+  A1 -. via .-> KES
+  A2 -. executes on .-> TRI
+  A4 -. targets .-> OMS
+  A5 -. syncs into .-> MOAT
+  A6 -. consumed by .-> OPA
+
+  B1 -. query to .-> TRI
+  B2 -. call .-> OPA
+  B3 -. policy source .-> MOAT

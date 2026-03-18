@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: umf-mysql
+  labels:
+    app: umf-mysql
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      targetPort: 3306
+      nodePort: 30406
+      protocol: TCP
+  selector:
+    app: umf-mysql

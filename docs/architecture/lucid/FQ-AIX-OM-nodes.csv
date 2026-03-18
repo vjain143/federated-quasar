@@ -1,0 +1,19 @@
+id,label,namespace,domain,level
+ext_data_engineer,Data Engineer,external,producer,L0
+ext_data_analyst,Data Analyst,external,consumer,L0
+ext_governance_admin,Governance Admin,external,governance,L0
+fq_gex,fq-gex,fq,data_execution,L2
+fq_kestra,fq-kestra,fq,data_execution,L2
+fq_trino_coordinator,fq-trino-coordinator,fq,data_execution,L2
+fq_trino_worker,fq-trino-worker,fq,data_execution,L2
+fq_hms,fq-hms,fq,data_execution,L2
+fq_minio,fq-minio,fq,data_execution,L2
+fq_mysql,fq-mysql,fq,data_execution,L2
+fq_gravitino,fq-gravitino,fq,data_execution,L2
+om_server,om-server,openmetadata,metadata,L2
+om_airflow,om-airflow,openmetadata,metadata,L2
+om_mysql,om-mysql,openmetadata,metadata,L2
+om_elasticsearch,om-elasticsearch,openmetadata,metadata,L2
+aix_moat,moat,aix,governance,L2
+aix_opa,opa,aix,governance,L2
+aix_mysql,mysql,aix,governance,L2

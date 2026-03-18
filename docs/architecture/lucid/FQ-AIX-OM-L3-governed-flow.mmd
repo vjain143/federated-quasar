@@ -1,0 +1,18 @@
+sequenceDiagram
+  actor ENG as Data Engineer
+  participant K as Kestra/GEX
+  participant DBT as dbt Runtime
+  participant T as Trino
+  participant OM as OpenMetadata
+  participant M as Moat
+  participant O as OPA
+
+  ENG->>K: Trigger governed pipeline run
+  K->>DBT: dbt run/test/docs
+  DBT->>T: Execute DDL/DML on fq_dbt schema
+  K->>OM: Ingest Trino metadata
+  K->>OM: Ingest dbt metadata/tags/meta
+  M->>OM: Pull metadata via connector sync
+  M->>M: Map metadata to policy resources/attributes
+  M-->>O: Publish bundle (trino)
+  O->>O: Pull and activate bundle

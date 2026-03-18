@@ -22,15 +22,25 @@ spec:
             - |
               set -eu
               mkdir -p /opt/moat/runtime/connectors
+              mkdir -p /opt/policies/trino
               for f in /seed-connectors/*; do
                 [ -f "$f" ] || continue
                 cp "$f" /opt/moat/runtime/connectors/
               done
+              for f in /seed-trino/*; do
+                [ -f "$f" ] || continue
+                cp "$f" /opt/policies/trino/
+              done
           volumeMounts:
             - name: moat-runtime-config
               mountPath: /opt/moat/runtime
+            - name: moat-policy-config
+              mountPath: /opt/policies
             - name: moat-connector-seed
               mountPath: /seed-connectors
+              readOnly: true
+            - name: moat-config-trino-policy
+              mountPath: /seed-trino
               readOnly: true
         - name: init-db
           image: moat/moat:0.22.2
@@ -64,8 +74,8 @@ spec:
             - name: moat-api-config
               mountPath: /opt/moat
               readOnly: true
-            - name: moat-config-trino-policy
-              mountPath: /opt/moat/trino
+            - name: moat-policy-config
+              mountPath: /opt/policies
               readOnly: true
             - name: bundle-storage
               mountPath: /opt/moat/bundles
@@ -86,8 +96,8 @@ spec:
             - name: moat-api-config
               mountPath: /opt/moat
               readOnly: true
-            - name: moat-config-trino-policy
-              mountPath: /opt/moat/trino
+            - name: moat-policy-config
+              mountPath: /opt/policies
               readOnly: true
             - name: bundle-storage
               mountPath: /opt/moat/bundles
@@ -100,6 +110,8 @@ spec:
         - name: moat-config-trino-policy
           configMap:
             name: moat-config-trino-policy
+        - name: moat-policy-config
+          emptyDir: {}
         - name: bundle-storage
           emptyDir: {}
         - name: moat-runtime-config

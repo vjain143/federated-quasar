@@ -1,0 +1,15 @@
+sequenceDiagram
+  actor CON as Data Consumer
+  participant T as Trino
+  participant O as OPA
+
+  CON->>T: SELECT ... FROM governed table
+  T->>O: POST /v1/data/trino/allow
+  O->>O: Evaluate policy with bundle data
+  O-->>T: allow=true/false
+
+  alt allowed
+    T-->>CON: Return query results
+  else denied
+    T-->>CON: Access denied
+  end

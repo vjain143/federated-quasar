@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: umf-mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: umf-mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: umf-mysql
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:8.0.28-oracle
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: umf-mysql-secret
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: umf-mysql-secret
+                  key: MYSQL_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: umf-mysql-secret
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: umf-mysql-secret
+                  key: MYSQL_PASSWORD
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: umf-mysql-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: umf-mysql-storage
+          persistentVolumeClaim:
+            claimName: umf-mysql-pvc

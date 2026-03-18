@@ -1,0 +1,94 @@
+<mxfile host="app.diagrams.net" modified="2026-03-17T11:18:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="FQ-COMBINED" name="L0-L3-Combined">
+    <mxGraphModel dx="1266" dy="768" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2600" pageHeight="2000" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+
+        <mxCell id="10" value="L0 System Context" style="swimlane;childLayout=stackLayout;horizontal=0;startSize=28;rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="2500" height="230" as="geometry"/>
+        </mxCell>
+        <mxCell id="11" value="Data Engineers" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="10">
+          <mxGeometry x="30" y="70" width="170" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="12" value="Data Analysts and BI" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="10">
+          <mxGeometry x="220" y="70" width="180" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="13" value="Governance and Security Admins" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="10">
+          <mxGeometry x="420" y="70" width="240" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="14" value="Audit and Compliance" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="10">
+          <mxGeometry x="680" y="70" width="180" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="15" value="External Data Sources" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="10">
+          <mxGeometry x="880" y="70" width="180" height="45" as="geometry"/>
+        </mxCell>
+        <mxCell id="16" value="Federated Quasar Platform" style="ellipse;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;" vertex="1" parent="10">
+          <mxGeometry x="1180" y="50" width="320" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="17" value="AI Apps and Reports" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="10">
+          <mxGeometry x="1600" y="70" width="180" height="45" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="18" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="10" source="11" target="16"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="19" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="10" source="12" target="16"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="20" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="10" source="13" target="16"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="21" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="10" source="14" target="16"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="22" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="10" source="15" target="16"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="23" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="10" source="16" target="17"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="30" value="L1 Domain Decomposition" style="swimlane;childLayout=stackLayout;horizontal=0;startSize=28;rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="300" width="2500" height="220" as="geometry"/>
+        </mxCell>
+        <mxCell id="31" value="fq namespace&#xa;Data Execution Plane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="30">
+          <mxGeometry x="380" y="70" width="320" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="32" value="openmetadata namespace&#xa;Metadata Plane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="30">
+          <mxGeometry x="760" y="70" width="320" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="33" value="aix namespace&#xa;Governance Plane" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="30">
+          <mxGeometry x="1140" y="70" width="320" height="80" as="geometry"/>
+        </mxCell>
+        <mxCell id="34" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="30" source="31" target="32"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="35" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="30" source="32" target="33"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="36" value="authz decisions" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=1;" edge="1" parent="30" source="33" target="31"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="40" value="L2 Service View" style="swimlane;childLayout=stackLayout;horizontal=0;startSize=28;rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="550" width="2500" height="650" as="geometry"/>
+        </mxCell>
+        <mxCell id="41" value="fq: GEX, Kestra, Trino, HMS, MinIO, MySQL, Gravitino" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff8dc;strokeColor=#d6b656;" vertex="1" parent="40">
+          <mxGeometry x="80" y="60" width="720" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="42" value="openmetadata: OM Server, Airflow, MySQL, Elasticsearch" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#eaf7ea;strokeColor=#82b366;" vertex="1" parent="40">
+          <mxGeometry x="850" y="60" width="760" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="43" value="aix: Moat, OPA, MySQL" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fdeaea;strokeColor=#b85450;" vertex="1" parent="40">
+          <mxGeometry x="1660" y="60" width="360" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="44" value="Data path: GEX/Kestra -&gt; Trino -&gt; OpenMetadata -&gt; Moat -&gt; OPA -&gt; Trino authz" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;" vertex="1" parent="40">
+          <mxGeometry x="120" y="190" width="1880" height="70" as="geometry"/>
+        </mxCell>
+        <mxCell id="45" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="40" source="41" target="42"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="46" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;endFill=1;" edge="1" parent="40" source="42" target="43"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="47" value="decisions" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=1;" edge="1" parent="40" source="43" target="41"><mxGeometry relative="1" as="geometry"/></mxCell>
+
+        <mxCell id="50" value="L3 Runtime Flows" style="swimlane;childLayout=stackLayout;horizontal=0;startSize=28;rounded=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="40" y="1230" width="2500" height="640" as="geometry"/>
+        </mxCell>
+        <mxCell id="51" value="L3-A: Trigger run -&gt; dbt execution -&gt; metadata ingest -&gt; Moat sync -&gt; bundle generation -&gt; OPA poll" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="50">
+          <mxGeometry x="100" y="70" width="2240" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="52" value="L3-B: User query -&gt; Trino calls OPA -&gt; OPA evaluates Rego + bundle -&gt; allow/deny" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="50">
+          <mxGeometry x="100" y="220" width="2240" height="90" as="geometry"/>
+        </mxCell>
+        <mxCell id="53" value="Policy contract: dbt tags/meta + OpenMetadata attributes + Moat resources + OPA identity groups" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="50">
+          <mxGeometry x="100" y="370" width="2240" height="90" as="geometry"/>
+        </mxCell>
+
+        <mxCell id="60" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1" source="16" target="31"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="61" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1" source="31" target="41"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="62" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;dashed=1;endArrow=block;endFill=1;" edge="1" parent="1" source="41" target="51"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

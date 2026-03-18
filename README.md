@@ -16,8 +16,9 @@ The main end-to-end flow in this repo is:
 ### Core stack manifests
 
 - `kube/components/fq`: data/query/orchestration stack in namespace `fq`
+- `kube/components/umf`: Unified Metadata Fabric stack in namespace `umf`
 - `kube/components/om`: OpenMetadata stack in namespace `openmetadata`
-- `kube/components/aix/kubernetes`: governance stack in namespace `aix`
+- `kube/components/aix`: governance stack in namespace `aix`
 
 ### Runtime images and app code
 
@@ -53,13 +54,19 @@ These are not all deployed by default in the `fq` stack.
 From `kube/components/fq/kustomization.yml`:
 
 - `gex` (`fq-gex`)
-- `gravitino` (`fq-gravitino`)
 - `trino` (`fq-trino`, `fq-trino-coordinator`)
 - `hms` (`fq-hms`)
 - `minio` (`fq-minio`, `fq-minio-console`)
 - `mysql` (`fq-mysql`)
 - `kestra` (`fq-kestra`)
 - plus supporting configs, policies, service accounts
+
+### `umf` namespace (Unified Metadata Fabric)
+
+From `kube/components/umf/kustomization.yml`:
+
+- `umf-mysql` (dedicated MySQL for UMF Gravitino metadata)
+- `umf-gravitino` (dedicated Gravitino deployment)
 
 ### `openmetadata` namespace (metadata plane)
 
@@ -72,7 +79,7 @@ From `kube/components/om/kustomization.yml`:
 
 ### `aix` namespace (governance + policy plane)
 
-From `kube/components/aix/kubernetes/kustomization.yaml`:
+From `kube/components/aix/kustomization.yaml`:
 
 - `mysql` (Moat persistence)
 - `moat` (metadata-to-policy + connector UI/API)
@@ -90,8 +97,9 @@ From `kube/components/aix/kubernetes/kustomization.yaml`:
 
 ```bash
 kubectl apply -k kube/components/fq
+kubectl apply -k kube/components/umf
 kubectl apply -k kube/components/om
-kubectl apply -k kube/components/aix/kubernetes
+kubectl apply -k kube/components/aix
 ```
 
 ### Verify rollout
@@ -100,8 +108,10 @@ kubectl apply -k kube/components/aix/kubernetes
 kubectl rollout status deployment/fq-trino-coordinator -n fq
 kubectl rollout status deployment/fq-gex -n fq
 kubectl rollout status deployment/fq-kestra -n fq
-kubectl rollout status deployment/fq-gravitino -n fq
 kubectl rollout status deployment/fq-hms -n fq
+
+kubectl rollout status deployment/umf-mysql -n umf
+kubectl rollout status deployment/umf-gravitino -n umf
 
 kubectl rollout status deployment/om-server -n openmetadata
 kubectl rollout status deployment/om-airflow -n openmetadata
@@ -117,11 +127,15 @@ kubectl rollout status deployment/opa -n aix
 - Trino UI/API: `http://localhost:30080`
 - GEX UI/API: `http://localhost:30881`
 - Kestra UI/API: `http://localhost:30882`
-- Gravitino API/UI: `http://localhost:30090`
 - Hive Metastore thrift: `thrift://localhost:30983`
 - MinIO API: `http://localhost:30990`
 - MinIO Console: `http://localhost:30991`
 - FQ MySQL: `localhost:30336`
+
+### `umf`
+
+- Gravitino API/UI: `http://localhost:30190`
+- UMF MySQL: `localhost:30406`
 
 ### `openmetadata`
 
@@ -176,10 +190,12 @@ cd docker/trino
 
 - Check pods by namespace:
   - `kubectl get pods -n fq`
+  - `kubectl get pods -n umf`
   - `kubectl get pods -n openmetadata`
   - `kubectl get pods -n aix`
 - Check service endpoints:
   - `kubectl get svc -n fq`
+  - `kubectl get svc -n umf`
   - `kubectl get svc -n openmetadata`
   - `kubectl get svc -n aix`
 - Tail logs:
@@ -194,5 +210,5 @@ For deeper implementation detail, start with:
 
 - `docs/DBT-USER-GUIDE.md`
 - `kube/components/fq/README.md`
-- `kube/components/aix/kubernetes/moat/README.md`
-- `kube/components/aix/kubernetes/opa/README.md`
+- `kube/components/aix/moat/README.md`
+- `kube/components/aix/opa/README.md`

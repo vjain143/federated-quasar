@@ -1,0 +1,52 @@
+flowchart TB
+  U[Platform Users]
+
+  subgraph FQ[fq namespace]
+    GEX[fq-gex:8080]
+    KES[fq-kestra:8080]
+    TRI[fq-trino-coordinator:8080]
+    TWR[fq-trino-worker]
+    HMS[fq-hms:9083]
+    MIN[fq-minio:9000]
+    FQDB[fq-mysql:3306]
+    GRA[fq-gravitino:8090]
+  end
+
+  subgraph OM[openmetadata namespace]
+    OMS[om-server:8585]
+    OMA[om-airflow:8080]
+    OMDB[om-mysql:3306]
+    OME[om-elasticsearch:9200]
+  end
+
+  subgraph AIX[aix namespace]
+    MOAT[moat:8000]
+    OPA[opa:8181]
+    AIXDB[aix-mysql:3306]
+  end
+
+  U --> GEX
+  U --> KES
+  U --> TRI
+
+  KES --> GEX
+  GEX --> TRI
+  GEX --> OMS
+
+  TRI --> TWR
+  TRI --> HMS
+  TRI --> MIN
+  TRI --> OPA
+  TRI -. catalog connector .-> GRA
+
+  HMS --> FQDB
+  GRA --> FQDB
+
+  OMA --> TRI
+  OMA --> OMS
+  OMS --> OMDB
+  OMS --> OME
+
+  MOAT --> OMS
+  MOAT --> AIXDB
+  OPA --> MOAT

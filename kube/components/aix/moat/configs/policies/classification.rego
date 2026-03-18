@@ -47,7 +47,7 @@ allow if {
 
 # Helper to determine if data is confidential
 is_confidential_data if {
-  resource_tags := get_resource_tags()
+  resource_tags := get_resource_tags
   some tag in resource_tags
   contains(tag.tagFQN, "classification:confidential")
 }

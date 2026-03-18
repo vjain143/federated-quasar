@@ -11,7 +11,7 @@ database.port: "3306"
 database.database: "moat"
 
 bundle_generator.temp_directory: /tmp
-bundle_generator.static_rego_file_path: "/opt/moat/trino"
+bundle_generator.static_rego_file_path: "/opt/policies"
 bundler.bundle_directory: "/opt/moat/bundles"
 bundler.platform_specific_bundles: "true"
 

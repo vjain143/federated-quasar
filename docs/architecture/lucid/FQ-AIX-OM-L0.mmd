@@ -1,0 +1,16 @@
+flowchart LR
+  DE[Data Engineers]
+  AN[Data Analysts / BI]
+  GOV[Governance and Security Admins]
+  AUD[Audit and Compliance]
+  EXT[External Data Sources]
+  AI[AI Apps and Reports]
+
+  FQP[(Federated Quasar Platform)]
+
+  DE --> FQP
+  AN --> FQP
+  GOV --> FQP
+  AUD --> FQP
+  EXT --> FQP
+  FQP --> AI

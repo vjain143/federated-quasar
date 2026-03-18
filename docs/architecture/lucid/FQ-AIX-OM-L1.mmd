@@ -1,0 +1,32 @@
+flowchart LR
+  USER[Users and Services]
+
+  subgraph FQ[fq namespace - Data Execution Plane]
+    GEX[GEX]
+    KES[Kestra]
+    TRI[Trino]
+  end
+
+  subgraph OM[openmetadata namespace - Metadata Plane]
+    OMS[OpenMetadata Server]
+    OMA[OpenMetadata Ingestion (Airflow)]
+  end
+
+  subgraph AIX[aix namespace - Governance Plane]
+    MOAT[Moat]
+    OPA[OPA]
+  end
+
+  USER --> GEX
+  USER --> KES
+  USER --> TRI
+
+  KES --> GEX
+  GEX --> TRI
+  GEX --> OMS
+  OMA --> TRI
+  OMA --> OMS
+
+  OMS --> MOAT
+  MOAT --> OPA
+  TRI --> OPA

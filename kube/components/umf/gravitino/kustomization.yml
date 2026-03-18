@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: umf
+
+resources:
+  - umf-gravitino-secret.yml
+  - umf-gravitino-deployment.yml
+  - umf-gravitino-service.yml

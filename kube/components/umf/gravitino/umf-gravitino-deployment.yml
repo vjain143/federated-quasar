@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: umf-gravitino
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: umf-gravitino
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: umf-gravitino
+    spec:
+      containers:
+        - name: umf-gravitino
+          image: fq-gravitino:1.2.0
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: METADATA_STORE_TYPE
+              value: jdbc
+            - name: METADATA_STORE_JDBC_URL
+              value: jdbc:mysql://umf-mysql:3306/umf_gravitino_db?useSSL=false&serverTimezone=UTC
+            - name: METADATA_STORE_JDBC_USER
+              valueFrom:
+                secretKeyRef:
+                  name: umf-gravitino-secret
+                  key: METADATA_STORE_JDBC_USER
+            - name: METADATA_STORE_JDBC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: umf-gravitino-secret
+                  key: METADATA_STORE_JDBC_PASSWORD
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: umf-gravitino-secret
+                  key: MINIO_ROOT_USER
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: umf-gravitino-secret
+                  key: MINIO_ROOT_PASSWORD
+            - name: CATALOG_DEFAULT.name
+              value: default_iceberg
+            - name: CATALOG_DEFAULT.type
+              value: iceberg
+            - name: CATALOG_DEFAULT.warehouse
+              value: s3://gravitino-iceberg/
+            - name: CATALOG_DEFAULT.catalog-impl
+              value: org.apache.iceberg.jdbc.JdbcCatalog
+            - name: CATALOG_DEFAULT.uri
+              value: jdbc:mysql://umf-mysql:3306/umf_gravitino_db?useSSL=false&serverTimezone=UTC
+          ports:
+            - containerPort: 8090
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              export JAVA_OPTS="-Dcom.sun.management.jmxremote.port=9999 -XX:+UnlockExperimentalVMOptions -XX:-UseContainerSupport -Dcom.sun.management.jmxremote=false -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false"
+              export JAVA_TOOL_OPTIONS="-Djdk.internal.platform.cgroupv2.disable=true"
+              /opt/gravitino/bin/gravitino.sh run

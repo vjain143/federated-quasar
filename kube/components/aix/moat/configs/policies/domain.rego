@@ -46,19 +46,19 @@ allow if {
 
 # Helper functions to determine domain
 is_public_domain if {
-  resource_tags := get_resource_tags()
+  resource_tags := get_resource_tags
   some tag in resource_tags
   contains(tag.tagFQN, "domain:public")
 }
 
 is_enterprise_domain if {
-  resource_tags := get_resource_tags()
+  resource_tags := get_resource_tags
   some tag in resource_tags
   contains(tag.tagFQN, "domain:enterprise")
 }
 
 is_finance_domain if {
-  resource_tags := get_resource_tags()
+  resource_tags := get_resource_tags
   some tag in resource_tags
   contains(tag.tagFQN, "domain:finance")
 }

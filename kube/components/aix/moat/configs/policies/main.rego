@@ -12,6 +12,17 @@ classification_allow := data.trino.classification.allow
 domain_allow := data.trino.domain.allow  
 access_allow := data.trino.access.allow
 
+# Service principals used by platform automation
+trusted_service_principals := {"dbt", "openmetadata"}
+
+identity := object.get(object.get(input, "context", {}), "identity", {})
+user_name := lower(object.get(identity, "user", ""))
+
+# Allow trusted automation users to run platform-managed operations.
+allow if {
+  trusted_service_principals[user_name]
+}
+
 # Main decision logic - all dimensions must allow
 allow if {
   # All policy dimensions must grant access
@@ -21,27 +32,14 @@ allow if {
 }
 
 # Combine row filters from all dimensions
-row_filters := array.concat([
-  data.trino.access.rowFilters,
-  data.trino.classification.rowFilters
-])
+access_row_filters := object.get(data.trino.access, "row_filters", [])
+classification_row_filters := object.get(data.trino.classification, "row_filters", [])
+row_filters := array.concat(access_row_filters, classification_row_filters)
 
 # Combine column masks from all dimensions
-column_mask := object.union(
-  data.trino.classification.column_mask,
-  {}
-)
-
-# Helper function to combine arrays
-array_concat(arrays) = result if {
-  count(arrays) > 0
-  result := arrays[_][_]  # Flatten nested arrays
-}
-
-# Fallback for empty arrays
-array_concat(arrays) = [] if {
-  count(arrays) == 0
-}
+classification_column_mask := object.get(data.trino.classification, "column_mask", {})
+access_column_mask := object.get(data.trino.access, "column_mask", {})
+column_mask := object.union(classification_column_mask, access_column_mask)
 
 # Apply combined filters
 rowFilters := row_filters if {
@@ -56,7 +54,7 @@ columnMask := column_mask if {
 # Audit logging
 decision := {
   "allow": allow,
-  "reason": get_reason(),
+  "reason": get_reason,
   "applied_policies": [
     "classification",
     "domain", 
