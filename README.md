@@ -23,6 +23,7 @@ The main end-to-end flow in this repo is:
 ### Runtime images and app code
 
 - `docker/gex`: Governance Execution Engine (UI + API for dbt + metadata ingestion)
+- `docker/review-studio`: reusable enterprise-style code review toolkit for Java, Python, Kubernetes, and Bitbucket pull requests
 - `docker/trino`: custom Trino image with Gravitino connector
 - `docker/gravitino`, `docker/hive-metastore`, and other runtime image folders
 
@@ -177,6 +178,13 @@ Trino uses OPA plugin endpoints (`allow`, `rowFilters`, `columnMask`) for access
 
 ```bash
 ./docker/gex/build.sh
+```
+
+### Run Review Studio
+
+```bash
+cd docker/review-studio
+PYTHONPATH=src python3 -m review_studio.cli review-repo --repo /path/to/project --persona architect
 ```
 
 ### Rebuild Trino image

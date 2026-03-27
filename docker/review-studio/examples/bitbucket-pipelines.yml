@@ -1,0 +1,12 @@
+image: python:3.13
+
+pipelines:
+  pull-requests:
+    "**":
+      - step:
+          name: Review Studio
+          script:
+            - cd docker/review-studio
+            - git diff origin/main...HEAD > /tmp/pr.diff
+            - sh ./review-studio review-diff --diff-file /tmp/pr.diff --persona architect --format markdown --output /tmp/review.md
+            - cat /tmp/review.md
