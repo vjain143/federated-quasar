@@ -22,6 +22,7 @@ configMapGenerator:
   - name: fq-trino-datasource-configs
     files:
       - configs/gravitino.properties
+      - configs/http.properties
       - configs/hms_db.properties
       - configs/iceberg.properties
       - configs/minio.properties

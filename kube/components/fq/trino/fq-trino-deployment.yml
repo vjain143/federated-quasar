@@ -15,7 +15,8 @@ spec:
         app: fq-trino-coordinator
     spec:
       containers:
-      - image: fq-trino:472.1.2
+      #- image: fq-trino:472.1.2
+      - image: infed-trino:472.0.1
         imagePullPolicy: IfNotPresent
         name: trino
         ports:
@@ -64,6 +65,9 @@ spec:
           - name: fq-trino-datasource-configs-volume
             mountPath: /etc/trino/catalog/gravitino.properties
             subPath: gravitino.properties
+          - name: fq-trino-datasource-configs-volume
+            mountPath: /etc/trino/catalog/http.properties
+            subPath: http.properties
           - name: fq-trino-datasource-configs-volume
             mountPath: /etc/trino/catalog/hms_db.properties
             subPath: hms_db.properties
